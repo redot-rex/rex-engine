@@ -1,5 +1,5 @@
-short_name = "redot"
-name = "Redot Engine"
+short_name = "ReX"
+name = "ReX Engine"
 major = 4
 minor = 4
 patch = 0
