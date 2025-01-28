@@ -205,7 +205,7 @@ To communicate with developers (e.g. to discuss a feature you want to implement
 or a bug you want to fix), the following channels can be used:
 
 - [Redot Discord](https://discord.gg/redot): General community chat and development can all be found here.
-- [Bug tracker](https://github.com/Redot-Engine/redot-engine/issues): If there is an
+- [Bug tracker](https://github.com/Redot-Experimental/ReX/issues): If there is an
   existing issue about a topic you want to discuss, you can participate directly.
   If not, you can open a new issue. Please mind the guidelines outlined above
   for bug reporting.
