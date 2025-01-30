@@ -1927,7 +1927,7 @@ static bool _guess_expression_type(GDScriptParser::CompletionContext &p_context,
 						}
 					}
 
-					if (!found && base.value.get_type() != Variant::NIL) {
+					if (!found) {
 						found = _guess_method_return_type_from_base(c, base, call->function_name, r_type);
 					}
 				}
@@ -2862,7 +2862,15 @@ static void _find_call_arguments(GDScriptParser::CompletionContext &p_context, c
 
 				if (p_argidx == 1 && p_context.node && p_context.node->type == GDScriptParser::Node::CALL && ClassDB::is_parent_class(class_name, SNAME("Tween")) && p_method == SNAME("tween_property")) {
 					// Get tweened objects properties.
+					if (static_cast<GDScriptParser::CallNode *>(p_context.node)->arguments.is_empty()) {
+						base_type.kind = GDScriptParser::DataType::UNRESOLVED;
+						break;
+					}
 					GDScriptParser::ExpressionNode *tweened_object = static_cast<GDScriptParser::CallNode *>(p_context.node)->arguments[0];
+					if (!tweened_object) {
+						base_type.kind = GDScriptParser::DataType::UNRESOLVED;
+						break;
+					}
 					StringName native_type = tweened_object->datatype.native_type;
 					switch (tweened_object->datatype.kind) {
 						case GDScriptParser::DataType::SCRIPT: {

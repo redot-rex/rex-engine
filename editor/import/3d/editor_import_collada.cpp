@@ -1798,10 +1798,6 @@ void ColladaImport::create_animation(int p_clip, bool p_import_value_tracks) {
 /*************************************** SCENE ***********************************/
 /*********************************************************************************/
 
-uint32_t EditorSceneFormatImporterCollada::get_import_flags() const {
-	return IMPORT_SCENE | IMPORT_ANIMATION;
-}
-
 void EditorSceneFormatImporterCollada::get_extensions(List<String> *r_extensions) const {
 	r_extensions->push_back("dae");
 }

@@ -154,6 +154,7 @@ bool DisplayServerX11::has_feature(Feature p_feature) const {
 		case FEATURE_CLIPBOARD_PRIMARY:
 		case FEATURE_TEXT_TO_SPEECH:
 		case FEATURE_WINDOW_EMBEDDING:
+		case FEATURE_WINDOW_DRAG:
 			return true;
 		case FEATURE_SCREEN_CAPTURE:
 			return !xwayland;
@@ -5850,6 +5851,24 @@ Error DisplayServerX11::remove_embedded_process(OS::ProcessID p_pid) {
 	}
 
 	EmbeddedProcessData *ep = embedded_processes.get(p_pid);
+
+	// Handle bad window errors silently because just in case the embedded window was closed.
+	int (*oldHandler)(Display *, XErrorEvent *) = XSetErrorHandler(&bad_window_error_handler);
+
+	// Send the message to gracefully close the window.
+	XEvent ev;
+	memset(&ev, 0, sizeof(ev));
+	ev.xclient.type = ClientMessage;
+	ev.xclient.window = ep->process_window;
+	ev.xclient.message_type = XInternAtom(x11_display, "WM_PROTOCOLS", True);
+	ev.xclient.format = 32;
+	ev.xclient.data.l[0] = XInternAtom(x11_display, "WM_DELETE_WINDOW", False);
+	ev.xclient.data.l[1] = CurrentTime;
+	XSendEvent(x11_display, ep->process_window, False, NoEventMask, &ev);
+
+	// Restore default error handler.
+	XSetErrorHandler(oldHandler);
+
 	embedded_processes.erase(p_pid);
 	memdelete(ep);
 

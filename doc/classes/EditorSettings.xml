@@ -480,6 +480,15 @@
 		<member name="editors/3d_gizmos/gizmo_colors/skeleton" type="Color" setter="" getter="">
 			The 3D editor gizmo color used for [Skeleton3D] nodes.
 		</member>
+		<member name="editors/3d_gizmos/gizmo_colors/spring_bone_collision" type="Color" setter="" getter="">
+			The 3D editor gizmo color used for [SpringBoneCollision3D] nodes.
+		</member>
+		<member name="editors/3d_gizmos/gizmo_colors/spring_bone_inside_collision" type="Color" setter="" getter="">
+			The 3D editor gizmo color used for [SpringBoneCollision3D] nodes with inside mode.
+		</member>
+		<member name="editors/3d_gizmos/gizmo_colors/spring_bone_joint" type="Color" setter="" getter="">
+			The 3D editor gizmo color used for [SpringBoneSimulator3D] nodes.
+		</member>
 		<member name="editors/3d_gizmos/gizmo_colors/stream_player_3d" type="Color" setter="" getter="">
 			The 3D editor gizmo color used for [AudioStreamPlayer3D]'s emission angle.
 		</member>
@@ -1126,6 +1135,9 @@
 			- [b]Side-by-side with Editor[/b] will launch the Play window side-by-side with the Editor window.
 			- [b]Launch in PiP mode[/b] will launch the Play window directly in picture-in-picture (PiP) mode if PiP mode is supported and enabled. When maximized, the Play window will occupy the same window as the Editor.
 			[b]Note:[/b] Only available in the Android editor.
+		</member>
+		<member name="run/window_placement/game_embed_mode" type="int" setter="" getter="">
+			Overrides game embedding setting for all newly opened projects. If enabled, game embedding settings are not saved.
 		</member>
 		<member name="run/window_placement/play_window_pip_mode" type="int" setter="" getter="">
 			Specifies the picture-in-picture (PiP) mode for the Play window.

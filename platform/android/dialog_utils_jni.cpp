@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  GodotXRGame.kt                                                        */
+/*  dialog_utils_jni.cpp                                                  */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -30,51 +30,25 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-package org.redotengine.editor
+#include "dialog_utils_jni.h"
 
-import org.redotengine.godot.GodotLib
-import org.redotengine.godot.xr.XRMode
+#include "display_server_android.h"
+#include "jni_utils.h"
 
-/**
- * Provide support for running XR apps / games from the editor window.
- */
-open class GodotXRGame: GodotGame() {
+extern "C" {
 
-	override fun overrideOrientationRequest() = true
-
-	override fun updateCommandLineParams(args: List<String>) {
-		val updatedArgs = ArrayList<String>()
-		if (!args.contains(XRMode.OPENXR.cmdLineArg)) {
-			updatedArgs.add(XRMode.OPENXR.cmdLineArg)
-		}
-		if (!args.contains(XR_MODE_ARG)) {
-			updatedArgs.add(XR_MODE_ARG)
-			updatedArgs.add("on")
-		}
-		updatedArgs.addAll(args)
-
-		super.updateCommandLineParams(updatedArgs)
+JNIEXPORT void JNICALL Java_org_redotengine_godot_utils_DialogUtils_dialogCallback(JNIEnv *env, jclass clazz, jint p_button_index) {
+	DisplayServerAndroid *ds = (DisplayServerAndroid *)DisplayServer::get_singleton();
+	if (ds) {
+		ds->emit_dialog_callback(p_button_index);
 	}
+}
 
-	override fun getEditorWindowInfo() = XR_RUN_GAME_INFO
-
-	override fun getProjectPermissionsToEnable(): MutableList<String> {
-		val permissionsToEnable = super.getProjectPermissionsToEnable()
-
-		val openxrEnabled = GodotLib.getGlobal("xr/openxr/enabled").toBoolean()
-		if (openxrEnabled) {
-			// We only request permissions when the `automatically_request_runtime_permissions`
-			// project setting is enabled.
-			// If the project setting is not defined, we fall-back to the default behavior which is
-			// to automatically request permissions.
-			val automaticallyRequestPermissionsSetting = GodotLib.getGlobal("xr/openxr/extensions/automatically_request_runtime_permissions")
-			val automaticPermissionsRequestEnabled = automaticallyRequestPermissionsSetting.isNullOrEmpty() ||
-				automaticallyRequestPermissionsSetting.toBoolean()
-			if (automaticPermissionsRequestEnabled) {
-				permissionsToEnable.addAll(USE_SCENE_PERMISSIONS)
-			}
-		}
-
-		return permissionsToEnable
+JNIEXPORT void JNICALL Java_org_redotengine_godot_utils_DialogUtils_inputDialogCallback(JNIEnv *env, jclass clazz, jstring p_text) {
+	DisplayServerAndroid *ds = (DisplayServerAndroid *)DisplayServer::get_singleton();
+	if (ds) {
+		String text = jstring_to_string(p_text, env);
+		ds->emit_input_dialog_callback(text);
 	}
+}
 }
