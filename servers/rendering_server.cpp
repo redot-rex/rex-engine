@@ -2443,7 +2443,7 @@ void RenderingServer::_bind_methods() {
 	/* MULTIMESH API */
 
 	ClassDB::bind_method(D_METHOD("multimesh_create"), &RenderingServer::multimesh_create);
-	ClassDB::bind_method(D_METHOD("multimesh_allocate_data", "multimesh", "instances", "transform_format", "color_format", "custom_data_format"), &RenderingServer::multimesh_allocate_data, DEFVAL(false), DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("multimesh_allocate_data", "multimesh", "instances", "transform_format", "color_format", "custom_data_format", "use_indirect"), &RenderingServer::multimesh_allocate_data, DEFVAL(false), DEFVAL(false), DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("multimesh_get_instance_count", "multimesh"), &RenderingServer::multimesh_get_instance_count);
 	ClassDB::bind_method(D_METHOD("multimesh_set_mesh", "multimesh", "mesh"), &RenderingServer::multimesh_set_mesh);
 	ClassDB::bind_method(D_METHOD("multimesh_instance_set_transform", "multimesh", "index", "transform"), &RenderingServer::multimesh_instance_set_transform);
@@ -2461,6 +2461,7 @@ void RenderingServer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("multimesh_set_visible_instances", "multimesh", "visible"), &RenderingServer::multimesh_set_visible_instances);
 	ClassDB::bind_method(D_METHOD("multimesh_get_visible_instances", "multimesh"), &RenderingServer::multimesh_get_visible_instances);
 	ClassDB::bind_method(D_METHOD("multimesh_set_buffer", "multimesh", "buffer"), &RenderingServer::multimesh_set_buffer);
+	ClassDB::bind_method(D_METHOD("multimesh_get_command_buffer_rd_rid", "multimesh"), &RenderingServer::multimesh_get_command_buffer_rd_rid);
 	ClassDB::bind_method(D_METHOD("multimesh_get_buffer_rd_rid", "multimesh"), &RenderingServer::multimesh_get_buffer_rd_rid);
 	ClassDB::bind_method(D_METHOD("multimesh_get_buffer", "multimesh"), &RenderingServer::multimesh_get_buffer);
 
@@ -2683,6 +2684,7 @@ void RenderingServer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("particles_set_lifetime", "particles", "lifetime"), &RenderingServer::particles_set_lifetime);
 	ClassDB::bind_method(D_METHOD("particles_set_one_shot", "particles", "one_shot"), &RenderingServer::particles_set_one_shot);
 	ClassDB::bind_method(D_METHOD("particles_set_pre_process_time", "particles", "time"), &RenderingServer::particles_set_pre_process_time);
+	ClassDB::bind_method(D_METHOD("particles_request_process_time", "particles", "time"), &RenderingServer::particles_request_process_time);
 	ClassDB::bind_method(D_METHOD("particles_set_explosiveness_ratio", "particles", "ratio"), &RenderingServer::particles_set_explosiveness_ratio);
 	ClassDB::bind_method(D_METHOD("particles_set_randomness_ratio", "particles", "ratio"), &RenderingServer::particles_set_randomness_ratio);
 	ClassDB::bind_method(D_METHOD("particles_set_interp_to_end", "particles", "factor"), &RenderingServer::particles_set_interp_to_end);

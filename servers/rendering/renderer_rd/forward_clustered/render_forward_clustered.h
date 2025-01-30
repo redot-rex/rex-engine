@@ -257,6 +257,7 @@ private:
 
 	// When changing any of these enums, remember to change the corresponding enums in the shader files as well.
 	enum {
+		INSTANCE_DATA_FLAG_MULTIMESH_INDIRECT = 1 << 2,
 		INSTANCE_DATA_FLAGS_DYNAMIC = 1 << 3,
 		INSTANCE_DATA_FLAGS_NON_UNIFORM_SCALE = 1 << 4,
 		INSTANCE_DATA_FLAG_USE_GI_BUFFERS = 1 << 5,
@@ -430,6 +431,10 @@ private:
 
 		union {
 			struct {
+				uint64_t sort_key1;
+				uint64_t sort_key2;
+			};
+			struct {
 				uint64_t lod_index : 8;
 				uint64_t surface_index : 8;
 				uint64_t geometry_id : 32;
@@ -443,10 +448,6 @@ private:
 				uint64_t uses_lightmap : 1;
 				uint64_t depth_layer : 4;
 				uint64_t priority : 8;
-			};
-			struct {
-				uint64_t sort_key1;
-				uint64_t sort_key2;
 			};
 		} sort;
 
@@ -542,6 +543,8 @@ private:
 
 	struct GlobalPipelineData {
 		union {
+			uint32_t key;
+
 			struct {
 				uint32_t texture_samples : 3;
 				uint32_t use_reflection_probes : 1;
@@ -557,8 +560,6 @@ private:
 				uint32_t use_shadow_cubemaps : 1;
 				uint32_t use_shadow_dual_paraboloid : 1;
 			};
-
-			uint32_t key;
 		};
 	};
 

@@ -594,6 +594,7 @@ private:
 
 	void _exit_editor(int p_exit_code);
 
+	virtual void input(const Ref<InputEvent> &p_event) override;
 	virtual void shortcut_input(const Ref<InputEvent> &p_event) override;
 
 	bool has_main_screen() const { return true; }
@@ -747,7 +748,6 @@ public:
 	void save_resource_in_path(const Ref<Resource> &p_resource, const String &p_path);
 	void save_resource(const Ref<Resource> &p_resource);
 	void save_resource_as(const Ref<Resource> &p_resource, const String &p_at_path = String());
-	void ensure_uid_file(const String &p_new_resource_path);
 
 	void show_about() { _menu_option_confirm(HELP_ABOUT, false); }
 
