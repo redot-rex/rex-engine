@@ -63,7 +63,7 @@ Error MIDIDriverCoreMidi::open() {
 	ERR_FAIL_COND_V_MSG(client || core_midi_closed, FAILED,
 			"MIDIDriverCoreMidi cannot be reopened.");
 
-	CFStringRef name = CFStringCreateWithCString(nullptr, "Redot", kCFStringEncodingASCII);
+	CFStringRef name = CFStringCreateWithCString(nullptr, "ReX", kCFStringEncodingASCII);
 	OSStatus result = MIDIClientCreate(name, nullptr, nullptr, &client);
 	CFRelease(name);
 	if (result != noErr) {
