@@ -708,6 +708,7 @@ void EditorAssetLibrary::_update_repository_options() {
 	// TODO: Move to editor_settings.cpp
 	Dictionary default_urls;
 	default_urls["godotengine.org"] = "https://godotengine.org/asset-library/api";
+	default_urls["redotengine.org"] = "https://assets.redotengine.org/api";
 	Dictionary available_urls = _EDITOR_DEF("asset_library/available_urls", default_urls, true);
 	repository->clear();
 	Array keys = available_urls.keys();
