@@ -63,7 +63,7 @@ Error MIDIDriverCoreMidi::open() {
 	ERR_FAIL_COND_V_MSG(client || core_midi_closed, FAILED,
 			"MIDIDriverCoreMidi cannot be reopened.");
 
-	CFStringRef name = CFStringCreateWithCString(nullptr, "Redot", kCFStringEncodingASCII);
+	CFStringRef name = CFStringCreateWithCString(nullptr, "ReX", kCFStringEncodingASCII);
 	OSStatus result = MIDIClientCreate(name, nullptr, nullptr, &client);
 	CFRelease(name);
 	if (result != noErr) {
@@ -71,7 +71,7 @@ Error MIDIDriverCoreMidi::open() {
 		return ERR_CANT_OPEN;
 	}
 
-	result = MIDIInputPortCreate(client, CFSTR("Redot Input"), MIDIDriverCoreMidi::read, (void *)this, &port_in);
+	result = MIDIInputPortCreate(client, CFSTR("ReX Input"), MIDIDriverCoreMidi::read, (void *)this, &port_in);
 	if (result != noErr) {
 		ERR_PRINT("MIDIInputPortCreate failed, code: " + itos(result));
 		return ERR_CANT_OPEN;

@@ -57,11 +57,11 @@ String DisplayServerWayland::_get_app_id_from_context(Context p_context) {
 
 	switch (p_context) {
 		case CONTEXT_EDITOR: {
-			app_id = "org.redotengine.Editor";
+			app_id = "org.rexengine.Editor";
 		} break;
 
 		case CONTEXT_PROJECTMAN: {
-			app_id = "org.redotengine.ProjectManager";
+			app_id = "org.rexengine.ProjectManager";
 		} break;
 
 		case CONTEXT_ENGINE:
@@ -70,7 +70,7 @@ String DisplayServerWayland::_get_app_id_from_context(Context p_context) {
 			if (config_name.length() != 0) {
 				app_id = config_name;
 			} else {
-				app_id = "org.redotengine.Redot";
+				app_id = "org.rexengine.ReX";
 			}
 		}
 	}
@@ -211,6 +211,7 @@ bool DisplayServerWayland::has_feature(Feature p_feature) const {
 		case FEATURE_SWAP_BUFFERS:
 		case FEATURE_KEEP_SCREEN_ON:
 		case FEATURE_IME:
+		case FEATURE_WINDOW_DRAG:
 		case FEATURE_CLIPBOARD_PRIMARY: {
 			return true;
 		} break;
@@ -1175,6 +1176,7 @@ void DisplayServerWayland::process_events() {
 				if (OS::get_singleton()->get_main_loop()) {
 					OS::get_singleton()->get_main_loop()->notification(MainLoop::NOTIFICATION_APPLICATION_FOCUS_OUT);
 				}
+				Input::get_singleton()->release_pressed_events();
 			}
 		}
 
@@ -1224,10 +1226,12 @@ void DisplayServerWayland::process_events() {
 
 		Ref<WaylandThread::IMEUpdateEventMessage> ime_update_msg = msg;
 		if (ime_update_msg.is_valid()) {
-			ime_text = ime_update_msg->text;
-			ime_selection = ime_update_msg->selection;
+			if (ime_text != ime_update_msg->text || ime_selection != ime_update_msg->selection) {
+				ime_text = ime_update_msg->text;
+				ime_selection = ime_update_msg->selection;
 
-			OS::get_singleton()->get_main_loop()->notification(MainLoop::NOTIFICATION_OS_IME_UPDATE);
+				OS::get_singleton()->get_main_loop()->notification(MainLoop::NOTIFICATION_OS_IME_UPDATE);
+			}
 		}
 	}
 
@@ -1550,7 +1554,7 @@ DisplayServerWayland::DisplayServerWayland(const String &p_rendering_driver, Win
 	wd.flags = p_flags;
 	wd.vsync_mode = p_vsync_mode;
 	wd.rect.size = p_resolution;
-	wd.title = "Redot";
+	wd.title = "ReX";
 
 	_show_window();
 

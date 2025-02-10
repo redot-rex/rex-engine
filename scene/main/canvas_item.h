@@ -172,6 +172,8 @@ protected:
 
 	void item_rect_changed(bool p_size_changed = true);
 
+	void set_canvas_item_use_identity_transform(bool p_enable);
+
 	void _notification(int p_what);
 	static void _bind_methods();
 
@@ -341,6 +343,7 @@ public:
 	virtual Transform2D get_transform() const = 0;
 
 	virtual Transform2D get_global_transform() const;
+	virtual Transform2D get_global_transform_const() const;
 	virtual Transform2D get_global_transform_with_canvas() const;
 	virtual Transform2D get_screen_transform() const;
 

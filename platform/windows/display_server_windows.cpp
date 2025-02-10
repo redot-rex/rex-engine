@@ -140,6 +140,7 @@ bool DisplayServerWindows::has_feature(Feature p_feature) const {
 		case FEATURE_SCREEN_CAPTURE:
 		case FEATURE_STATUS_INDICATOR:
 		case FEATURE_WINDOW_EMBEDDING:
+		case FEATURE_WINDOW_DRAG:
 		case FEATURE_SCREEN_EXCLUDE_FROM_CAPTURE:
 			return true;
 		case FEATURE_EMOJI_AND_SYMBOL_PICKER:
@@ -716,7 +717,7 @@ Error DisplayServerWindows::_file_dialog_with_options_show(const String &p_title
 	}
 	String appname;
 	if (Engine::get_singleton()->is_editor_hint()) {
-		appname = "Godot.GodotEditor." + String(VERSION_BRANCH);
+		appname = "Redot.ReXEditor." + String(VERSION_BRANCH);
 	} else {
 		String name = GLOBAL_GET("application/config/name");
 		String version = GLOBAL_GET("application/config/version");
@@ -730,7 +731,7 @@ Error DisplayServerWindows::_file_dialog_with_options_show(const String &p_title
 			}
 		}
 		clean_app_name = clean_app_name.substr(0, 120 - version.length()).trim_suffix(".");
-		appname = "Godot." + clean_app_name + "." + version;
+		appname = "ReX." + clean_app_name + "." + version;
 	}
 
 	FileDialogData *fd = memnew(FileDialogData);
@@ -1485,7 +1486,7 @@ void DisplayServerWindows::screen_set_keep_on(bool p_enable) {
 	}
 
 	if (p_enable) {
-		const String reason = "Redot Engine running with display/window/energy_saving/keep_screen_on = true";
+		const String reason = "ReX Engine running with display/window/energy_saving/keep_screen_on = true";
 		Char16String reason_utf16 = reason.utf16();
 		REASON_CONTEXT context;
 		context.Version = POWER_REQUEST_CONTEXT_VERSION;
@@ -2976,6 +2977,9 @@ Error DisplayServerWindows::remove_embedded_process(OS::ProcessID p_pid) {
 
 	EmbeddedProcessData *ep = embedded_processes.get(p_pid);
 
+	// Send a close message to gracefully close the process.
+	PostMessage(ep->window_handle, WM_CLOSE, 0, 0);
+
 	// This is a workaround to ensure the parent window correctly regains focus after the
 	// embedded window is closed. When the embedded window is closed while it has focus,
 	// the parent window (the editor) does not become active. It appears focused but is not truly activated.
@@ -3052,8 +3056,14 @@ Error DisplayServerWindows::dialog_show(String p_title, String p_description, Ve
 		buttons.push_back(s.utf16());
 	}
 
+	WindowID window_id = _get_focused_window_or_popup();
+	if (!windows.has(window_id)) {
+		window_id = MAIN_WINDOW_ID;
+	}
+
 	config.pszWindowTitle = (LPCWSTR)(title.get_data());
 	config.pszContent = (LPCWSTR)(message.get_data());
+	config.hwndParent = windows[window_id].hWnd;
 
 	const int button_count = buttons.size();
 	config.cButtons = button_count;
@@ -3062,7 +3072,7 @@ Error DisplayServerWindows::dialog_show(String p_title, String p_description, Ve
 	TASKDIALOG_BUTTON *tbuttons = button_count != 0 ? (TASKDIALOG_BUTTON *)alloca(sizeof(TASKDIALOG_BUTTON) * button_count) : nullptr;
 	if (tbuttons) {
 		for (int i = 0; i < button_count; i++) {
-			tbuttons[i].nButtonID = i;
+			tbuttons[i].nButtonID = i + 100;
 			tbuttons[i].pszButtonText = (LPCWSTR)(buttons[i].get_data());
 		}
 	}
@@ -3079,7 +3089,7 @@ Error DisplayServerWindows::dialog_show(String p_title, String p_description, Ve
 
 		if (task_dialog_indirect && SUCCEEDED(task_dialog_indirect(&config, &button_pressed, nullptr, nullptr))) {
 			if (p_callback.is_valid()) {
-				Variant button = button_pressed;
+				Variant button = button_pressed - 100;
 				const Variant *args[1] = { &button };
 				Variant ret;
 				Callable::CallError ce;
@@ -3229,7 +3239,7 @@ Error DisplayServerWindows::dialog_input_text(String p_title, String p_descripti
 		WCHAR font[13]; // must be "MS Shell Dlg"
 	} template_base = {
 		1, 0xFFFF, 0, 0,
-		DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU,
+		DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION,
 		3, 0, 0, 20, 20, L"", L"#32770", L"", 8, FW_NORMAL, 0, DEFAULT_CHARSET, L"MS Shell Dlg"
 	};
 
@@ -4685,7 +4695,9 @@ LRESULT DisplayServerWindows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 					// If multiple Shifts are held down at the same time,
 					// Windows natively only sends a KEYUP for the last one to be released.
 					if (raw->data.keyboard.Flags & RI_KEY_BREAK) {
-						if (!mods.has_flag(WinKeyModifierMask::SHIFT)) {
+						// Make sure to check the latest key state since
+						// we're in the middle of the message queue.
+						if (GetAsyncKeyState(VK_SHIFT) < 0) {
 							// A Shift is released, but another Shift is still held
 							ERR_BREAK(key_event_pos >= KEY_EVENT_BUFFER_SIZE);
 
@@ -6258,7 +6270,7 @@ DisplayServer::WindowID DisplayServerWindows::_create_window(WindowMode p_mode, 
 			PROPVARIANT val;
 			String appname;
 			if (Engine::get_singleton()->is_editor_hint()) {
-				appname = "Godot.GodotEditor." + String(VERSION_FULL_CONFIG);
+				appname = "Redot.ReXEditor." + String(VERSION_FULL_CONFIG);
 			} else {
 				String name = GLOBAL_GET("application/config/name");
 				String version = GLOBAL_GET("application/config/version");
@@ -6272,7 +6284,7 @@ DisplayServer::WindowID DisplayServerWindows::_create_window(WindowMode p_mode, 
 					}
 				}
 				clean_app_name = clean_app_name.substr(0, 120 - version.length()).trim_suffix(".");
-				appname = "Godot." + clean_app_name + "." + version;
+				appname = "ReX." + clean_app_name + "." + version;
 			}
 			InitPropVariantFromString((PCWSTR)appname.utf16().get_data(), &val);
 			prop_store->SetValue(PKEY_AppUserModel_ID, val);
@@ -6825,7 +6837,7 @@ DisplayServerWindows::DisplayServerWindows(const String &p_rendering_driver, Win
 #endif
 	String appname;
 	if (Engine::get_singleton()->is_editor_hint()) {
-		appname = "Godot.GodotEditor." + String(VERSION_FULL_CONFIG);
+		appname = "Redot.ReXEditor." + String(VERSION_FULL_CONFIG);
 	} else {
 		String name = GLOBAL_GET("application/config/name");
 		String version = GLOBAL_GET("application/config/version");
@@ -6839,7 +6851,7 @@ DisplayServerWindows::DisplayServerWindows(const String &p_rendering_driver, Win
 			}
 		}
 		clean_app_name = clean_app_name.substr(0, 120 - version.length()).trim_suffix(".");
-		appname = "Godot." + clean_app_name + "." + version;
+		appname = "ReX." + clean_app_name + "." + version;
 
 #ifndef TOOLS_ENABLED
 		// Set for exported projects only.

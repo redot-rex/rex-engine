@@ -708,6 +708,7 @@ void EditorAssetLibrary::_update_repository_options() {
 	// TODO: Move to editor_settings.cpp
 	Dictionary default_urls;
 	default_urls["godotengine.org"] = "https://godotengine.org/asset-library/api";
+	default_urls["redotengine.org"] = "https://assets.redotengine.org/lib/api";
 	Dictionary available_urls = _EDITOR_DEF("asset_library/available_urls", default_urls, true);
 	repository->clear();
 	Array keys = available_urls.keys();
@@ -782,8 +783,9 @@ const char *EditorAssetLibrary::support_text[SUPPORT_MAX] = {
 };
 
 void EditorAssetLibrary::_select_author(const String &p_author) {
-	if (!host.contains("godotengine.org")) {
+	if (host.contains("redotengine.org")) {
 		// Don't open the link for alternative repositories.
+		OS::get_singleton()->shell_open("https://assets.redotengine.org/lib/asset?user=" + p_author.uri_encode());
 		return;
 	}
 	OS::get_singleton()->shell_open("https://godotengine.org/asset-library/asset?user=" + p_author.uri_encode());

@@ -37,5 +37,4 @@ package org.redotengine.editor
  *
  * This is the implementation of the editor used when running on regular Android devices.
  */
-open class GodotEditor : BaseGodotEditor() {
-}
+open class GodotEditor : BaseGodotEditor()

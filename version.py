@@ -1,4 +1,4 @@
-short_name = "ReX"
+short_name = "Rex"
 name = "ReX Engine"
 major = 4
 minor = 4
