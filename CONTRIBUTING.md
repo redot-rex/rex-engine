@@ -1,10 +1,21 @@
+# Contributing to Redot Engine Experimental
+
+First off, thanks for taking the time to contribute! ❤️
+
+> And if you like the project, but just don't have time to contribute, that's fine. There are other easy ways to support the project and show your appreciation, which we would also be very happy about:
+>
+> - Star the project
+> - Tweet about it
+> - Refer this project in your project's readme
+> - Mention the project at local meetups and tell your friends/colleagues
+
 # Contributors guidelines
 
 This document summarizes the most important points for people interested in
 contributing to Redot, especially via bug reports or pull requests.
 
-The [Redot Documentation](https://docs-stable.redotengine.org/contributing/development) has a dedicated Contributing section
-which details these points and more, and is a recommended read.
+The [Redot Documentation](https://docs.redotengine.org/en/stable/contributing/development/) has a dedicated Contributing section
+which details these points and more, and is a recommended read. Additionally, there is more information about the Experimental engine in the [Experimental Documentation](https://docs-experimental.redotengine.org/).
 
 ## Table of contents
 
@@ -21,7 +32,7 @@ if you open your project in Godot's current dev builds to ensure that it is not
 a bug we've inherited from their upstream work process, as we must let them
 work on those bugs to minimize merge conflicts on our end.
 
-Report bugs [here](https://github.com/Redot-Engine/redot-engine/issues/new?assignees=&labels=&template=bug_report.yml).
+Report bugs [here](https://github.com/Redot-Experimental/ReX/issues/new?assignees=&labels=&template=bug_report.yml).
 Please follow the instructions in the template when you do.
 
 Notably, please include a Minimal Reproduction Project (MRP), which is a small
@@ -69,7 +80,7 @@ Similar rules can be applied when contributing bug fixes - it's always best to
 discuss the implementation in the bug report first if you are not 100% about
 what would be the best fix.
 
-Read the [Redot Documentation](https://docs-stable.redotengine.org/contributing/development)
+Read the [Redot Documentation](https://docs.redotengine.org/en/stable/contributing/development)
 for information and guides related to contribution and pull requests.
 
 ### Be mindful of your commits
@@ -194,7 +205,7 @@ To communicate with developers (e.g. to discuss a feature you want to implement
 or a bug you want to fix), the following channels can be used:
 
 - [Redot Discord](https://discord.gg/redot): General community chat and development can all be found here.
-- [Bug tracker](https://github.com/Redot-Engine/redot-engine/issues): If there is an
+- [Bug tracker](https://github.com/Redot-Experimental/ReX/issues): If there is an
   existing issue about a topic you want to discuss, you can participate directly.
   If not, you can open a new issue. Please mind the guidelines outlined above
   for bug reporting.
