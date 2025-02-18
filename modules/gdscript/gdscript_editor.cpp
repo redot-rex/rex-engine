@@ -131,11 +131,11 @@ Vector<ScriptLanguage::ScriptTemplate> GDScriptLanguage::get_built_in_templates(
 	return templates;
 }
 
-static void get_function_names_recursively(const GDScriptParser::ClassNode *p_class, const String &p_prefix, HashMap<int, String> &r_funcs) {
+static void get_function_names_recursively(const GDScriptParser::ClassNode *p_class, const String &p_prefix, Vector<String> &r_funcs) {
 	for (int i = 0; i < p_class->members.size(); i++) {
 		if (p_class->members[i].type == GDScriptParser::ClassNode::Member::FUNCTION) {
 			const GDScriptParser::FunctionNode *function = p_class->members[i].function;
-			r_funcs[function->start_line] = p_prefix.is_empty() ? String(function->identifier->name) : p_prefix + "." + String(function->identifier->name);
+			r_funcs.push_back((p_prefix.is_empty() ? String(function->identifier->name) : p_prefix + "." + String(function->identifier->name)) + ":" + itos(function->start_line));
 		} else if (p_class->members[i].type == GDScriptParser::ClassNode::Member::CLASS || p_class->members[i].type == GDScriptParser::ClassNode::Member::TRAIT) {
 			String new_prefix = p_class->members[i].m_class->identifier->name;
 			get_function_names_recursively(p_class->members[i].m_class, p_prefix.is_empty() ? new_prefix : p_prefix + "." + new_prefix, r_funcs);
@@ -193,12 +193,12 @@ bool GDScriptLanguage::validate(const String &p_script, const String &p_path, Li
 		return false;
 	} else {
 		const GDScriptParser::ClassNode *cl = parser.get_tree();
-		HashMap<int, String> funcs;
+		Vector<String> funcs;
 
 		get_function_names_recursively(cl, "", funcs);
 
-		for (const KeyValue<int, String> &E : funcs) {
-			r_functions->push_back(E.value + ":" + itos(E.key));
+		for (const String &E : funcs) {
+			r_functions->push_back(E);
 		}
 	}
 
