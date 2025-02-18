@@ -104,6 +104,11 @@ Ref<Script> GDScriptLanguage::make_template_using_extension(const String &p_temp
 									 .replace(" -> Object", "");
 	}
 
+	// Processing the template for the GDTrait
+	if (p_extension == "gdt") {
+		processed_template = processed_template.replace("extends _BASE_", "trait_name _CLASS_ extends _BASE_");
+	}
+
 	processed_template = processed_template.replace("_BASE_", p_base_class_name)
 								 .replace("_CLASS_SNAKE_CASE_", p_class_name.to_snake_case().validate_unicode_identifier())
 								 .replace("_CLASS_", p_class_name.to_pascal_case().validate_unicode_identifier())

@@ -568,9 +568,8 @@ void ScriptCreateDialog::set_script_menu() {
 void ScriptCreateDialog::_on_script_menu_item_selected(int p_index) {
 	selected_script = p_index;
 	file_path->set_text(_adjust_file_path(file_path->get_text()));
-	path_error = _validate_path(file_path->get_text(), false, false);
+	_path_changed(file_path->get_text());
 	_parent_name_changed(parent_name->get_text());
-	validation_panel->update();
 }
 
 void ScriptCreateDialog::_built_in_pressed() {

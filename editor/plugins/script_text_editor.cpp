@@ -126,6 +126,18 @@ Vector<String> ScriptTextEditor::get_functions() {
 		//if valid rewrite functions to latest
 		functions.clear();
 		for (const String &E : fnc) {
+			int line = E.get_slice(":", 1).to_int() - 1;
+
+			// We check if the function really exist in the file (due to the trait system)
+			if (te->get_line_count() < line) {
+				continue;
+			}
+
+			String line_content = te->get_line_wrapped_text(line)[0].strip_edges();
+			String function_name = E.get_slice(":", 0);
+			if (!line_content.begins_with(vformat("func %s", function_name))) {
+				continue;
+			}
 			functions.push_back(E);
 		}
 	}
@@ -562,6 +574,19 @@ void ScriptTextEditor::_validate_script() {
 
 		functions.clear();
 		for (const String &E : fnc) {
+			int line = E.get_slice(":", 1).to_int() - 1;
+
+			// We check if the function really exist in the file (due to the trait system)
+			if (te->get_line_count() < line) {
+				continue;
+			}
+
+			String line_content = te->get_line_wrapped_text(line)[0].strip_edges();
+			String function_name = E.get_slice(":", 0);
+			if (!line_content.begins_with(vformat("func %s", function_name))) {
+				continue;
+			}
+
 			functions.push_back(E);
 		}
 		script_is_valid = true;
