@@ -1,4 +1,4 @@
-name: Build Redot Project
+name: Build ReX Project
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: Redot-Engine/redot-engine # Adjust this to the actual repo
+          repository: ReX-Experimental/ReXX
           ref: master
 
       - name: Install Dependencies
@@ -31,14 +31,14 @@ jobs:
             g++ \
             python3
 
-      - name: Build Redot Project for Linux
+      - name: Build ReX Project for Linux
         run: |
           scons platform=linuxbsd production=yes
 
       - name: Upload Linux dev artifact
         uses: actions/upload-artifact@v4
         with:
-          name: redot-linux-dev
+          name: rex-linux-dev
           path: bin
 
   build-linux-template:
@@ -48,7 +48,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: Redot-Engine/redot-engine
+          repository: ReX-Experimental/ReXX
           ref: master
 
       - name: Install Dependencies
@@ -68,14 +68,14 @@ jobs:
             g++ \
             python3
 
-      - name: Build Redot Templates for Linux
+      - name: Build ReX Templates for Linux
         run: |
           scons platform=linuxbsd target=template_release
 
       - name: Upload Linux Template Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: redot-linux-template
+          name: rex-linux-template
           path: bin
 
   build-windows:
@@ -85,7 +85,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: Redot-Engine/redot-engine
+          repository: ReX-Experimental/ReXX
           ref: master
 
       - name: Setup Scoop
@@ -94,14 +94,14 @@ jobs:
           buckets: extras
           apps: gcc python scons make mingw
 
-      - name: Build Redot Project for Windows
+      - name: Build ReX Project for Windows
         run: |
           scons platform=windows production=yes
 
       - name: Upload Windows dev artifact
         uses: actions/upload-artifact@v4
         with:
-          name: redot-windows-dev
+          name: rex-windows-dev
           path: bin
 
   build-windows-template:
@@ -111,7 +111,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: Redot-Engine/redot-engine
+          repository: ReX-Experimental/ReXX
           ref: master
 
       - name: Setup Scoop
@@ -120,14 +120,14 @@ jobs:
           buckets: extras
           apps: gcc python scons make mingw
 
-      - name: Build Redot Templates for Windows
+      - name: Build ReX Templates for Windows
         run: |
           scons platform=windows target=template_release
 
       - name: Upload Windows Template Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: redot-windows-template
+          name: rex-windows-template
           path: bin
 
   build-macos-x64:
@@ -137,7 +137,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: Redot-Engine/redot-engine
+          repository: ReX-Experimental/ReXX
           ref: master
       - name: Setup Vulkan SDK
         run: |
@@ -146,14 +146,14 @@ jobs:
         run: |
           brew install scons pkg-config
 
-      - name: Build Redot Project for macOS x64
+      - name: Build ReX Project for macOS x64
         run: |
           scons platform=macos arch=x64 production=yes
 
       - name: Upload macOS x64 dev artifact
         uses: actions/upload-artifact@v4
         with:
-          name: redot-macos-x64-dev
+          name: rex-macos-x64-dev
           path: bin
 
   build-macos-arm64:
@@ -163,7 +163,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: Redot-Engine/redot-engine
+          repository: ReX-Experimental/ReXX
           ref: master
 
       - name: Setup Vulkan SDK
@@ -173,14 +173,14 @@ jobs:
         run: |
           brew install scons pkg-config
 
-      - name: Build Redot Project for macOS arm64
+      - name: Build ReX Project for macOS arm64
         run: |
           scons platform=macos arch=arm64
 
       - name: Upload macOS arm64 dev artifact
         uses: actions/upload-artifact@v4
         with:
-          name: redot-macos-arm64-dev
+          name: rex-macos-arm64-dev
           path: bin
 
   build-macos-x64-template:
@@ -190,7 +190,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: Redot-Engine/redot-engine
+          repository: ReX-Experimental/ReXX
           ref: master
       - name: Setup Vulkan SDK
         run: |
@@ -199,14 +199,14 @@ jobs:
         run: |
           brew install scons pkg-config
 
-      - name: Build Redot Templates for macOS x64
+      - name: Build ReX Templates for macOS x64
         run: |
           scons platform=macos arch=x64 target=template_release
 
       - name: Upload macOS x64 Template Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: redot-macos-x64-template
+          name: rex-macos-x64-template
           path: bin
 
   build-macos-arm64-template:
@@ -216,7 +216,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: Redot-Engine/redot-engine
+          repository: ReX-Experimental/ReXX
           ref: master
       - name: Setup Vulkan SDK
         run: |
@@ -225,14 +225,14 @@ jobs:
         run: |
           brew install scons pkg-config
 
-      - name: Build Redot Templates for macOS arm64
+      - name: Build ReX Templates for macOS arm64
         run: |
           scons platform=macos arch=arm64 target=template_release
 
       - name: Upload macOS arm64 Template Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: redot-macos-arm64-template
+          name: rex-macos-arm64-template
           path: bin
 
   release:
@@ -245,50 +245,50 @@ jobs:
       - name: Download Linux dev artifact
         uses: actions/download-artifact@v4
         with:
-          name: redot-linux-dev
-          path: redot-linux-dev
+          name: rex-linux-dev
+          path: rex-linux-dev
 
       - name: Download Windows dev artifact
         uses: actions/download-artifact@v4
         with:
-          name: redot-windows-dev
-          path: redot-windows-dev
+          name: rex-windows-dev
+          path: rex-windows-dev
 
       - name: Download Linux template artifact
         uses: actions/download-artifact@v4
         with:
-          name: redot-linux-template
-          path: redot-linux-template
+          name: rex-linux-template
+          path: rex-linux-template
 
       - name: Download Windows template artifact
         uses: actions/download-artifact@v4
         with:
-          name: redot-windows-template
-          path: redot-windows-template
+          name: rex-windows-template
+          path: rex-windows-template
 
       - name: Download macOS x64 dev artifact
         uses: actions/download-artifact@v4
         with:
-          name: redot-macos-x64-dev
-          path: redot-macos-x64-dev
+          name: rex-macos-x64-dev
+          path: rex-macos-x64-dev
 
       - name: Download macOS arm64 dev artifact
         uses: actions/download-artifact@v4
         with:
-          name: redot-macos-arm64-dev
-          path: redot-macos-arm64-dev
+          name: rex-macos-arm64-dev
+          path: rex-macos-arm64-dev
 
       - name: Download macOS x64 template artifact
         uses: actions/download-artifact@v4
         with:
-          name: redot-macos-x64-template
-          path: redot-macos-x64-template
+          name: rex-macos-x64-template
+          path: rex-macos-x64-template
 
       - name: Download macOS arm64 template artifact
         uses: actions/download-artifact@v4
         with:
-          name: redot-macos-arm64-template
-          path: redot-macos-arm64-template
+          name: rex-macos-arm64-template
+          path: rex-macos-arm64-template
 
       - name: Get the current date
         id: date
@@ -296,28 +296,28 @@ jobs:
 
       - name: Zip the dev artifact
         run: |
-          zip -r redot-linuxbsd.zip redot-linux-dev/*
-          zip -r redot-windowsx64.zip redot-windows-dev/*
-          zip -r redot-macos-x64.zip redot-macos-x64-dev/*
-          zip -r redot-macos-arm64.zip redot-macos-arm64-dev/*
-          zip -r redot-linux-template.zip redot-linux-template/*
-          zip -r redot-windows-template.zip redot-windows-template/*
-          zip -r redot-macos-x64-template.zip redot-macos-x64-template/*
-          zip -r redot-macos-arm64-template.zip redot-macos-arm64-template/*
+          zip -r rex-linuxbsd.zip rex-linux-dev/*
+          zip -r rex-windowsx64.zip rex-windows-dev/*
+          zip -r rex-macos-x64.zip rex-macos-x64-dev/*
+          zip -r rex-macos-arm64.zip rex-macos-arm64-dev/*
+          zip -r rex-linux-template.zip rex-linux-template/*
+          zip -r rex-windows-template.zip rex-windows-template/*
+          zip -r rex-macos-x64-template.zip rex-macos-x64-template/*
+          zip -r rex-macos-arm64-template.zip rex-macos-arm64-template/*
 
       # - name: Upload release artifacts
       #   uses: actions/upload-artifact@v4
       #   with:
-      #     name: redot-release-${{ env.CURRENT_DATE }}
+      #     name: rex-release-${{ env.CURRENT_DATE }}
       #     path: |
-      #       redot-linuxbsd.zip
-      #       redot-windowsx64.zip
-      #       redot-macos-x64.zip
-      #       redot-macos-arm64.zip
-      #       redot-linux-template.zip
-      #       redot-windows-template.zip
-      #       redot-macos-x64-template.zip
-      #       redot-macos-arm64-template.zip
+      #       rex-linuxbsd.zip
+      #       rex-windowsx64.zip
+      #       rex-macos-x64.zip
+      #       rex-macos-arm64.zip
+      #       rex-linux-template.zip
+      #       rex-windows-template.zip
+      #       rex-macos-x64-template.zip
+      #       rex-macos-arm64-template.zip
 
       - name: Upload dev build artifacts to GitHub dev
         uses: softprops/action-gh-release@v2
@@ -327,11 +327,11 @@ jobs:
           draft: false
           make_latest: true
           files: |
-            redot-linuxbsd.zip
-            redot-windowsx64.zip
-            redot-macos-x64.zip
-            redot-macos-arm64.zip
-            redot-linux-template.zip
-            redot-windows-template.zip
-            redot-macos-x64-template.zip
-            redot-macos-arm64-template.zip
+            rex-linuxbsd.zip
+            rex-windowsx64.zip
+            rex-macos-x64.zip
+            rex-macos-arm64.zip
+            rex-linux-template.zip
+            rex-windows-template.zip
+            rex-macos-x64-template.zip
+            rex-macos-arm64-template.zip
