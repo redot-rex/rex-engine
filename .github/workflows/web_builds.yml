@@ -5,7 +5,7 @@ on:
 # Global Settings
 env:
   # Used for the cache key. Add version suffix to force clean build.
-  GODOT_BASE_BRANCH: master
+  REX_BASE_BRANCH: master
   SCONSFLAGS: verbose=yes warnings=extra werror=yes debug_symbols=no use_closure_compiler=yes strict_checks=yes
   EM_VERSION: 3.1.64
 
@@ -49,16 +49,16 @@ jobs:
           emcc -v
 
       - name: Restore Godot build cache
-        uses: ./.github/actions/godot-cache-restore
+        uses: ./.github/actions/redot-cache-restore
         with:
           cache-name: ${{ matrix.cache-name }}
         continue-on-error: true
 
       - name: Setup Python and SCons
-        uses: ./.github/actions/godot-deps
+        uses: ./.github/actions/redot-deps
 
       - name: Compilation
-        uses: ./.github/actions/godot-build
+        uses: ./.github/actions/redot-build
         with:
           sconsflags: ${{ env.SCONSFLAGS }} ${{ matrix.sconsflags }}
           platform: web
@@ -67,7 +67,7 @@ jobs:
           scons-cache-limit: 0.5
 
       - name: Save Godot build cache
-        uses: ./.github/actions/godot-cache-save
+        uses: ./.github/actions/redot-cache-save
         with:
           cache-name: ${{ matrix.cache-name }}
         continue-on-error: true
