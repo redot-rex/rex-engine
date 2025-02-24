@@ -1,12 +1,12 @@
-name: Build godot-cpp
-description: Build godot-cpp with the provided options.
+name: Build rex-cpp
+description: Build rex-cpp with the provided options.
 
 env:
-  GODOT_CPP_BRANCH: 4.3
+  REX_CPP_BRANCH: 4.3
 
 inputs:
   bin:
-    description: Path to the Godot binary.
+    description: Path to the ReX binary.
     required: true
     type: string
   scons-flags:
@@ -24,9 +24,9 @@ runs:
       uses: actions/checkout@v4
       with:
         submodules: recursive
-        repository: godotengine/godot-cpp
-        ref: ${{ env.GODOT_CPP_BRANCH }}
-        path: godot-cpp
+        repository: Redot-Experimental/redot-cpp
+        ref: ${{ env.REX_CPP_BRANCH }}
+        path: rex-cpp
 
     - name: Extract API
       shell: sh
@@ -36,4 +36,4 @@ runs:
       shell: sh
       env:
         SCONS_CACHE: ${{ inputs.scons-cache }}
-      run: scons --directory=./godot-cpp/test "gdextension_dir=${{ github.workspace }}" ${{ inputs.scons-flags }}
+      run: scons --directory=./rex-cpp/test "gdextension_dir=${{ github.workspace }}" ${{ inputs.scons-flags }}

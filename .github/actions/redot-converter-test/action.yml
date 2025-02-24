@@ -1,9 +1,9 @@
-name: Test Godot project converter
-description: Test the Godot project converter.
+name: Test ReX Project Converter
+description: Test the ReX project converter.
 
 inputs:
   bin:
-    description: The path to the Godot executable
+    description: The path to the ReX executable
     required: true
 
 runs:

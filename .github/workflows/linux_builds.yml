@@ -5,7 +5,7 @@ on:
 # Global Settings
 env:
   # Used for the cache key. Add version suffix to force clean build.
-  GODOT_BASE_BRANCH: master
+  REX_BASE_BRANCH: master
   SCONSFLAGS: verbose=yes warnings=extra werror=yes module_text_server_fb_enabled=yes strict_checks=yes
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
@@ -120,18 +120,18 @@ jobs:
           echo "Disk usage after:" && df -h
 
       - name: Restore Godot build cache
-        uses: ./.github/actions/godot-cache-restore
+        uses: ./.github/actions/redot-cache-restore
         with:
           cache-name: ${{ matrix.cache-name }}
         continue-on-error: true
 
       - name: Setup Python and SCons
         if: "!matrix.legacy-scons"
-        uses: ./.github/actions/godot-deps
+        uses: ./.github/actions/redot-deps
 
       - name: Setup Python and SCons (legacy versions)
         if: matrix.legacy-scons
-        uses: ./.github/actions/godot-deps
+        uses: ./.github/actions/redot-deps
         with:
           # Sync with Ensure*Version in SConstruct.
           python-version: 3.8
@@ -150,7 +150,7 @@ jobs:
           dotnet-version: 8.0.100
 
       - name: Compilation
-        uses: ./.github/actions/godot-build
+        uses: ./.github/actions/redot-build
         with:
           sconsflags: ${{ env.SCONSFLAGS }} ${{ matrix.sconsflags }}
           platform: linuxbsd
@@ -159,14 +159,14 @@ jobs:
           scons-cache-limit: ${{ matrix.cache-limit }}
 
       - name: Compilation (godot-cpp)
-        uses: ./.github/actions/godot-cpp-build
+        uses: ./.github/actions/redot-cpp-build
         if: matrix.godot-cpp
         with:
           bin: ${{ matrix.bin }}
           scons-flags: target=template_debug dev_build=yes verbose=yes
 
       - name: Save Godot build cache
-        uses: ./.github/actions/godot-cache-save
+        uses: ./.github/actions/redot-cache-save
         with:
           cache-name: ${{ matrix.cache-name }}
         continue-on-error: true
@@ -223,14 +223,14 @@ jobs:
 
       # Download and run the test project
       - name: Test Godot project
-        uses: ./.github/actions/godot-project-test
+        uses: ./.github/actions/redot-project-test
         if: matrix.proj-test
         with:
           bin: ${{ matrix.bin }}
 
       # Test the project converter
       - name: Test project converter
-        uses: ./.github/actions/godot-converter-test
+        uses: ./.github/actions/redot-converter-test
         if: matrix.proj-conv
         with:
           bin: ${{ matrix.bin }}

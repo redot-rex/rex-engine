@@ -5,7 +5,7 @@ on:
 # Global Settings
 env:
   # Used for the cache key. Add version suffix to force clean build.
-  GODOT_BASE_BRANCH: master
+  REX_BASE_BRANCH: master
   SCONSFLAGS: verbose=yes warnings=extra werror=yes module_text_server_fb_enabled=yes strict_checks=yes
 
 jobs:
@@ -39,20 +39,20 @@ jobs:
           submodules: recursive
 
       - name: Restore Godot build cache
-        uses: ./.github/actions/godot-cache-restore
+        uses: ./.github/actions/redot-cache-restore
         with:
           cache-name: ${{ matrix.cache-name }}
         continue-on-error: true
 
       - name: Setup Python and SCons
-        uses: ./.github/actions/godot-deps
+        uses: ./.github/actions/redot-deps
 
       - name: Setup Vulkan SDK
         run: |
           sh misc/scripts/install_vulkan_sdk_macos.sh
 
       - name: Compilation (x86_64)
-        uses: ./.github/actions/godot-build
+        uses: ./.github/actions/redot-build
         with:
           sconsflags: ${{ env.SCONSFLAGS }} arch=x86_64
           platform: macos
@@ -61,7 +61,7 @@ jobs:
           scons-cache-limit: 0 # Only cap on second run to avoid purging unnecessarily
 
       - name: Compilation (arm64)
-        uses: ./.github/actions/godot-build
+        uses: ./.github/actions/redot-build
         with:
           sconsflags: ${{ env.SCONSFLAGS }} arch=arm64
           platform: macos
@@ -70,7 +70,7 @@ jobs:
           scons-cache-limit: ${{ matrix.cache-limit }}
 
       - name: Save Godot build cache
-        uses: ./.github/actions/godot-cache-save
+        uses: ./.github/actions/redot-cache-save
         with:
           cache-name: ${{ matrix.cache-name }}
         continue-on-error: true
