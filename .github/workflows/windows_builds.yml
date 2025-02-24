@@ -6,7 +6,7 @@ on:
 # SCONS_CACHE for windows must be set in the build environment
 env:
   # Used for the cache key. Add version suffix to force clean build.
-  GODOT_BASE_BRANCH: master
+  REX_BASE_BRANCH: master
   SCONSFLAGS: verbose=yes warnings=extra werror=yes module_text_server_fb_enabled=yes d3d12=yes strict_checks=yes "angle_libs=${{ github.workspace }}/"
   SCONS_CACHE_MSVC_CONFIG: true
 
@@ -65,13 +65,13 @@ jobs:
           submodules: recursive
 
       - name: Restore Godot build cache
-        uses: ./.github/actions/godot-cache-restore
+        uses: ./.github/actions/redot-cache-restore
         with:
           cache-name: ${{ matrix.cache-name }}
         continue-on-error: true
 
       - name: Setup Python and SCons
-        uses: ./.github/actions/godot-deps
+        uses: ./.github/actions/redot-deps
 
       - name: Download Direct3D 12 SDK components
         run: python ./misc/scripts/install_d3d12_sdk_windows.py
@@ -88,7 +88,7 @@ jobs:
         run: Expand-Archive -Force angle/angle.zip ${{ github.workspace }}/
 
       - name: Compilation
-        uses: ./.github/actions/godot-build
+        uses: ./.github/actions/redot-build
         with:
           sconsflags: ${{ env.SCONSFLAGS }} ${{ matrix.sconsflags }}
           platform: windows
@@ -105,7 +105,7 @@ jobs:
         run: python modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin
 
       - name: Save Godot build cache
-        uses: ./.github/actions/godot-cache-save
+        uses: ./.github/actions/redot-cache-save
         with:
           cache-name: ${{ matrix.cache-name }}
         continue-on-error: true
