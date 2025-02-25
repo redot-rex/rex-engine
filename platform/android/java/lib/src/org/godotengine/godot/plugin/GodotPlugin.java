@@ -99,7 +99,7 @@ public abstract class GodotPlugin {
 	/**
 	 * Provides access to the Godot engine.
 	 */
-	protected Godot getGodot() {
+	protected Godot getReX() {
 		return godot;
 	}
 
@@ -357,7 +357,7 @@ public abstract class GodotPlugin {
 				throw new IllegalArgumentException(
 						"Signal " + signalName + " is not registered for this plugin.");
 			}
-			emitSignal(getGodot(), getPluginName(), signalInfo, signalArgs);
+			emitSignal(getReX(), getPluginName(), signalInfo, signalArgs);
 		} catch (IllegalArgumentException exception) {
 			Log.w(TAG, exception);
 			if (BuildConfig.DEBUG) {

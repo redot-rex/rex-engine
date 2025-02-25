@@ -132,7 +132,7 @@ open class GodotGame : GodotEditor() {
 		}
 	}
 
-	override fun getGodotAppLayout() = R.layout.godot_game_layout
+	override fun getReXAppLayout() = R.layout.godot_game_layout
 
 	override fun getEditorWindowInfo() = RUN_GAME_INFO
 

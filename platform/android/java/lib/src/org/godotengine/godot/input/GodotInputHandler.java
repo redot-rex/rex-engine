@@ -165,7 +165,7 @@ public class GodotInputHandler implements InputManager.InputDeviceListener, Sens
 			// Check if the device exists
 			final int deviceId = event.getDeviceId();
 			if (mJoystickIds.indexOfKey(deviceId) >= 0) {
-				final int button = getGodotButton(keyCode);
+				final int button = getReXButton(keyCode);
 				final int godotJoyId = mJoystickIds.get(deviceId);
 				handleJoystickButtonEvent(godotJoyId, button, false);
 			}
@@ -194,7 +194,7 @@ public class GodotInputHandler implements InputManager.InputDeviceListener, Sens
 				return true;
 
 			if (mJoystickIds.indexOfKey(deviceId) >= 0) {
-				final int button = getGodotButton(keyCode);
+				final int button = getReXButton(keyCode);
 				final int godotJoyId = mJoystickIds.get(deviceId);
 				handleJoystickButtonEvent(godotJoyId, button, true);
 			}
@@ -398,7 +398,7 @@ public class GodotInputHandler implements InputManager.InputDeviceListener, Sens
 		onInputDeviceAdded(deviceId);
 	}
 
-	public static int getGodotButton(int keyCode) {
+	public static int getReXButton(int keyCode) {
 		int button;
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_BUTTON_A: // Android A is SNES B

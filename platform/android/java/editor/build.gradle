@@ -25,7 +25,7 @@ ext {
     editorBuildNumberOffset = 100
 
     // Return the keystore file used for signing the release build.
-    getGodotKeystoreFile = { ->
+    getReXKeystoreFile = { ->
         def keyStore = System.getenv("GODOT_ANDROID_SIGN_KEYSTORE")
         if (keyStore == null || keyStore.isEmpty()) {
             return null
@@ -34,13 +34,13 @@ ext {
     }
 
     // Return the key alias used for signing the release build.
-    getGodotKeyAlias = { ->
+    getReXKeyAlias = { ->
         def kAlias = System.getenv("GODOT_ANDROID_KEYSTORE_ALIAS")
         return kAlias
     }
 
     // Return the password for the key used for signing the release build.
-    getGodotSigningPassword = { ->
+    getReXSigningPassword = { ->
         def signingPassword = System.getenv("GODOT_ANDROID_SIGN_PASSWORD")
         return signingPassword
     }
@@ -48,9 +48,9 @@ ext {
     // Returns true if the environment variables contains the configuration for signing the release
     // build.
     hasReleaseSigningConfigs = { ->
-        def keystoreFile = getGodotKeystoreFile()
-        def keyAlias = getGodotKeyAlias()
-        def signingPassword = getGodotSigningPassword()
+        def keystoreFile = getReXKeystoreFile()
+        def keyAlias = getReXKeyAlias()
+        def signingPassword = getReXSigningPassword()
 
         return keystoreFile != null && keystoreFile.isFile()
             && keyAlias != null && !keyAlias.isEmpty()
@@ -59,12 +59,12 @@ ext {
 }
 
 def generateVersionCode() {
-    int libraryVersionCode = getGodotLibraryVersionCode()
+    int libraryVersionCode = getReXLibraryVersionCode()
     return (libraryVersionCode * editorBuildNumberOffset) + getEditorBuildNumber()
 }
 
 def generateVersionName() {
-    String libraryVersionName = getGodotLibraryVersionName()
+    String libraryVersionName = getReXLibraryVersionName()
     int buildNumber = getEditorBuildNumber()
     return buildNumber == 0 ? libraryVersionName : libraryVersionName + ".$buildNumber"
 }
@@ -106,10 +106,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile getGodotKeystoreFile()
-            storePassword getGodotSigningPassword()
-            keyAlias getGodotKeyAlias()
-            keyPassword getGodotSigningPassword()
+            storeFile getReXKeystoreFile()
+            storePassword getReXSigningPassword()
+            keyAlias getReXKeyAlias()
+            keyPassword getReXSigningPassword()
         }
     }
 

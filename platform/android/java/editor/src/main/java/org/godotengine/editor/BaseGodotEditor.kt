@@ -132,7 +132,7 @@ abstract class BaseGodotEditor : GodotActivity() {
 	private val editorMessageDispatcher = EditorMessageDispatcher(this)
 	private val editorLoadingIndicator: View? by lazy { findViewById(R.id.editor_loading_indicator) }
 
-	override fun getGodotAppLayout() = R.layout.godot_editor_layout
+	override fun getReXAppLayout() = R.layout.godot_editor_layout
 
 	internal open fun getEditorWindowInfo() = EDITOR_MAIN_INFO
 

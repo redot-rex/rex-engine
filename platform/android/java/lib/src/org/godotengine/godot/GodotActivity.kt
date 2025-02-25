@@ -81,7 +81,7 @@ abstract class GodotActivity : FragmentActivity(), GodotHost {
 
 		super.onCreate(savedInstanceState)
 
-		setContentView(getGodotAppLayout())
+		setContentView(getReXAppLayout())
 
 		handleStartIntent(intent, true)
 
@@ -120,7 +120,7 @@ abstract class GodotActivity : FragmentActivity(), GodotHost {
 	}
 
 	@LayoutRes
-	protected open fun getGodotAppLayout() = R.layout.godot_app_layout
+	protected open fun getReXAppLayout() = R.layout.godot_app_layout
 
 	override fun onDestroy() {
 		Log.v(TAG, "Destroying RedotActivity $this...")
@@ -206,7 +206,7 @@ abstract class GodotActivity : FragmentActivity(), GodotHost {
 		return this
 	}
 
-	override fun getGodot(): Godot? {
+	override fun getReX(): Godot? {
 		return godotFragment?.godot
 	}
 

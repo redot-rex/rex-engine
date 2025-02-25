@@ -105,7 +105,7 @@ public interface GodotHost {
 	/**
 	 * Provide access to the hosted {@link Godot} engine.
 	 */
-	Godot getGodot();
+	Godot getReX();
 
 	/**
 	 * Returns a set of {@link GodotPlugin} to be registered with the hosted {@link Godot} engine.

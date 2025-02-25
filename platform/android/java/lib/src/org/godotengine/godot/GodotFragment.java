@@ -130,7 +130,7 @@ public class GodotFragment extends Fragment implements IDownloaderClient, GodotH
 	public ResultCallback resultCallback;
 
 	@Override
-	public Godot getGodot() {
+	public Godot getReX() {
 		return godot;
 	}
 
@@ -191,7 +191,7 @@ public class GodotFragment extends Fragment implements IDownloaderClient, GodotH
 		mCurrentIntent = activity.getIntent();
 
 		if (parentHost != null) {
-			godot = parentHost.getGodot();
+			godot = parentHost.getReX();
 		}
 		if (godot == null) {
 			godot = new Godot(requireContext());
