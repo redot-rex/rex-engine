@@ -97,9 +97,9 @@ jobs:
         if: matrix.target == 'editor'
         run: |
           cd platform/android/java
-          ./gradlew generateGodotEditor
-          ./gradlew generateGodotHorizonOSEditor
-          ./gradlew generateGodotPicoOSEditor
+          ./gradlew generateReXEditor
+          ./gradlew generateReXHorizonOSEditor
+          ./gradlew generateReXPicoOSEditor
           cd ../../..
           ls -l bin/android_editor_builds/
 
