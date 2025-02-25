@@ -64,7 +64,7 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Restore Godot build cache
+      - name: Restore Redot build cache
         uses: ./.github/actions/redot-cache-restore
         with:
           cache-name: ${{ matrix.cache-name }}
@@ -100,11 +100,11 @@ jobs:
         if: ${{ matrix.cache-name == 'windows-editor-mono' }}
         run: ./bin/redot.windows.editor.x86_64.mono.exe --headless --generate-mono-glue modules/mono/glue
 
-      - name: Build GodotSharp
+      - name: Build RedotSharp
         if: ${{ matrix.cache-name == 'windows-editor-mono' }}
         run: python modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin
 
-      - name: Save Godot build cache
+      - name: Save Redot build cache
         uses: ./.github/actions/redot-cache-save
         with:
           cache-name: ${{ matrix.cache-name }}

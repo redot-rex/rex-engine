@@ -50,7 +50,7 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Restore Godot build cache
+      - name: Restore ReX build cache
         uses: ./.github/actions/redot-cache-restore
         with:
           cache-name: ${{ matrix.cache-name }}
@@ -79,21 +79,21 @@ jobs:
           tests: ${{ matrix.tests }}
           scons-cache-limit: ${{ matrix.cache-limit }}
 
-      - name: Save Godot build cache
+      - name: Save ReX build cache
         uses: ./.github/actions/redot-cache-save
         with:
           cache-name: ${{ matrix.cache-name }}
         continue-on-error: true
 
-      - name: Generate Godot templates
+      - name: Generate ReX templates
         if: matrix.target == 'template_release'
         run: |
           cd platform/android/java
-          ./gradlew generateGodotTemplates
+          ./gradlew generateReXTemplates
           cd ../../..
           ls -l bin/
 
-      - name: Generate Godot editor
+      - name: Generate ReX editor
         if: matrix.target == 'editor'
         run: |
           cd platform/android/java

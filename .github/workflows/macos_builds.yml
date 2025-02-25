@@ -38,7 +38,7 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Restore Godot build cache
+      - name: Restore ReX build cache
         uses: ./.github/actions/redot-cache-restore
         with:
           cache-name: ${{ matrix.cache-name }}
@@ -69,7 +69,7 @@ jobs:
           tests: ${{ matrix.tests }}
           scons-cache-limit: ${{ matrix.cache-limit }}
 
-      - name: Save Godot build cache
+      - name: Save ReX build cache
         uses: ./.github/actions/redot-cache-save
         with:
           cache-name: ${{ matrix.cache-name }}

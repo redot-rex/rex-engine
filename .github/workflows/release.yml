@@ -11,7 +11,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: ReX-Experimental/ReXX
+          repository: ReX-Experimental/RedotX
           ref: master
 
       - name: Install Dependencies
@@ -48,7 +48,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: ReX-Experimental/ReXX
+          repository: ReX-Experimental/RedotX
           ref: master
 
       - name: Install Dependencies
@@ -85,7 +85,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: ReX-Experimental/ReXX
+          repository: ReX-Experimental/RedotX
           ref: master
 
       - name: Setup Scoop
@@ -111,7 +111,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: ReX-Experimental/ReXX
+          repository: ReX-Experimental/RedotX
           ref: master
 
       - name: Setup Scoop
@@ -137,7 +137,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: ReX-Experimental/ReXX
+          repository: ReX-Experimental/RedotX
           ref: master
       - name: Setup Vulkan SDK
         run: |
@@ -163,7 +163,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: ReX-Experimental/ReXX
+          repository: ReX-Experimental/RedotX
           ref: master
 
       - name: Setup Vulkan SDK
@@ -190,7 +190,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: ReX-Experimental/ReXX
+          repository: ReX-Experimental/RedotX
           ref: master
       - name: Setup Vulkan SDK
         run: |
@@ -216,7 +216,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: ReX-Experimental/ReXX
+          repository: ReX-Experimental/RedotX
           ref: master
       - name: Setup Vulkan SDK
         run: |
