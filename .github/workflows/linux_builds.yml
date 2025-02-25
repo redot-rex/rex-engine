@@ -185,8 +185,8 @@ jobs:
       - name: Prepare artifact
         if: matrix.artifact
         run: |
-          strip bin/rex.*
-          chmod +x bin/rex.*
+          strip bin/redot.*
+          chmod +x bin/redot.*
 
       - name: Upload artifact
         uses: ./.github/actions/upload-artifact
