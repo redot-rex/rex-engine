@@ -128,6 +128,18 @@ Vector<String> ScriptTextEditor::get_functions() {
 		//if valid rewrite functions to latest
 		functions.clear();
 		for (const String &E : fnc) {
+			int line = E.get_slice(":", 1).to_int() - 1;
+
+			// We check if the function really exist in the file (due to the trait system)
+			if (te->get_line_count() < line) {
+				continue;
+			}
+
+			String line_content = te->get_line_wrapped_text(line)[0].strip_edges();
+			String function_name = E.get_slice(":", 0);
+			if (!line_content.begins_with(vformat("func %s", function_name))) {
+				continue;
+			}
 			functions.push_back(E);
 		}
 	}
@@ -563,6 +575,19 @@ void ScriptTextEditor::_validate_script() {
 
 		functions.clear();
 		for (const String &E : fnc) {
+			int line = E.get_slice(":", 1).to_int() - 1;
+
+			// We check if the function really exist in the file (due to the trait system)
+			if (te->get_line_count() < line) {
+				continue;
+			}
+
+			String line_content = te->get_line_wrapped_text(line)[0].strip_edges();
+			String function_name = E.get_slice(":", 0);
+			if (!line_content.begins_with(vformat("func %s", function_name))) {
+				continue;
+			}
+
 			functions.push_back(E);
 		}
 		script_is_valid = true;
@@ -1248,70 +1273,69 @@ void ScriptTextEditor::_update_connected_methods() {
 		return;
 	}
 
-	Node *base = get_tree()->get_edited_scene_root();
-	if (!base) {
-		return;
-	}
+	HashSet<StringName> methods_found;
 
 	// Add connection icons to methods.
-	Vector<Node *> nodes = _find_all_node_for_script(base, base, script);
-	HashSet<StringName> methods_found;
-	for (int i = 0; i < nodes.size(); i++) {
-		List<Connection> signal_connections;
-		nodes[i]->get_signals_connected_to_this(&signal_connections);
+	Node *base = get_tree()->get_edited_scene_root();
+	if (base) {
+		Vector<Node *> nodes = _find_all_node_for_script(base, base, script);
+		for (int i = 0; i < nodes.size(); i++) {
+			List<Connection> signal_connections;
+			nodes[i]->get_signals_connected_to_this(&signal_connections);
 
-		for (const Connection &connection : signal_connections) {
-			if (!(connection.flags & CONNECT_PERSIST)) {
-				continue;
-			}
-
-			// As deleted nodes are still accessible via the undo/redo system, check if they're still on the tree.
-			Node *source = Object::cast_to<Node>(connection.signal.get_object());
-			if (source && !source->is_inside_tree()) {
-				continue;
-			}
-
-			const StringName method = connection.callable.get_method();
-			if (methods_found.has(method)) {
-				continue;
-			}
-
-			if (!ClassDB::has_method(script->get_instance_base_type(), method)) {
-				int line = -1;
-
-				for (int j = 0; j < functions.size(); j++) {
-					String name = functions[j].get_slice(":", 0);
-					if (name == method) {
-						Dictionary line_meta;
-						line_meta["type"] = "connection";
-						line_meta["method"] = method;
-						line = functions[j].get_slice(":", 1).to_int() - 1;
-						text_edit->set_line_gutter_metadata(line, connection_gutter, line_meta);
-						text_edit->set_line_gutter_icon(line, connection_gutter, get_parent_control()->get_editor_theme_icon(SNAME("Slot")));
-						text_edit->set_line_gutter_clickable(line, connection_gutter, true);
-						methods_found.insert(method);
-						break;
-					}
-				}
-
-				if (line >= 0) {
+			for (const Connection &connection : signal_connections) {
+				if (!(connection.flags & CONNECT_PERSIST)) {
 					continue;
 				}
 
-				// There is a chance that the method is inherited from another script.
-				bool found_inherited_function = false;
-				Ref<Script> inherited_script = script->get_base_script();
-				while (inherited_script.is_valid()) {
-					if (inherited_script->has_method(method)) {
-						found_inherited_function = true;
-						break;
-					}
-
-					inherited_script = inherited_script->get_base_script();
+				// As deleted nodes are still accessible via the undo/redo system, check if they're still on the tree.
+				Node *source = Object::cast_to<Node>(connection.signal.get_object());
+				if (source && !source->is_inside_tree()) {
+					continue;
 				}
 
-				if (!found_inherited_function) {
-					missing_connections.push_back(connection);
+				const StringName method = connection.callable.get_method();
+				if (methods_found.has(method)) {
+					continue;
+				}
+
+				if (!ClassDB::has_method(script->get_instance_base_type(), method)) {
+					int line = -1;
+
+					for (int j = 0; j < functions.size(); j++) {
+						String name = functions[j].get_slice(":", 0);
+						if (name == method) {
+							Dictionary line_meta;
+							line_meta["type"] = "connection";
+							line_meta["method"] = method;
+							line = functions[j].get_slice(":", 1).to_int() - 1;
+							text_edit->set_line_gutter_metadata(line, connection_gutter, line_meta);
+							text_edit->set_line_gutter_icon(line, connection_gutter, get_parent_control()->get_editor_theme_icon(SNAME("Slot")));
+							text_edit->set_line_gutter_clickable(line, connection_gutter, true);
+							methods_found.insert(method);
+							break;
+						}
+					}
+
+					if (line >= 0) {
+						continue;
+					}
+
+					// There is a chance that the method is inherited from another script.
+					bool found_inherited_function = false;
+					Ref<Script> inherited_script = script->get_base_script();
+					while (inherited_script.is_valid()) {
+						if (inherited_script->has_method(method)) {
+							found_inherited_function = true;
+							break;
+						}
+
+						inherited_script = inherited_script->get_base_script();
+					}
+
+					if (!found_inherited_function) {
+						missing_connections.push_back(connection);
+					}
 				}
 			}
 		}
@@ -1362,6 +1386,13 @@ void ScriptTextEditor::_update_connected_methods() {
 					break;
 				}
 				base_class = base_class_ptr->name;
+			}
+		}
+
+		if (found_base_class.is_empty()) {
+			MethodInfo mi = script->get_method_info(name);
+			if (!mi.overridden_source_path.is_empty()) {
+				found_base_class = "script:" + mi.overridden_source_path;
 			}
 		}
 
