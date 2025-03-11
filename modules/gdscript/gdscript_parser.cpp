@@ -3766,6 +3766,12 @@ GDScriptParser::ExpressionNode *GDScriptParser::parse_invalid_token(ExpressionNo
 
 GDScriptParser::TypeNode *GDScriptParser::parse_type(bool p_allow_void) {
 	TypeNode *type = alloc_node<TypeNode>();
+
+	if (!type) {
+		// Allocation was not successful.
+		return nullptr;
+	}
+
 	make_completion_context(p_allow_void ? COMPLETION_TYPE_NAME_OR_VOID : COMPLETION_TYPE_NAME, type);
 	if (!match(GDScriptTokenizer::Token::IDENTIFIER)) {
 		if (match(GDScriptTokenizer::Token::VOID)) {
@@ -3779,6 +3785,7 @@ GDScriptParser::TypeNode *GDScriptParser::parse_type(bool p_allow_void) {
 		}
 		// Leave error message to the caller who knows the context.
 		complete_extents(type);
+		delete type;
 		return nullptr;
 	}
 
@@ -3794,7 +3801,7 @@ GDScriptParser::TypeNode *GDScriptParser::parse_type(bool p_allow_void) {
 			if (container_type == nullptr) {
 				push_error(vformat(R"(Expected type for collection after "%s".)", first_pass ? "[" : ","));
 				complete_extents(type);
-				type = nullptr;
+				delete type;
 				break;
 			} else if (container_type->container_types.size() > 0) {
 				push_error("Nested typed collections are not supported.");
