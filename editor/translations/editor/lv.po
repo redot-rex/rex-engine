@@ -1,5 +1,4 @@
-# Latvian translation of the Redot Engine editor interface.
-# Copyright (c) 2024-present Redot Engine contributors.
+# Latvian translation of the Godot Engine editor interface.
 # Copyright (c) 2014-present Godot Engine contributors.
 # Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.
 # This file is distributed under the same license as the Godot source code.
@@ -16,8 +15,8 @@
 # Peter Lauris <peterlauris@gmail.com>, 2023.
 msgid ""
 msgstr ""
-"Project-Id-Version: Redot Engine editor interface\n"
-"Report-Msgid-Bugs-To: https://github.com/Redot-Engine/redot-engine\n"
+"Project-Id-Version: Godot Engine editor interface\n"
+"Report-Msgid-Bugs-To: https://github.com/godotengine/godot\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: 2023-11-16 07:52+0000\n"
 "Last-Translator: Peter Lauris <peterlauris@gmail.com>\n"
@@ -1122,11 +1121,11 @@ msgstr "Neizdevās izveidot mapi."
 msgid "Create Folder"
 msgstr "Izveidot mapi"
 
-msgid "Thanks from the Redot community!"
-msgstr "Paldies no Redot sabiedrības!"
+msgid "Thanks from the Godot community!"
+msgstr "Paldies no Godot sabiedrības!"
 
-msgid "Redot Engine contributors"
-msgstr "Redot Dzinēja ieguldītāji"
+msgid "Godot Engine contributors"
+msgstr "Godot Dzinēja ieguldītāji"
 
 msgid "Project Founders"
 msgstr "Projekta Dibinātāji"
@@ -1159,12 +1158,12 @@ msgid "Third-party Licenses"
 msgstr "Trešās partijas Licences"
 
 msgid ""
-"Redot Engine relies on a number of third-party free and open source "
+"Godot Engine relies on a number of third-party free and open source "
 "libraries, all compatible with the terms of its MIT license. The following is "
 "an exhaustive list of all such third-party components with their respective "
 "copyright statements and license terms."
 msgstr ""
-"Redot Konstruktors paļaujas uz citiem trešās partijas brīvajām un atvērtā "
+"Godot Konstruktors paļaujas uz citiem trešās partijas brīvajām un atvērtā "
 "avota bibliotēkām, kuras ir saderīgas ar to MIT licences nosacījumiem. "
 "Sekojošais ir saraksts ar šīm trešās partijas komponentēm ar to autortiesību "
 "apgalvojumiem un licences nosacījumiem."
@@ -1521,8 +1520,8 @@ msgstr ""
 msgid "New profile name:"
 msgstr "Jaunais profila nosaukums:"
 
-msgid "Redot Feature Profile"
-msgstr "Redot iespēju profils"
+msgid "Godot Feature Profile"
+msgstr "Godot iespēju profils"
 
 msgid "Import Profile(s)"
 msgstr "Importēt profilu(s)"
@@ -2060,8 +2059,8 @@ msgstr "Ieteikt Iespēju"
 msgid "Send Docs Feedback"
 msgstr "Sūtīt dokumentu atsauksmi"
 
-msgid "Support Redot Development"
-msgstr "Atbalstīt Redot izstrādi"
+msgid "Support Godot Development"
+msgstr "Atbalstīt Godot izstrādi"
 
 msgid "Update Continuously"
 msgstr "Nepārtraukti Atjaunot"
@@ -2919,8 +2918,8 @@ msgstr "Saglabāt motīvu kā..."
 msgid "Online Docs"
 msgstr "Tiešsaistes Dokumenti"
 
-msgid "Open Redot online documentation."
-msgstr "Atvērt Redot tiešsaistes dokumentāciju."
+msgid "Open Godot online documentation."
+msgstr "Atvērt Godot tiešsaistes dokumentāciju."
 
 msgid "Find Next"
 msgstr "Atrast Nākamo"

@@ -1226,7 +1226,6 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o
 								char_xform = charfx->transform;
 								fx_offset = charfx->offset;
 								font_color = charfx->color;
-								frid = charfx->font;
 								gl = charfx->glyph_index;
 								txt_visible &= charfx->visibility;
 							}
@@ -2916,7 +2915,6 @@ bool RichTextLabel::_find_layout_subitem(Item *from, Item *to) {
 void RichTextLabel::_thread_function(void *p_userdata) {
 	set_current_thread_safe_for_nodes(true);
 	_process_line_caches();
-	updating.store(false);
 	callable_mp(this, &RichTextLabel::_thread_end).call_deferred();
 }
 
@@ -3084,7 +3082,6 @@ bool RichTextLabel::_validate_line_caches() {
 	} else {
 		updating.store(true);
 		_process_line_caches();
-		updating.store(false);
 		if (!scroll_visible) {
 			vscroll->hide();
 		}
@@ -3096,6 +3093,7 @@ bool RichTextLabel::_validate_line_caches() {
 void RichTextLabel::_process_line_caches() {
 	// Shape invalid lines.
 	if (!is_inside_tree()) {
+		updating.store(false);
 		return;
 	}
 
@@ -3118,6 +3116,7 @@ void RichTextLabel::_process_line_caches() {
 			main->first_invalid_font_line.store(i);
 
 			if (stop_thread.load()) {
+				updating.store(false);
 				return;
 			}
 		}
@@ -3134,6 +3133,7 @@ void RichTextLabel::_process_line_caches() {
 			main->first_resized_line.store(i);
 
 			if (stop_thread.load()) {
+				updating.store(false);
 				return;
 			}
 		}
@@ -3149,6 +3149,7 @@ void RichTextLabel::_process_line_caches() {
 		main->first_invalid_font_line.store(i);
 
 		if (stop_thread.load()) {
+			updating.store(false);
 			return;
 		}
 		loaded.store(double(i) / double(main->lines.size()));
@@ -3157,6 +3158,7 @@ void RichTextLabel::_process_line_caches() {
 	main->first_invalid_line.store(main->lines.size());
 	main->first_resized_line.store(main->lines.size());
 	main->first_invalid_font_line.store(main->lines.size());
+	updating.store(false);
 
 	if (fit_content) {
 		update_minimum_size();
@@ -3396,6 +3398,13 @@ void RichTextLabel::update_image(const Variant &p_key, BitField<ImageUpdateMask>
 				ItemImage *item = it_img;
 				if (p_mask & UPDATE_REGION) {
 					item->region = p_region;
+					if (!(p_mask & UPDATE_TEXTURE)) {
+						// Update existing atlas texture region, if texture is not updated.
+						Ref<AtlasTexture> atlas_tex = item->image;
+						if (atlas_tex.is_valid()) {
+							atlas_tex->set_region(item->region);
+						}
+					}
 				}
 				if (p_mask & UPDATE_TEXTURE) {
 					if (item->image.is_valid()) {
@@ -6827,6 +6836,7 @@ Size2 RichTextLabel::get_minimum_size() const {
 void RichTextLabel::_generate_context_menu() {
 	menu = memnew(PopupMenu);
 	add_child(menu, false, INTERNAL_MODE_FRONT);
+	menu->force_parent_owned();
 	menu->connect(SceneStringName(id_pressed), callable_mp(this, &RichTextLabel::menu_option));
 
 	menu->add_item(ETR("Copy"), MENU_COPY);

@@ -1,49 +1,41 @@
 #!/usr/bin/env sh
-# This script checks for the latest Vulkan SDK version,
-# downloads it if a newer version is available, and then installs it for Redot.
-# It requires 'jq' to parse JSON responses.
 
 set -euo pipefail
 IFS=$'\n\t'
+new_ver_full=''
 
-# Initialize the variable to hold the latest version string.
-latest_version_str=""
+# Check currently installed and latest available Vulkan SDK versions.
+if command -v jq 2>&1 >/dev/null; then
+	curl -L "https://sdk.lunarg.com/sdk/download/latest/mac/config.json" -o /tmp/vulkan-sdk.json
 
-# If 'jq' is installed, fetch the current Vulkan SDK release info.
-if command -v jq >/dev/null 2>&1; then
-    curl -L "https://sdk.lunarg.com/sdk/download/latest/mac/config.json" -o /tmp/vk-sdk-config.json
-    latest_version_str=$(jq -r '.version' /tmp/vk-sdk-config.json)
-    # Convert version numbers (x.y.z.w) into a comparable numeric format.
-    latest_version_num=$(echo "$latest_version_str" | awk -F. '{ printf("%d%02d%04d%02d", $1, $2, $3, $4); }')
-    rm -f /tmp/vk-sdk-config.json
+	new_ver_full=`jq -r '.version' /tmp/vulkan-sdk.json`
+	new_ver=`echo "$new_ver_full" | awk -F. '{ printf("%d%02d%04d%02d\n", $1,$2,$3,$4); }';`
 
-    # Loop through installed Vulkan SDK directories to verify if an update is needed.
-    for sdk_dir in "$HOME/VulkanSDK"/*; do
-        if [ -d "$sdk_dir" ]; then
-            installed_version_num=$(basename "$sdk_dir" | awk -F. '{ printf("%d%02d%04d%02d", $1, $2, $3, $4); }')
-            if [ "$installed_version_num" -ge "$latest_version_num" ]; then
-                echo "A current or newer Vulkan SDK is already installed. Update skipped."
-                exit 0
-            fi
-        fi
-    done
+	rm -f /tmp/vulkan-sdk.json
+
+	for f in $HOME/VulkanSDK/*; do
+		if [ -d "$f" ]; then
+			f=`echo "${f##*/}" | awk -F. '{ printf("%d%02d%04d%02d\n", $1,$2,$3,$4); }';`
+			if [ $f -ge $new_ver ]; then
+				echo 'Latest or newer Vulkan SDK is already installed. Skipping installation.'
+				exit 0
+			fi
+		fi
+	done
 fi
 
-# Download and extract the latest Vulkan SDK package.
-curl -L "https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.zip" -o /tmp/vk-sdk.zip
-unzip /tmp/vk-sdk.zip -d /tmp
+# Download and install the Vulkan SDK.
+curl -L "https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.zip" -o /tmp/vulkan-sdk.zip
+unzip /tmp/vulkan-sdk.zip -d /tmp
 
-# Run the appropriate installer based on the extracted directory structure.
-if [ -d "/tmp/InstallVulkan-$latest_version_str.app" ]; then
-    "/tmp/InstallVulkan-$latest_version_str.app/Contents/MacOS/InstallVulkan-$latest_version_str" \
-        --accept-licenses --default-answer --confirm-command install
-    rm -rf "/tmp/InstallVulkan-$latest_version_str.app"
+if [ -d "/tmp/InstallVulkan-$new_ver_full.app" ]; then
+	/tmp/InstallVulkan-$new_ver_full.app/Contents/MacOS/InstallVulkan-$new_ver_full  --accept-licenses --default-answer --confirm-command install
+	rm -rf /tmp/InstallVulkan-$new_ver_full.app
 elif [ -d "/tmp/InstallVulkan.app" ]; then
-    "/tmp/InstallVulkan.app/Contents/MacOS/InstallVulkan" \
-        --accept-licenses --default-answer --confirm-command install
-    rm -rf "/tmp/InstallVulkan.app"
+	/tmp/InstallVulkan.app/Contents/MacOS/InstallVulkan --accept-licenses --default-answer --confirm-command install
+	rm -rf /tmp/InstallVulkan.app
 fi
 
-rm -f /tmp/vk-sdk.zip
+rm -f /tmp/vulkan-sdk.zip
 
-echo "Vulkan SDK installation complete! You can now compile Redot by running 'scons'."
+echo 'Vulkan SDK installed successfully! You can now build Redot by running "scons".'

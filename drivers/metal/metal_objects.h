@@ -67,7 +67,6 @@
 #import <zlib.h>
 #import <initializer_list>
 #import <optional>
-#import <spirv.hpp>
 
 // These types can be used in Vector and other containers that use
 // pointer operations not supported by ARC.
@@ -565,7 +564,7 @@ struct API_AVAILABLE(macos(11.0), ios(14.0), tvos(14.0)) BindingInfo {
 	MTLBindingAccess access = MTLBindingAccessReadOnly;
 	MTLResourceUsage usage = 0;
 	MTLTextureType textureType = MTLTextureType2D;
-	spv::ImageFormat imageFormat = spv::ImageFormatUnknown;
+	int imageFormat = 0;
 	uint32_t arrayLength = 0;
 	bool isMultisampled = false;
 

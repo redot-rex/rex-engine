@@ -7,7 +7,7 @@ import re
 import subprocess
 import sys
 from collections import OrderedDict
-from io import StringIO, TextIOWrapper
+from io import StringIO, TextIOBase
 from pathlib import Path
 from typing import Generator, List, Optional, Union, cast
 
@@ -1213,7 +1213,7 @@ def generate_vs_project(env, original_args, project_name="redot"):
         vsconf = ""
         for a in vs_configuration["arches"]:
             if arch == a["architecture"]:
-                vsconf = f'{target}|{a["platform"]}'
+                vsconf = f"{target}|{a['platform']}"
                 break
 
         condition = "'$(RedotConfiguration)|$(RedotPlatform)'=='" + vsconf + "'"
@@ -1229,7 +1229,7 @@ def generate_vs_project(env, original_args, project_name="redot"):
             properties.append(
                 "<ActiveProjectItemList_%s>;%s;</ActiveProjectItemList_%s>" % (x, ";".join(itemlist[x]), x)
             )
-        output = f'bin\\redot{env["PROGSUFFIX"]}'
+        output = f"bin\\redot{env['PROGSUFFIX']}"
 
         with open("misc/msvs/props.template", "r", encoding="utf-8") as file:
             props_template = file.read()
@@ -1467,7 +1467,7 @@ def generated_wrapper(
     guard: Optional[bool] = None,
     prefix: str = "",
     suffix: str = "",
-) -> Generator[TextIOWrapper, None, None]:
+) -> Generator[TextIOBase, None, None]:
     """
     Wrapper class to automatically handle copyright headers and header guards
     for generated scripts. Meant to be invoked via `with` statement similar to
@@ -1489,8 +1489,7 @@ def generated_wrapper(
         if isinstance(path, list):
             if len(path) > 1:
                 print_warning(
-                    "Attempting to use generated wrapper with multiple targets; "
-                    f"will only use first entry: {path[0]}"
+                    f"Attempting to use generated wrapper with multiple targets; will only use first entry: {path[0]}"
                 )
             path = path[0]
         if not hasattr(path, "get_abspath"):
