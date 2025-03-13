@@ -43,6 +43,7 @@
 #include <cxxabi.h>
 #include <signal.h>
 #include <algorithm>
+#include <cstdlib>
 #include <iterator>
 #include <string>
 #include <vector>
@@ -133,6 +134,10 @@ extern void CrashHandlerException(int signal) {
 
 	if (OS::get_singleton() == nullptr || OS::get_singleton()->is_disable_crash_handler() || IsDebuggerPresent()) {
 		return;
+	}
+
+	if (OS::get_singleton()->is_crash_handler_silent()) {
+		std::_Exit(0);
 	}
 
 	String msg;

@@ -342,9 +342,6 @@ Ref<GDScript> GDScriptCache::get_shallow_script(const String &p_path, Error &r_e
 	}
 
 	if (r_error) {
-		if (p_path.get_extension().to_lower() == "gdt") {
-			return Ref<GDScriptTrait>();
-		}
 		return Ref<GDScript>(); // Returns null and does not cache when the script fails to load.
 	}
 

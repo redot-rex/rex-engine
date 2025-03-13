@@ -35,6 +35,7 @@ package org.redotengine.godot.input;
 import static org.redotengine.godot.utils.GLUtils.DEBUG;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -87,6 +88,8 @@ public class GodotInputHandler implements InputManager.InputDeviceListener, Sens
 	private int lastSeenToolType = MotionEvent.TOOL_TYPE_UNKNOWN;
 
 	private int rotaryInputAxis = ROTARY_INPUT_VERTICAL_AXIS;
+
+	private int cachedRotation = -1;
 
 	public GodotInputHandler(Context context, Godot godot) {
 		this.godot = godot;
@@ -743,10 +746,14 @@ public class GodotInputHandler implements InputManager.InputDeviceListener, Sens
 			return;
 		}
 
+		if (cachedRotation == -1) {
+			updateCachedRotation();
+		}
+
 		float rotatedValue0 = 0f;
 		float rotatedValue1 = 0f;
 		float rotatedValue2 = 0f;
-		switch (windowManager.getDefaultDisplay().getRotation()) {
+		switch (cachedRotation) {
 			case Surface.ROTATION_0:
 				rotatedValue0 = values[0];
 				rotatedValue1 = values[1];
@@ -778,4 +785,12 @@ public class GodotInputHandler implements InputManager.InputDeviceListener, Sens
 
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+	private void updateCachedRotation() {
+		cachedRotation = windowManager.getDefaultDisplay().getRotation();
+	}
+
+	public void onConfigurationChanged(Configuration newConfig) {
+		updateCachedRotation();
+	}
 }

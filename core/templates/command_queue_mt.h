@@ -116,6 +116,7 @@ class CommandQueueMT {
 	uint32_t sync_awaiters = 0;
 	WorkerThreadPool::TaskID pump_task_id = WorkerThreadPool::INVALID_TASK_ID;
 	uint64_t flush_read_ptr = 0;
+	std::atomic<bool> pending;
 
 	template <typename T, typename... Args>
 	_FORCE_INLINE_ void create_command(Args &&...p_args) {
@@ -128,6 +129,7 @@ class CommandQueueMT {
 		*(uint64_t *)&command_mem[size] = alloc_size;
 		void *cmd = &command_mem[size + sizeof(uint64_t)];
 		new (cmd) T(std::forward<Args>(p_args)...);
+		pending.store(true);
 	}
 
 	template <typename T, bool NeedsSync, typename... Args>
@@ -188,6 +190,7 @@ class CommandQueueMT {
 		}
 
 		command_mem.clear();
+		pending.store(false);
 		flush_read_ptr = 0;
 
 		_prevent_sync_wraparound();
@@ -228,7 +231,7 @@ public:
 	}
 
 	_FORCE_INLINE_ void flush_if_pending() {
-		if (unlikely(command_mem.size() > 0)) {
+		if (unlikely(pending.load())) {
 			_flush();
 		}
 	}

@@ -1017,9 +1017,7 @@ void VariantUtilityFunctions::print_rich(const Variant **p_args, int p_arg_count
 	r_error.error = Callable::CallError::CALL_OK;
 }
 
-#undef print_verbose
-
-void VariantUtilityFunctions::print_verbose(const Variant **p_args, int p_arg_count, Callable::CallError &r_error) {
+void VariantUtilityFunctions::_print_verbose(const Variant **p_args, int p_arg_count, Callable::CallError &r_error) {
 	if (OS::get_singleton()->is_stdout_verbose()) {
 		String s;
 		for (int i = 0; i < p_arg_count; i++) {
@@ -1599,16 +1597,16 @@ static _FORCE_INLINE_ Variant::Type get_ret_type_helper(void (*p_func)(P...)) {
 	};                                                                                                           \
 	register_utility_function<Func_##m_func>(#m_func, m_args)
 
-#define FUNCBINDVARARGV(m_func, m_args, m_category)                                                              \
+#define FUNCBINDVARARGV_CNAME(m_func, m_func_cname, m_args, m_category)                                          \
 	class Func_##m_func {                                                                                        \
 	public:                                                                                                      \
 		static void call(Variant *r_ret, const Variant **p_args, int p_argcount, Callable::CallError &r_error) { \
 			r_error.error = Callable::CallError::CALL_OK;                                                        \
-			VariantUtilityFunctions::m_func(p_args, p_argcount, r_error);                                        \
+			VariantUtilityFunctions::m_func_cname(p_args, p_argcount, r_error);                                  \
 		}                                                                                                        \
 		static void validated_call(Variant *r_ret, const Variant **p_args, int p_argcount) {                     \
 			Callable::CallError c;                                                                               \
-			VariantUtilityFunctions::m_func(p_args, p_argcount, c);                                              \
+			VariantUtilityFunctions::m_func_cname(p_args, p_argcount, c);                                        \
 		}                                                                                                        \
 		static void ptrcall(void *ret, const void **p_args, int p_argcount) {                                    \
 			Vector<Variant> args;                                                                                \
@@ -1642,6 +1640,8 @@ static _FORCE_INLINE_ Variant::Type get_ret_type_helper(void (*p_func)(P...)) {
 		}                                                                                                        \
 	};                                                                                                           \
 	register_utility_function<Func_##m_func>(#m_func, m_args)
+
+#define FUNCBINDVARARGV(m_func, m_args, m_category) FUNCBINDVARARGV_CNAME(m_func, m_func, m_args, m_category)
 
 #define FUNCBIND(m_func, m_args, m_category)                                                                     \
 	class Func_##m_func {                                                                                        \
@@ -1855,7 +1855,7 @@ void Variant::_register_variant_utility_functions() {
 	FUNCBINDVARARGV(printt, sarray(), Variant::UTILITY_FUNC_TYPE_GENERAL);
 	FUNCBINDVARARGV(prints, sarray(), Variant::UTILITY_FUNC_TYPE_GENERAL);
 	FUNCBINDVARARGV(printraw, sarray(), Variant::UTILITY_FUNC_TYPE_GENERAL);
-	FUNCBINDVARARGV(print_verbose, sarray(), Variant::UTILITY_FUNC_TYPE_GENERAL);
+	FUNCBINDVARARGV_CNAME(print_verbose, _print_verbose, sarray(), Variant::UTILITY_FUNC_TYPE_GENERAL);
 	FUNCBINDVARARGV(push_error, sarray(), Variant::UTILITY_FUNC_TYPE_GENERAL);
 	FUNCBINDVARARGV(push_warning, sarray(), Variant::UTILITY_FUNC_TYPE_GENERAL);
 
