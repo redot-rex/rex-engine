@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="module_RSA" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		An RSA implementation for GDScript.
+	</brief_description>
+	<description>
+		This is a basic RSA implementation for GDScript. You generate keys, encrypted, and decrypt with it.
+		[codeblocks]
+		[gdscript]
+		var rsa_module = module_RSA.new(); # Initialize the RSA module.
+		rsa_module.generate_keys(2048); # Generate a key.
+		var plaintext = "Hello, Redot.";
+
+		var ciphertext = rsa_module.encrypt(plaintext); # Encrypts, returns String.
+		print("encrypted: ", ciphertext);
+
+		var decrypted_text = rsa_module.decrypt(ciphertext); # Decrypts, returns String.
+		print("decrypted: ", decrypted_text);
+		[/gdscript]
+		[/codeblocks]
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="decrypt">
+			<return type="String" />
+			<param index="0" name="ciphertext" type="String" />
+			<description>
+				Returns decrypted ciphertext as a String.
+			</description>
+		</method>
+		<method name="encrypt">
+			<return type="String" />
+			<param index="0" name="plaintext" type="String" />
+			<description>
+				Returns encrypted plaintext as a String.
+			</description>
+		</method>
+		<method name="generate_keys">
+			<return type="bool" />
+			<param index="0" name="bits" type="int" default="2048" />
+			<description>
+				Generates keys.
+			</description>
+		</method>
+	</methods>
+</class>
