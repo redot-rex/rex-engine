@@ -1,7 +1,7 @@
 short_name = "Rex"
 name = "ReX Engine"
-major = 0
-minor = 1
+major = 1
+minor = 0
 patch = 0
 status = "beta"
 status_version = 0
