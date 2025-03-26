@@ -1,9 +1,9 @@
 short_name = "Rex"
 name = "ReX Engine"
-major = 4
-minor = 4
+major = 0
+minor = 1
 patch = 0
-status = "alpha"
+status = "beta"
 status_version = 0
 module_config = ""
 website = "https://redotengine.org"
