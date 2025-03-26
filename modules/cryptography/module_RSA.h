@@ -58,6 +58,7 @@ class module_RSA : public Object {
 private:
 	EVP_PKEY *privkey;
 	EVP_PKEY *pubkey;
+	EVP_PKEY *server_pubkey;
 #endif // #if __has_include(<openssl/bio.h>)
 #endif
 
@@ -69,6 +70,10 @@ public:
 	bool generate_keys(int bits);
 	String encrypt(const String &plaintext);
 	String decrypt(const String &ciphertext);
+	void import_privkey(String p);
+	void import_pubkey(String p, bool self);
+	String export_privkey();
+	String export_pubkey(bool self);
 };
 
 #endif // MODULE_RSA_H
