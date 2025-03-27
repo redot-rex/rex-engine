@@ -47,31 +47,32 @@
 #endif
 
 #include <algorithm>
+#include <memory>
 #include <string>
 #include <vector>
 
 class module_RSA : public Object {
 	GDCLASS(module_RSA, Object);
 
+private:
 #ifdef __has_include
 #if __has_include(<openssl/bio.h>)
-private:
-	EVP_PKEY *privkey;
-	EVP_PKEY *pubkey;
-	EVP_PKEY *server_pubkey;
+	std::unique_ptr<EVP_PKEY, decltype(&EVP_PKEY_free)> privkey{ nullptr, EVP_PKEY_free };
+	std::unique_ptr<EVP_PKEY, decltype(&EVP_PKEY_free)> pubkey{ nullptr, EVP_PKEY_free };
+	std::unique_ptr<EVP_PKEY, decltype(&EVP_PKEY_free)> server_pubkey{ nullptr, EVP_PKEY_free };
 #endif // #if __has_include(<openssl/bio.h>)
 #endif
+	std::vector<unsigned char> b64_decode(const String &s);
 
 public:
 	static void _bind_methods();
 	module_RSA();
 	~module_RSA();
-	std::vector<unsigned char> b64_decode(const String &s);
 	bool generate_keys(int bits);
-	String encrypt(const String &plaintext);
+	String encrypt(const String &plaintext, bool self);
 	String decrypt(const String &ciphertext);
-	void import_privkey(String p);
-	void import_pubkey(String p, bool self);
+	void import_privkey(const String &p);
+	void import_pubkey(const String &p, bool self);
 	String export_privkey();
 	String export_pubkey(bool self);
 };

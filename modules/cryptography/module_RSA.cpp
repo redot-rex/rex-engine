@@ -34,10 +34,10 @@
 
 void module_RSA::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("generate_keys", "bits"), &module_RSA::generate_keys, DEFVAL(2048));
-	ClassDB::bind_method(D_METHOD("encrypt", "plaintext"), &module_RSA::encrypt);
+	ClassDB::bind_method(D_METHOD("encrypt", "plaintext", "self"), &module_RSA::encrypt, DEFVAL(true));
 	ClassDB::bind_method(D_METHOD("decrypt", "ciphertext"), &module_RSA::decrypt);
 	ClassDB::bind_method(D_METHOD("import_privkey", "privkey"), &module_RSA::import_privkey);
-	ClassDB::bind_method(D_METHOD("import_pubkey", "pubkey", "self"), &module_RSA::import_pubkey, DEFVAL(""), DEFVAL(true));
+	ClassDB::bind_method(D_METHOD("import_pubkey", "pubkey", "self"), &module_RSA::import_pubkey, DEFVAL(true));
 	ClassDB::bind_method(D_METHOD("export_privkey"), &module_RSA::export_privkey);
 	ClassDB::bind_method(D_METHOD("export_pubkey", "self"), &module_RSA::export_pubkey, DEFVAL(true));
 }
@@ -45,10 +45,14 @@ void module_RSA::_bind_methods() {
 #ifdef __has_include
 #if __has_include(<openssl/bio.h>)
 module_RSA::module_RSA() :
-		privkey(nullptr), pubkey(nullptr), server_pubkey(nullptr) {}
+		privkey(nullptr, EVP_PKEY_free),
+		pubkey(nullptr, EVP_PKEY_free),
+		server_pubkey(nullptr, EVP_PKEY_free) {}
 
 module_RSA::~module_RSA() {
-	ERR_print_errors_fp(stderr);
+	privkey.reset();
+	pubkey.reset();
+	server_pubkey.reset();
 }
 
 // FIXME: Remove this when we get CryptoCore::b64_decode() working.
@@ -64,7 +68,7 @@ std::vector<unsigned char> module_RSA::b64_decode(const String &s) {
 	BIO *b64 = BIO_new(BIO_f_base64()); // Sets bio to 64 base
 
 	// https://docs.openssl.org/3.4/man3/BIO_push/
-	BIO_push(b64, bio); // chain b64 to bio. {
+	BIO_push(b64, bio); // chain b64 to bio.
 
 	// https://docs.openssl.org/3.4/man3/BIO_f_base64/
 	BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL); // We HATESES the newlines.
@@ -76,8 +80,8 @@ std::vector<unsigned char> module_RSA::b64_decode(const String &s) {
 
 	if (len < 0) {
 		// Dire situation.
-		ERR_print_errors_fp(stderr);
-		return std::vector<unsigned char>();
+		print_error("base64 decode failed.");
+		return {}; //std::vector<unsigned char>();
 	}
 
 	un_b64.resize(len);
@@ -90,54 +94,64 @@ bool module_RSA::generate_keys(int bits) {
 	 * Generate RSA keys based on given bit size.
 	 */
 
-	if (privkey) {
-		// Free the keys.
-		EVP_PKEY_free(privkey);
-		privkey = nullptr;
+	// Check if bits are acceptable
+	switch (bits) {
+		case 1024:
+			print_error("WARNING: Very weak bit-size.");
+			break;
+		case 2048:
+			break;
+		case 3072:
+			break;
+		case 4096:
+			break;
+		case 8192:
+			break;
+		default:
+			if (bits < 1024 || bits > 8192 || (bits % 1024) != 0) {
+				print_error("Invalid key size for RSA. It must be  between 1024 - 8192 and a multiple of 1024.");
+				return false;
+			}
+			return false;
 	}
-	if (pubkey) {
-		EVP_PKEY_free(pubkey);
-		pubkey = nullptr;
-	}
+
+	// Free the keys
+	privkey.reset(pubkey.release());
+	pubkey.reset();
 
 	// https://docs.openssl.org/3.4/man3/EVP_PKEY_CTX_new/
 	EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_RSA, nullptr);
 
-	if (!ctx) {
-		// failed to make context for keys
-		ERR_print_errors_fp(stderr);
-		return false;
-	}
-
 	// https://docs.openssl.org/3.4/man3/EVP_PKEY_keygen/
-	if (EVP_PKEY_keygen_init(ctx) <= 0) {
-		// attempts to init the pub/priv-keys
-		ERR_print_errors_fp(stderr);
+	if (!ctx || EVP_PKEY_keygen_init(ctx) <= 0) {
 		// https://docs.openssl.org/3.4/man7/life_cycle-pkey/
 		EVP_PKEY_CTX_free(ctx);
+		print_error("Key gen context init. failed.");
 		return false;
 	}
 
 	// https://docs.openssl.org/3.4/man3/EVP_PKEY_CTX_ctrl/
 	if (EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, bits) <= 0) {
 		// Set param for key size.
-		ERR_print_errors_fp(stderr);
 		EVP_PKEY_CTX_free(ctx);
+		print_error("Failed to set RSA key size.");
 		return false;
 	}
 
 	// Allocate empty EVP_PKEY struct for storing pub/priv keys.
-	privkey = EVP_PKEY_new();
+	EVP_PKEY *tmp_key = nullptr;
 
 	// https://docs.openssl.org/3.4/man3/EVP_PKEY_keygen/
-	if (EVP_PKEY_keygen(ctx, &privkey) <= 0) {
+	if (EVP_PKEY_keygen(ctx, &tmp_key) <= 0) {
 		// Generate the key.
-		ERR_print_errors_fp(stderr);
 		EVP_PKEY_CTX_free(ctx);
+		print_error("Key gen failed.");
 		return false;
+	} else {
+		privkey.reset(tmp_key);
 	}
 
-	pubkey = privkey;
+	pubkey.reset(privkey.get());
 
 	// Free up mem.
 	EVP_PKEY_CTX_free(ctx);
@@ -146,47 +160,46 @@ bool module_RSA::generate_keys(int bits) {
 	return true;
 }
 
-String module_RSA::encrypt(const String &plaintext) {
+String module_RSA::encrypt(const String &plaintext, bool self) {
 	/*
 	 * Encrypts given plaintext.
 	 */
 
 	size_t enc_len; // Stores length of encrypted output.
 
-	if (!pubkey) {
+	if ((!pubkey && self) || (!self && !server_pubkey)) {
 		// Dude, where's my pubkey?
+		print_error("No public key.");
 		return "ERR: No pubkey";
 	}
 
-	EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new(pubkey, nullptr);
+	EVP_PKEY *key = self ? pubkey.get() : server_pubkey.get();
+
+	EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new(key, nullptr);
 
 	if ((!ctx) || (EVP_PKEY_encrypt_init(ctx) <= 0)) {
 		// context + init check.
-		ERR_print_errors_fp(stderr);
-
-		if (ctx) {
-			// Memory leak status: Dealt with.
-			EVP_PKEY_CTX_free(ctx);
-		}
-
-		return "ERR: context issue";
+		EVP_PKEY_CTX_free(ctx);
+		print_error("Encryption context init failed.");
+		return "ERR: Encryption context init failed.";
 	}
 
 	// https://docs.openssl.org/3.4/man3/EVP_PKEY_encrypt/
 	if (EVP_PKEY_encrypt(ctx, nullptr, &enc_len, (unsigned char *)plaintext.utf8().get_data(), plaintext.length()) <= 0) {
 		// Checks if it obtained length of encrypted output.
-		ERR_print_errors_fp(stderr);
 		EVP_PKEY_CTX_free(ctx);
-		return "ERR: len issue (enc)";
+		print_error("Could not determine encryption length.");
+		return "ERR: Could not determine encryption length.";
 	}
 
 	std::vector<uint8_t> encrypted(enc_len);
+
 	// Encrypt
 	if (EVP_PKEY_encrypt(ctx, encrypted.data(), &enc_len, (unsigned char *)plaintext.utf8().get_data(), plaintext.length()) <= 0) {
 		// Checks if it encrypted the plaintext.
-		ERR_print_errors_fp(stderr);
 		EVP_PKEY_CTX_free(ctx);
-		return "ERR: didn't encrypt plaintext";
+		print_error("Failed to encrypt plaintext.");
+		return "ERR: Failed to encrypt plaintext";
 	}
 
 	// We can free up the context now.
@@ -203,6 +216,7 @@ String module_RSA::decrypt(const String &ciphertext) {
 	 */
 
 	if (!privkey) {
+		print_error("No private key.");
 		return "ERR: NO PRIVATE KEY";
 	}
 
@@ -211,58 +225,46 @@ String module_RSA::decrypt(const String &ciphertext) {
 
 	//String encrypted_data = CryptoCore::b64_decode((unsigned char *)ciphertext.data(), ciphertext.size());
 	// FIXME: ^ that isn't how you use CryptoCore::b64_decode() -- SEE: core/crypto/crypto_core.cpp:235
-	const std::vector<unsigned char> &encrypted_data = b64_decode(ciphertext);
+	const std::vector<unsigned char> encrypted_data = b64_decode(ciphertext);
 
-	EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new(privkey, nullptr);
+	EVP_PKEY *key = privkey.get();
+
+	EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new(key, nullptr);
 
 	if (!ctx || EVP_PKEY_decrypt_init(ctx) <= 0) {
 		// check context, init for decryption.
-		ERR_print_errors_fp(stderr);
-
-		if (ctx) {
-			EVP_PKEY_CTX_free(ctx);
-		}
-
-		return "ERR: Failed to init";
+		EVP_PKEY_CTX_free(ctx);
+		print_error("Decryption context init failed.");
+		return "ERR: Decryption context init failed.";
 	}
 
 	if (EVP_PKEY_decrypt(ctx, nullptr, &enc_len, encrypted_data.data(), encrypted_data.size()) <= 0) {
 		// Get length of encrypted input.
-		ERR_print_errors_fp(stderr);
-
-		if (ctx) {
-			EVP_PKEY_CTX_free(ctx);
-		}
-
-		return "ERR: len issue.";
+		EVP_PKEY_CTX_free(ctx);
+		print_error("Failed to obtain decryption length.");
+		return "ERR: Failed to obtain decryption length.";
 	}
 
 	decrypted.resize(enc_len);
 
 	if (EVP_PKEY_decrypt(ctx, decrypted.data(), &enc_len, encrypted_data.data(), encrypted_data.size()) <= 0) {
 		// This is the actual decryption part.
-		ERR_print_errors_fp(stderr);
-
 		EVP_PKEY_CTX_free(ctx);
-
+		print_error("Failed to decrypt.");
 		return "ERR: failed to decrypt";
 	}
 
 	EVP_PKEY_CTX_free(ctx);
 
-	return String(std::string({ decrypted.begin(), decrypted.end() }).c_str());
-	//return String(reinterpret_cast<const char*>(decrypted.data()), decrypted.size());
+	return String(reinterpret_cast<const char *>(decrypted.data()), decrypted.size());
 }
 
-void module_RSA::import_privkey(String p) {
+void module_RSA::import_privkey(const String &p) {
 	/*
 	 * Import private key.
 	 */
 
-	if (privkey) {
-		EVP_PKEY_free(privkey);
-		privkey = nullptr;
-	}
+	privkey.reset();
 
 	std::string s = std::string(p.utf8().get_data());
 	int s_len = p.utf8().length();
@@ -270,40 +272,31 @@ void module_RSA::import_privkey(String p) {
 	BIO *bio = BIO_new_mem_buf(s.data(), s_len);
 
 	if (!bio) {
-		ERR_print_errors_fp(stderr);
+		print_error("PRIV KEY: Failed to create BIO");
+		return;
 	}
 
 	// https://docs.openssl.org/3.4/man3/PEM_read_bio_PrivateKey
-	privkey = PEM_read_bio_PrivateKey(bio, nullptr, nullptr, nullptr);
+	privkey.reset(PEM_read_bio_PrivateKey(bio, nullptr, nullptr, nullptr));
 
 	if (!privkey) {
-		BIO_free(bio);
-		print_error("FAILED TO READ THE PRIVATE KEY.");
-		ERR_print_errors_fp(stderr);
+		print_error("Failed to read the private key.");
+		return;
 	}
 
-	pubkey = privkey;
-
-	BIO_free(bio);
+	pubkey.reset(privkey.get());
 }
 
-void module_RSA::import_pubkey(String p, bool self = true) {
+void module_RSA::import_pubkey(const String &p, bool self) {
 	/*
 	 * Import public key.
 	 */
 
 	// Deal with previously existing key:
 	if (self) {
-		if (pubkey) {
-			EVP_PKEY_free(pubkey);
-			pubkey = nullptr;
-		}
+		pubkey.reset();
 	} else {
-		if (server_pubkey) {
-			// There is no reason for this to be used, but it's safer anyways.
-			EVP_PKEY_free(server_pubkey);
-			server_pubkey = nullptr;
-		}
+		server_pubkey.reset();
 	}
 
 	std::string s = std::string(p.utf8().get_data());
@@ -312,25 +305,25 @@ void module_RSA::import_pubkey(String p, bool self = true) {
 	BIO *bio = BIO_new_mem_buf(s.data(), s_len);
 
 	if (!bio) {
-		ERR_print_errors_fp(stderr);
+		print_error("PUB KEY: Failed to create BIO.");
+		return;
+	}
+
+	// https://docs.openssl.org/3.4/man3/PEM_read_bio_PrivateKey
+	EVP_PKEY *key = PEM_read_bio_PUBKEY(bio, nullptr, nullptr, nullptr);
+
+	BIO_free(bio);
+
+	if (!key) {
+		print_error("Failed to read the public key.");
+		return;
 	}
 
 	if (self) {
-		// INBOUND PUBKEY (user)
-		// https://docs.openssl.org/3.4/man3/PEM_read_bio_PrivateKey
-		pubkey = PEM_read_bio_PUBKEY(bio, nullptr, nullptr, nullptr);
+		pubkey.reset(key);
 	} else {
-		// OUTBOUND PUBKEY (server)
-		server_pubkey = PEM_read_bio_PUBKEY(bio, nullptr, nullptr, nullptr);
+		server_pubkey.reset(key);
 	}
-
-	if ((!pubkey && self) || (!server_pubkey && !self)) {
-		// Check if keys imported successfully.
-		BIO_free(bio);
-		ERR_print_errors_fp(stderr);
-	}
-
-	BIO_free(bio);
 }
 
 String module_RSA::export_privkey() {
@@ -338,64 +331,65 @@ String module_RSA::export_privkey() {
 	 * Exports private key in the PEM format.
 	 */
 
-	if (privkey) {
-		BIO *bio = BIO_new(BIO_s_mem());
-
-		int res = PEM_write_bio_PrivateKey(bio, privkey, nullptr, nullptr, 0, nullptr, nullptr);
-
-		if (res < 1) {
-			// Something weird happened if we hit this point.
-			BIO_free(bio);
-			ERR_print_errors_fp(stderr);
-		}
-
-		char *data = nullptr;
-
-		long len = BIO_get_mem_data(bio, &data);
-
-		String pem_privkey(data, len);
-
-		BIO_free(bio);
-
-		return pem_privkey;
-	} else {
-		return "No private key available.";
+	if (!privkey) {
+		print_error("No private key.");
+		return "No private key";
 	}
+
+	BIO *bio = BIO_new(BIO_s_mem());
+
+	if (!bio) {
+		print_error("Failed to create BIO for export privkey.");
+		return "Failed to create BIO for export privkey.";
+	}
+
+	// /home/mcdubh/BLOWFISH/rsa/fixed.cpp:232
+	if (PEM_write_bio_PrivateKey(bio, privkey.get(), nullptr, nullptr, 0, nullptr, nullptr) < 1) {
+		BIO_free(bio);
+		print_error("Something went wrong exporting the private key.");
+		return "Something went wrong exporting the private key.";
+	}
+
+	char *data = nullptr;
+
+	long len = BIO_get_mem_data(bio, &data);
+
+	String pem_privkey(data, len);
+
+	BIO_free(bio);
+
+	return pem_privkey;
 }
 
-String module_RSA::export_pubkey(bool self = true) {
+String module_RSA::export_pubkey(bool self) {
 	/*
 	 * Exports public key in the PEM format.
 	 */
 
-	if ((pubkey && self) || (server_pubkey && !self)) {
-		BIO *bio = BIO_new(BIO_s_mem());
-		int res;
-
-		if (server_pubkey) {
-			res = PEM_write_bio_PUBKEY(bio, server_pubkey);
-		} else {
-			res = PEM_write_bio_PUBKEY(bio, pubkey);
-		}
-
-		if (res < 1) {
-			// Second verse, same as the first.
-			BIO_free(bio);
-			ERR_print_errors_fp(stderr);
-		}
-
-		char *data = nullptr;
-
-		long long len = BIO_get_mem_data(bio, &data);
-
-		String pem_pubkey(data, len);
-
-		BIO_free(bio);
-
-		return pem_pubkey;
-	} else {
-		return "No public key available.";
+	if ((!pubkey && self) || (!server_pubkey && !self)) {
+		print_error("No public key available for export.");
+		return "No public key available for export.";
 	}
+
+	BIO *bio = BIO_new(BIO_s_mem());
+
+	int res = self ? PEM_write_bio_PUBKEY(bio, pubkey.get()) : PEM_write_bio_PUBKEY(bio, server_pubkey.get());
+
+	if (res < 1) {
+		BIO_free(bio);
+		print_error("Something went wrong exporting the public key.");
+		return "Something went wrong exporting the public key.";
+	}
+
+	char *data = nullptr;
+
+	long long len = BIO_get_mem_data(bio, &data);
+
+	String pem_pubkey(data, len);
+
+	BIO_free(bio);
+
+	return pem_pubkey;
 }
 
 #else
@@ -419,7 +413,7 @@ bool module_RSA::generate_keys(int bits) {
 	return false;
 }
 
-String module_RSA::encrypt(const String &plaintext) {
+String module_RSA::encrypt(const String &plaintext, bool self) {
 	/*
 	 * Non-OpenSSL response. Returns error.
 	 */
@@ -434,13 +428,13 @@ String module_RSA::decrypt(const String &ciphertext) {
 
 	return "Not implemented - Install the OpenSSL Library.";
 }
-void module_RSA::import_privkey(String p) {
+void module_RSA::import_privkey(const String &p) {
 	/*
 	 * Non-OpenSSL response. Does nothing.
 	 */
 }
 
-void module_RSA::import_pubkey(String p, bool self = true) {
+void module_RSA::import_pubkey(const String &p, bool self) {
 	/*
 	 * Non-OpenSSL response. Does nothing.
 	 */
@@ -453,7 +447,7 @@ String module_RSA::export_privkey() {
 	return "Not implemented - Install the OpenSSL library.";
 }
 
-String module_RSA::export_pubkey() {
+String module_RSA::export_pubkey(bool self) {
 	/*
 	 * Non-OpenSSL response. Returns error.
 	 */
