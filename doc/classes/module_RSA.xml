@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="module_RSA" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		An RSA implementation for GDScript.
+	</brief_description>
+	<description>
+		This is a basic RSA implementation for GDScript. You can generate (or import) keys, encrypted, and decrypt with it.
+		[codeblocks]
+		[gdscript]
+		var rsa_module = module_RSA.new(); # Initialize the RSA module.
+		rsa_module.generate_keys(2048); # Generate a key.
+		var plaintext = "Hello, Redot.";
+
+		var ciphertext = rsa_module.encrypt(plaintext); # Encrypts, returns String.
+		print("encrypted: ", ciphertext);
+
+		var decrypted_text = rsa_module.decrypt(ciphertext); # Decrypts, returns String.
+		print("decrypted: ", decrypted_text);
+		[/gdscript]
+		[/codeblocks]
+		Here is an example where you load two pem files, encode some given plaintext for the secondary/server pubkey.
+		[codeblocks]
+		[gdscript]
+		func load_pem(name):
+		    var file = FileAccess.open("user://"+name+".pem", FileAccess.READ)
+		    var content = file.get_as_text()
+		    return content
+
+		func _ready():
+		    var rsa_module = module_RSA.new(); # Initialize the RSA module.
+
+		    var server_pubkey = load_pem("server_pub") # Pull in server pubkey from file.
+		    var user_privkey = load_pem("user_priv") # Pull in user privkey from file
+
+		    rsa_module.import_privkey(user_privkey) # Import the user's private key.
+		    var user_pubkey = rsa_module.export_pubkey() # Exports user's pubkey to a variable.
+
+		    rsa_module.import_pubkey(server_pubkey, false)
+
+		    var plaintext = "Hello, Redot.";
+
+		    var ciphertext = rsa_module.encrypt(plaintext, false); # Encrypt plaintext using server pubkey
+
+		    print(ciphertext) # Unreadable except for the server via the server's privkey.
+		[/gdscript]
+		[/codeblocks]
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="decrypt">
+			<return type="String" />
+			<param index="0" name="ciphertext" type="String" />
+			<description>
+				Returns decrypted ciphertext as a String.
+			</description>
+		</method>
+		<method name="encrypt">
+			<return type="String" />
+			<param index="0" name="plaintext" type="String" />
+			<param index="1" name="self" type="bool" default="true" />
+			<description>
+				Returns encrypted plaintext as a String. If self is false, it encrypts with
+				the secondary pubkey (Server pubkey.)
+			</description>
+		</method>
+		<method name="export_privkey">
+			<return type="String" />
+			<description>
+				Exports a private key.
+			</description>
+		</method>
+		<method name="export_pubkey">
+			<return type="String" />
+			<param index="0" name="self" type="bool" default="true" />
+			<description>
+				For exporting a public key. If "self" is false, it imports a secondary public key (i.e. server pubkey)
+			</description>
+		</method>
+		<method name="generate_keys">
+			<return type="bool" />
+			<param index="0" name="bits" type="int" default="2048" />
+			<description>
+				Generates keys.
+			</description>
+		</method>
+		<method name="import_privkey">
+			<return type="void" />
+			<param index="0" name="privkey" type="String" />
+			<description>
+				Imports a private key.
+			</description>
+		</method>
+		<method name="import_pubkey">
+			<return type="void" />
+			<param index="0" name="pubkey" type="String" />
+			<param index="1" name="self" type="bool" default="true" />
+			<description>
+				Imports a public key. If "self" is false, it imports a secondary public key (i.e. server pubkey.)
+			</description>
+		</method>
+		<method name="sign">
+			<return type="String" />
+			<param index="0" name="data" type="String" />
+			<description>
+				Signs given data with a private key.
+			</description>
+		</method>
+		<method name="verify">
+			<return type="bool" />
+			<param index="0" name="data" type="String" />
+			<param index="1" name="signature" type="String" />
+			<param index="2" name="self" type="bool" default="true" />
+			<description>
+				Verifies given data with a public key. If "self" is set to false it uses a secondary public key (i.e. server pubkey.)
+			</description>
+		</method>
+	</methods>
+</class>
