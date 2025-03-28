@@ -99,5 +99,21 @@
 				Imports a public key. If "self" is false, it imports a secondary public key (i.e. server pubkey.)
 			</description>
 		</method>
+		<method name="sign">
+			<return type="String" />
+			<param index="0" name="data" type="String" />
+			<description>
+				Signs given data with a private key.
+			</description>
+		</method>
+		<method name="verify">
+			<return type="bool" />
+			<param index="0" name="data" type="String" />
+			<param index="1" name="signature" type="String" />
+			<param index="2" name="self" type="bool" default="true" />
+			<description>
+				Verifies given data with a public key. If "self" is set to false it uses a secondary public key (i.e. server pubkey.)
+			</description>
+		</method>
 	</methods>
 </class>

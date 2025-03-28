@@ -41,6 +41,7 @@
 #if __has_include(<openssl/bio.h>)
 #include <openssl/bio.h> // For module_RSA::b64_decode()
 #include <openssl/err.h>
+#include <openssl/evp.h>
 #include <openssl/pem.h>
 #include <openssl/rsa.h>
 #endif // #if __has_include(<openssl/bio.h>)
@@ -63,6 +64,7 @@ private:
 #endif // #if __has_include(<openssl/bio.h>)
 #endif
 	std::vector<unsigned char> b64_decode(const String &s);
+	std::vector<uint8_t> hash(const String &d);
 
 public:
 	static void _bind_methods();
@@ -75,6 +77,8 @@ public:
 	void import_pubkey(const String &p, bool self);
 	String export_privkey();
 	String export_pubkey(bool self);
+	String sign(const String &data);
+	bool verify(const String &data, const String &signature, bool self);
 };
 
 #endif // MODULE_RSA_H
