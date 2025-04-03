@@ -84,6 +84,7 @@ private:
 public:
 	static void _bind_methods();
 	String generate_key(int bytes);
+	String import_key(const String &hex_key);
 	String encrypt(const String &plaintext, const String &hex_key, const String &mode);
 	String decrypt(const String &ciphertext, const String &hex_key, const String &mode);
 	static constexpr int AES_GCM_TAG_LEN = 16;

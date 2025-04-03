@@ -34,6 +34,7 @@
 
 void module_AES::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("generate_key", "bytes"), &module_AES::generate_key, DEFVAL(16));
+	ClassDB::bind_method(D_METHOD("import_key", "key"), &module_AES::import_key);
 	ClassDB::bind_method(D_METHOD("encrypt", "plaintext", "key", "mode"), &module_AES::encrypt, DEFVAL("GCM"));
 	ClassDB::bind_method(D_METHOD("decrypt", "ciphertext", "key", "mode"), &module_AES::decrypt, DEFVAL("GCM"));
 }
@@ -217,6 +218,26 @@ String module_AES::generate_key(int bytes) {
 		return generate_key(bytes);
 	}
 	return hex_key;
+}
+
+String module_AES::import_key(const String &hex_key) {
+	/*
+	 * Import given key.
+	 */
+
+	if (!hex_key.is_valid_hex_number(false)) {
+		// Check if valid hex.
+		print_error("Invalid key, must be in hex format.");
+		return "";
+	}
+
+	if (hex_key.length() != 32 && hex_key.length() != 48 && hex_key.length() != 64) {
+		// Check if valid length.
+		print_error("Invalid key length. Must be 32, 48, 64 hex chars. (16,24,32 bytes)");
+		return "";
+	}
+
+	return hex_key.to_upper();
 }
 
 String module_AES::encrypt(const String &plaintext, const String &hex_key, const String &mode) {
@@ -521,6 +542,13 @@ std::vector<unsigned char> module_AES::b64_decode(const String &s) {
 }
 
 String module_AES::generate_key(int bytes) {
+	/*
+	 * Non-OpenSSL response. Returns error.
+	 */
+	return "Not implemented - Install the OpenSSL library.";
+}
+
+String module_AES::import_key(const String &hex_key) {
 	/*
 	 * Non-OpenSSL response. Returns error.
 	 */

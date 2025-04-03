@@ -47,5 +47,12 @@
 				Generates key. There are three byte-sizes: 16, 24, 32.
 			</description>
 		</method>
+		<method name="import_key">
+			<return type="String" />
+			<param index="0" name="key" type="String" />
+			<description>
+				Imports given key. It must be in hex format and it must be 32, 48, 64 chars long.
+			</description>
+		</method>
 	</methods>
 </class>
