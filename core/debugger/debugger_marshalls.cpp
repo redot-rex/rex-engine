@@ -102,23 +102,24 @@ bool DebuggerMarshalls::ScriptStackVariable::deserialize(const Array &p_arr) {
 
 Array DebuggerMarshalls::OutputError::serialize() {
 	Array arr;
-	arr.push_back(hr);
-	arr.push_back(min);
-	arr.push_back(sec);
-	arr.push_back(msec);
-	arr.push_back(source_file);
-	arr.push_back(source_func);
-	arr.push_back(source_line);
-	arr.push_back(error);
-	arr.push_back(error_descr);
-	arr.push_back(warning);
-	unsigned int size = callstack.size();
+	unsigned int callstack_size = callstack.size();
+	int w_index = 10; // A friendly write index.
+	arr.resize(callstack_size + w_index); // callstack.size() + the next 10 headers.
+	arr[0] = hr;
+	arr[1] = min;
+	arr[2] = msec;
+	arr[3] = source_file;
+	arr[4] = source_func;
+	arr[5] = source_line;
+	arr[6] = error;
+	arr[7] = error_descr;
+	arr[8] = warning;
+	arr[9] = callstack_size * 3;
 	const ScriptLanguage::StackInfo *r = callstack.ptr();
-	arr.push_back(size * 3);
-	for (int i = 0; i < callstack.size(); i++) {
-		arr.push_back(r[i].file);
-		arr.push_back(r[i].func);
-		arr.push_back(r[i].line);
+	for (unsigned int i = 0; i < callstack_size; i++) {
+		arr[w_index++] = (r[i].file);
+		arr[w_index++] = (r[i].func);
+		arr[w_index++] = (r[i].line);
 	}
 	return arr;
 }

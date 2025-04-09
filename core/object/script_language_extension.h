@@ -447,7 +447,10 @@ public:
 				if (op.has("matches")) {
 					PackedInt32Array matches = op["matches"];
 					ERR_CONTINUE(matches.size() & 1);
-					for (int j = 0; j < matches.size(); j += 2) {
+
+					int matches_size = matches.size();
+
+					for (int j = 0; j < matches_size; j += 2) {
 						option.matches.push_back(Pair<int, int>(matches[j], matches[j + 1]));
 					}
 				}

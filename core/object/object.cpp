@@ -122,8 +122,10 @@ MethodInfo::operator Dictionary() const {
 	d["name"] = name;
 	d["args"] = convert_property_list(&arguments);
 	Array da;
-	for (int i = 0; i < default_arguments.size(); i++) {
-		da.push_back(default_arguments[i]);
+	int default_arguments_size = default_arguments.size();
+	da.resize(default_arguments_size);
+	for (int i = 0; i < default_arguments_size; i++) {
+		da[i] = default_arguments[i];
 	}
 	d["default_args"] = da;
 	d["flags"] = flags;

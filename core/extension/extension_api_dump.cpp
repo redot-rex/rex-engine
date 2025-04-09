@@ -1028,8 +1028,10 @@ Dictionary GDExtensionAPIDump::generate_extension_api(bool p_include_docs) {
 						Vector<uint32_t> compat_hashes = ClassDB::get_virtual_method_compatibility_hashes(class_name, method_name);
 						Array compatibility;
 						if (compat_hashes.size()) {
-							for (int i = 0; i < compat_hashes.size(); i++) {
-								compatibility.push_back(compat_hashes[i]);
+							int compat_hashes_size = compat_hashes.size();
+							compatibility.resize(compat_hashes_size);
+							for (int i = 0; i < compat_hashes_size; i++) {
+								compatibility[i] = compat_hashes[i];
 							}
 						}
 						if (compatibility.size() > 0) {
@@ -1103,8 +1105,10 @@ Dictionary GDExtensionAPIDump::generate_extension_api(bool p_include_docs) {
 						Vector<uint32_t> compat_hashes = ClassDB::get_method_compatibility_hashes(class_name, method_name);
 						Array compatibility;
 						if (compat_hashes.size()) {
-							for (int i = 0; i < compat_hashes.size(); i++) {
-								compatibility.push_back(compat_hashes[i]);
+							int compat_hashes_size = compat_hashes.size();
+							compatibility.resize(compat_hashes_size);
+							for (int i = 0; i < compat_hashes_size; i++) {
+								compatibility[i] = compat_hashes[i];
 							}
 						}
 
@@ -1119,6 +1123,7 @@ Dictionary GDExtensionAPIDump::generate_extension_api(bool p_include_docs) {
 						Vector<Variant> default_args = method->get_default_arguments();
 
 						Array arguments;
+						arguments.resize(method->get_argument_count());
 						for (int i = (method->has_return() ? -1 : 0); i < method->get_argument_count(); i++) {
 							PropertyInfo pinfo = i == -1 ? method->get_return_info() : method->get_argument_info(i);
 							Dictionary d3;
