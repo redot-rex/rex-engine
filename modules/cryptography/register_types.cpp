@@ -32,7 +32,7 @@
 
 #include "register_types.h"
 #include "core/object/class_db.h"
-#include "module_Blowfish.h"
+#include "module_AES.h"
 #include "module_RSA.h"
 
 void initialize_cryptography_module(ModuleInitializationLevel p_level) {
@@ -43,7 +43,7 @@ void initialize_cryptography_module(ModuleInitializationLevel p_level) {
 		return;
 	}
 	ClassDB::register_class<module_RSA>();
-	ClassDB::register_class<module_Blowfish>();
+	ClassDB::register_class<module_AES>();
 }
 
 void uninitialize_cryptography_module(ModuleInitializationLevel p_level) {
