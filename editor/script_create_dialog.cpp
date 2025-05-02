@@ -656,7 +656,7 @@ void ScriptCreateDialog::_path_changed(const String &p_path) {
 
 	is_new_script_created = true;
 
-	path_error = _validate_path(p_path, false, &is_path_valid);
+	path_error = _validate_path(p_path, false);
 	if (!path_error.is_empty()) {
 		validation_panel->update();
 		return;

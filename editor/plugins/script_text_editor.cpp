@@ -1321,55 +1321,24 @@ void ScriptTextEditor::_update_connected_methods() {
 						continue;
 					}
 
-					// As deleted nodes are still accessible via the undo/redo system, check if they're still on the tree.
-					Node *source = Object::cast_to<Node>(connection.signal.get_object());
-					if (source && !source->is_inside_tree()) {
-						continue;
+					
+
+					// There is a chance that the method is inherited from another script.
+					bool found_inherited_function = false;
+					Ref<Script> inherited_script = script->get_base_script();
+					while (inherited_script.is_valid()) {
+						if (inherited_script->has_method(method)) {
+							found_inherited_function = true;
+							break;
+						}
+
+						inherited_script = inherited_script->get_base_script();
 					}
 
-					const StringName method = connection.callable.get_method();
-					if (methods_found.has(method)) {
-						continue;
+					if (!found_inherited_function) {
+						missing_connections.push_back(connection);
 					}
-
-					if (!ClassDB::has_method(script->get_instance_base_type(), method)) {
-						int line = -1;
-
-						for (int j = 0; j < functions.size(); j++) {
-							String name = functions[j].get_slice(":", 0);
-							if (name == method) {
-								Dictionary line_meta;
-								line_meta["type"] = "connection";
-								line_meta["method"] = method;
-								line = functions[j].get_slice(":", 1).to_int() - 1;
-								text_edit->set_line_gutter_metadata(line, connection_gutter, line_meta);
-								text_edit->set_line_gutter_icon(line, connection_gutter, get_parent_control()->get_editor_theme_icon(SNAME("Slot")));
-								text_edit->set_line_gutter_clickable(line, connection_gutter, true);
-								methods_found.insert(method);
-								break;
-							}
-						}
-
-						if (line >= 0) {
-							continue;
-						}
-
-						// There is a chance that the method is inherited from another script.
-						bool found_inherited_function = false;
-						Ref<Script> inherited_script = script->get_base_script();
-						while (inherited_script.is_valid()) {
-							if (inherited_script->has_method(method)) {
-								found_inherited_function = true;
-								break;
-							}
-
-							inherited_script = inherited_script->get_base_script();
-						}
-
-						if (!found_inherited_function) {
-							missing_connections.push_back(connection);
-						}
-					}
+					
 				}
 			}
 		}
