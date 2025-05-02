@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef DISPLAY_SERVER_WEB_H
-#define DISPLAY_SERVER_WEB_H
+#pragma once
 
 #include "servers/display_server.h"
 
@@ -41,7 +40,7 @@
 #include <emscripten/html5.h>
 
 class DisplayServerWeb : public DisplayServer {
-	// No need to register with GDCLASS, it's platform-specific and nothing is added.
+	GDSOFTCLASS(DisplayServerWeb, DisplayServer);
 
 private:
 	struct JSTouchEvent {
@@ -105,7 +104,6 @@ private:
 	int key_event_pos = 0;
 
 	bool swap_cancel_ok = false;
-	bool tts = false;
 	NativeMenu *native_menu = nullptr;
 
 	MouseMode mouse_mode_base = MOUSE_MODE_VISIBLE;
@@ -295,5 +293,3 @@ public:
 	DisplayServerWeb(const String &p_rendering_driver, WindowMode p_window_mode, VSyncMode p_vsync_mode, uint32_t p_flags, const Point2i *p_position, const Size2i &p_resolution, int p_screen, Context p_context, int64_t p_parent_window, Error &r_error);
 	~DisplayServerWeb();
 };
-
-#endif // DISPLAY_SERVER_WEB_H

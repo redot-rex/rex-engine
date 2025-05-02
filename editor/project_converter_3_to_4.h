@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef PROJECT_CONVERTER_3_TO_4_H
-#define PROJECT_CONVERTER_3_TO_4_H
+#pragma once
 
 #ifndef DISABLE_DEPRECATED
 
@@ -116,5 +115,3 @@ public:
 };
 
 #endif // DISABLE_DEPRECATED
-
-#endif // PROJECT_CONVERTER_3_TO_4_H

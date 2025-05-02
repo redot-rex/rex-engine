@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef EDITOR_RESOURCE_PICKER_H
-#define EDITOR_RESOURCE_PICKER_H
+#pragma once
 
 #include "scene/gui/box_container.h"
 
@@ -172,8 +171,6 @@ public:
 
 	void set_script_owner(Node *p_owner);
 	Node *get_script_owner() const;
-
-	EditorScriptPicker();
 };
 
 class EditorShaderPicker : public EditorResourcePicker {
@@ -193,8 +190,6 @@ public:
 	void set_edited_material(ShaderMaterial *p_material);
 	ShaderMaterial *get_edited_material() const;
 	void set_preferred_mode(int p_preferred_mode);
-
-	EditorShaderPicker();
 };
 
 class EditorAudioStreamPicker : public EditorResourcePicker {
@@ -218,5 +213,3 @@ protected:
 public:
 	EditorAudioStreamPicker();
 };
-
-#endif // EDITOR_RESOURCE_PICKER_H

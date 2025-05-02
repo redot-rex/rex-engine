@@ -59,7 +59,7 @@
 #include "scene/resources/mesh.h"
 #include "scene/resources/visual_shader_nodes.h"
 
-///////////////////// Nil /////////////////////////
+///////////////////// NIL /////////////////////////
 
 void EditorPropertyNil::update_property() {
 }
@@ -68,6 +68,91 @@ EditorPropertyNil::EditorPropertyNil() {
 	Label *prop_label = memnew(Label);
 	prop_label->set_text("<null>");
 	add_child(prop_label);
+}
+
+//////////////////// VARIANT ///////////////////////
+
+void EditorPropertyVariant::_change_type(int p_to_type) {
+	new_type = Variant::Type(p_to_type);
+
+	Variant zero;
+	Callable::CallError ce;
+	Variant::construct(new_type, zero, nullptr, 0, ce);
+	emit_changed(get_edited_property(), zero);
+}
+
+void EditorPropertyVariant::_set_read_only(bool p_read_only) {
+	change_type->set_disabled(p_read_only);
+	if (sub_property) {
+		sub_property->set_read_only(p_read_only);
+	}
+}
+
+void EditorPropertyVariant::_notification(int p_what) {
+	if (p_what == NOTIFICATION_THEME_CHANGED) {
+		change_type->set_button_icon(get_editor_theme_icon("Edit"));
+
+		PopupMenu *popup = change_type->get_popup();
+		for (int i = 0; i < popup->get_item_count(); i++) {
+			popup->set_item_icon(i, get_editor_theme_icon(Variant::get_type_name(Variant::Type(popup->get_item_id(i)))));
+		}
+	}
+}
+
+void EditorPropertyVariant::update_property() {
+	const Variant &value = get_edited_property_value();
+	if (new_type == Variant::VARIANT_MAX) {
+		new_type = value.get_type();
+	}
+
+	if (new_type != current_type) {
+		current_type = new_type;
+
+		if (sub_property) {
+			memdelete(sub_property);
+			sub_property = nullptr;
+		}
+
+		if (current_type == Variant::OBJECT) {
+			sub_property = EditorInspector::instantiate_property_editor(nullptr, current_type, "", PROPERTY_HINT_RESOURCE_TYPE, "Resource", PROPERTY_USAGE_NONE);
+		} else {
+			sub_property = EditorInspector::instantiate_property_editor(nullptr, current_type, "", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE);
+		}
+		ERR_FAIL_NULL(sub_property);
+
+		sub_property->set_object_and_property(get_edited_object(), get_edited_property());
+		sub_property->set_name_split_ratio(0);
+		sub_property->set_selectable(false);
+		sub_property->set_use_folding(is_using_folding());
+		sub_property->set_read_only(is_read_only());
+		sub_property->set_h_size_flags(SIZE_EXPAND_FILL);
+		sub_property->connect(SNAME("property_changed"), callable_mp((EditorProperty *)this, &EditorProperty::emit_changed));
+		content->add_child(sub_property);
+		content->move_child(sub_property, 0);
+		sub_property->update_property();
+	} else if (sub_property) {
+		sub_property->update_property();
+	}
+	new_type = Variant::VARIANT_MAX;
+}
+
+EditorPropertyVariant::EditorPropertyVariant() {
+	content = memnew(HBoxContainer);
+	add_child(content);
+
+	change_type = memnew(MenuButton);
+	change_type->set_flat(false);
+
+	PopupMenu *popup = change_type->get_popup();
+	for (int i = 0; i < Variant::VARIANT_MAX; i++) {
+		if (i == Variant::CALLABLE || i == Variant::SIGNAL || i == Variant::RID) {
+			// These types can't be constructed or serialized properly, so skip them.
+			continue;
+		}
+		popup->add_item(Variant::get_type_name(Variant::Type(i)), i);
+	}
+	popup->connect(SceneStringName(id_pressed), callable_mp(this, &EditorPropertyVariant::_change_type));
+	content->add_child(change_type);
 }
 
 ///////////////////// TEXT /////////////////////////
@@ -238,6 +323,7 @@ EditorPropertyMultilineText::EditorPropertyMultilineText(bool p_expression) {
 	hb->add_child(text);
 	text->set_h_size_flags(SIZE_EXPAND_FILL);
 	open_big_text = memnew(Button);
+	open_big_text->set_accessibility_name(TTRC("Open Text Edit Dialog"));
 	open_big_text->set_flat(true);
 	open_big_text->connect(SceneStringName(pressed), callable_mp(this, &EditorPropertyMultilineText::_open_big_text));
 	hb->add_child(open_big_text);
@@ -375,6 +461,7 @@ EditorPropertyTextEnum::EditorPropertyTextEnum() {
 	hb->add_child(edit_custom_layout);
 
 	option_button = memnew(OptionButton);
+	option_button->set_accessibility_name(TTRC("Enum Options"));
 	option_button->set_h_size_flags(SIZE_EXPAND_FILL);
 	option_button->set_clip_text(true);
 	option_button->set_flat(true);
@@ -383,22 +470,26 @@ EditorPropertyTextEnum::EditorPropertyTextEnum() {
 	option_button->connect(SceneStringName(item_selected), callable_mp(this, &EditorPropertyTextEnum::_option_selected));
 
 	edit_button = memnew(Button);
+	edit_button->set_accessibility_name(TTRC("Edit"));
 	edit_button->set_flat(true);
 	edit_button->hide();
 	default_layout->add_child(edit_button);
 	edit_button->connect(SceneStringName(pressed), callable_mp(this, &EditorPropertyTextEnum::_edit_custom_value));
 
 	custom_value_edit = memnew(LineEdit);
+	custom_value_edit->set_accessibility_name(TTRC("Custom Value"));
 	custom_value_edit->set_h_size_flags(SIZE_EXPAND_FILL);
 	edit_custom_layout->add_child(custom_value_edit);
 	custom_value_edit->connect(SceneStringName(text_submitted), callable_mp(this, &EditorPropertyTextEnum::_custom_value_submitted));
 
 	accept_button = memnew(Button);
+	accept_button->set_accessibility_name(TTRC("Accept Custom Value Edit"));
 	accept_button->set_flat(true);
 	edit_custom_layout->add_child(accept_button);
 	accept_button->connect(SceneStringName(pressed), callable_mp(this, &EditorPropertyTextEnum::_custom_value_accepted));
 
 	cancel_button = memnew(Button);
+	cancel_button->set_accessibility_name(TTRC("Cancel Custom Value Edit"));
 	cancel_button->set_flat(true);
 	edit_custom_layout->add_child(cancel_button);
 	cancel_button->connect(SceneStringName(pressed), callable_mp(this, &EditorPropertyTextEnum::_custom_value_canceled));
@@ -455,12 +546,14 @@ EditorPropertyLocale::EditorPropertyLocale() {
 	HBoxContainer *locale_hb = memnew(HBoxContainer);
 	add_child(locale_hb);
 	locale = memnew(LineEdit);
+	locale->set_accessibility_name(TTRC("Locale"));
 	locale_hb->add_child(locale);
 	locale->connect(SceneStringName(text_submitted), callable_mp(this, &EditorPropertyLocale::_locale_selected));
 	locale->connect(SceneStringName(focus_exited), callable_mp(this, &EditorPropertyLocale::_locale_focus_exited));
 	locale->set_h_size_flags(SIZE_EXPAND_FILL);
 
 	locale_edit = memnew(Button);
+	locale_edit->set_accessibility_name(TTRC("Edit"));
 	locale_edit->set_clip_text(true);
 	locale_hb->add_child(locale_edit);
 	add_focusable(locale);
@@ -575,7 +668,7 @@ void EditorPropertyPath::_drop_data_fw(const Point2 &p_point, const Variant &p_d
 		return;
 	}
 	const Vector<String> filesPaths = drag_data["files"];
-	if (filesPaths.size() == 0) {
+	if (filesPaths.is_empty()) {
 		return;
 	}
 
@@ -591,12 +684,12 @@ bool EditorPropertyPath::_can_drop_data_fw(const Point2 &p_point, const Variant 
 		return false;
 	}
 	const Vector<String> filesPaths = drag_data["files"];
-	if (filesPaths.size() == 0) {
+	if (filesPaths.is_empty()) {
 		return false;
 	}
 
 	for (const String &extension : extensions) {
-		if (filesPaths[0].ends_with(extension.substr(1, extension.size() - 1))) {
+		if (filesPaths[0].ends_with(extension.substr(1))) {
 			return true;
 		}
 	}
@@ -608,6 +701,7 @@ EditorPropertyPath::EditorPropertyPath() {
 	HBoxContainer *path_hb = memnew(HBoxContainer);
 	add_child(path_hb);
 	path = memnew(LineEdit);
+	path->set_accessibility_name(TTRC("Path"));
 	SET_DRAG_FORWARDING_CDU(path, EditorPropertyPath);
 	path->set_structured_text_bidi_override(TextServer::STRUCTURED_TEXT_FILE);
 	path_hb->add_child(path);
@@ -616,6 +710,7 @@ EditorPropertyPath::EditorPropertyPath() {
 	path->set_h_size_flags(SIZE_EXPAND_FILL);
 
 	path_edit = memnew(Button);
+	path_edit->set_accessibility_name(TTRC("Edit"));
 	path_edit->set_clip_text(true);
 	path_hb->add_child(path_edit);
 	add_focusable(path);
@@ -995,6 +1090,15 @@ void EditorPropertyLayersGrid::gui_input(const Ref<InputEvent> &p_ev) {
 
 void EditorPropertyLayersGrid::_notification(int p_what) {
 	switch (p_what) {
+		case NOTIFICATION_ACCESSIBILITY_UPDATE: {
+			RID ae = get_accessibility_element();
+			ERR_FAIL_COND(ae.is_null());
+
+			//TODO
+			DisplayServer::get_singleton()->accessibility_update_set_role(ae, DisplayServer::AccessibilityRole::ROLE_STATIC_TEXT);
+			DisplayServer::get_singleton()->accessibility_update_set_value(ae, TTR(vformat("The %s is not accessible at this time.", "Layers grid property editor")));
+		} break;
+
 		case NOTIFICATION_DRAW: {
 			Size2 grid_size = get_grid_size();
 			grid_size.x = get_size().x;
@@ -1302,6 +1406,7 @@ EditorPropertyLayers::EditorPropertyLayers() {
 	hb->add_child(grid);
 
 	button = memnew(TextureButton);
+	button->set_accessibility_name(TTRC("Layers"));
 	button->set_stretch_mode(TextureButton::STRETCH_KEEP_CENTERED);
 	button->set_toggle_mode(true);
 	button->connect(SceneStringName(pressed), callable_mp(this, &EditorPropertyLayers::_button_pressed));
@@ -1328,7 +1433,7 @@ void EditorPropertyInteger::_value_changed(int64_t val) {
 }
 
 void EditorPropertyInteger::update_property() {
-	int64_t val = get_edited_property_value();
+	int64_t val = get_edited_property_display_value();
 	spin->set_value_no_signal(val);
 #ifdef DEBUG_ENABLED
 	// If spin (currently EditorSplinSlider : Range) is changed so that it can use int64_t, then the below warning wouldn't be a problem.
@@ -1393,6 +1498,7 @@ void EditorPropertyObjectID::setup(const String &p_base_type) {
 
 EditorPropertyObjectID::EditorPropertyObjectID() {
 	edit = memnew(Button);
+	edit->set_accessibility_name(TTRC("Edit"));
 	add_child(edit);
 	add_focusable(edit);
 	edit->set_text_overrun_behavior(TextServer::OVERRUN_TRIM_ELLIPSIS);
@@ -1418,6 +1524,7 @@ void EditorPropertySignal::update_property() {
 
 EditorPropertySignal::EditorPropertySignal() {
 	edit = memnew(Button);
+	edit->set_accessibility_name(TTRC("Edit"));
 	add_child(edit);
 	add_focusable(edit);
 	edit->connect(SceneStringName(pressed), callable_mp(this, &EditorPropertySignal::_edit_pressed));
@@ -1437,6 +1544,7 @@ void EditorPropertyCallable::update_property() {
 
 EditorPropertyCallable::EditorPropertyCallable() {
 	edit = memnew(Button);
+	edit->set_accessibility_name(TTRC("Edit"));
 	add_child(edit);
 	add_focusable(edit);
 }
@@ -1529,7 +1637,7 @@ void EditorPropertyEasing::_drag_easing(const Ref<InputEvent> &p_ev) {
 
 		float val = get_edited_property_value();
 		bool sg = val < 0;
-		val = Math::absf(val);
+		val = Math::abs(val);
 
 		val = Math::log(val) / Math::log((float)2.0);
 		// Logarithmic space.
@@ -1768,6 +1876,7 @@ EditorPropertyRect2::EditorPropertyRect2(bool p_force_wide) {
 	for (int i = 0; i < 4; i++) {
 		spin[i] = memnew(EditorSpinSlider);
 		spin[i]->set_label(desc[i]);
+		spin[i]->set_accessibility_name(desc[i]);
 		spin[i]->set_flat(true);
 
 		if (grid) {
@@ -1862,6 +1971,7 @@ EditorPropertyRect2i::EditorPropertyRect2i(bool p_force_wide) {
 	for (int i = 0; i < 4; i++) {
 		spin[i] = memnew(EditorSpinSlider);
 		spin[i]->set_label(desc[i]);
+		spin[i]->set_accessibility_name(desc[i]);
 		spin[i]->set_flat(true);
 
 		if (grid) {
@@ -1953,6 +2063,7 @@ EditorPropertyPlane::EditorPropertyPlane(bool p_force_wide) {
 		spin[i] = memnew(EditorSpinSlider);
 		spin[i]->set_flat(true);
 		spin[i]->set_label(desc[i]);
+		spin[i]->set_accessibility_name(desc[i]);
 		bc->add_child(spin[i]);
 		add_focusable(spin[i]);
 		spin[i]->connect(SceneStringName(value_changed), callable_mp(this, &EditorPropertyPlane::_value_changed).bind(desc[i]));
@@ -2123,6 +2234,7 @@ EditorPropertyQuaternion::EditorPropertyQuaternion() {
 		spin[i] = memnew(EditorSpinSlider);
 		spin[i]->set_flat(true);
 		spin[i]->set_label(desc[i]);
+		spin[i]->set_accessibility_name(desc[i]);
 		default_layout->add_child(spin[i]);
 		add_focusable(spin[i]);
 		spin[i]->connect(SceneStringName(value_changed), callable_mp(this, &EditorPropertyQuaternion::_value_changed).bind(desc[i]));
@@ -2150,6 +2262,7 @@ EditorPropertyQuaternion::EditorPropertyQuaternion() {
 		euler[i] = memnew(EditorSpinSlider);
 		euler[i]->set_flat(true);
 		euler[i]->set_label(desc[i]);
+		euler[i]->set_accessibility_name(vformat(TTR("Temporary Euler %s"), desc[i]));
 		edit_custom_layout->add_child(euler[i]);
 		add_focusable(euler[i]);
 		euler[i]->connect(SceneStringName(value_changed), callable_mp(this, &EditorPropertyQuaternion::_custom_value_changed));
@@ -2159,6 +2272,7 @@ EditorPropertyQuaternion::EditorPropertyQuaternion() {
 	}
 
 	edit_button = memnew(Button);
+	edit_button->set_accessibility_name(TTRC("Edit"));
 	edit_button->set_flat(true);
 	edit_button->set_toggle_mode(true);
 	default_layout->add_child(edit_button);
@@ -2233,6 +2347,7 @@ EditorPropertyAABB::EditorPropertyAABB() {
 	for (int i = 0; i < 6; i++) {
 		spin[i] = memnew(EditorSpinSlider);
 		spin[i]->set_label(desc[i]);
+		spin[i]->set_accessibility_name(desc[i]);
 		spin[i]->set_flat(true);
 
 		g->add_child(spin[i]);
@@ -2313,6 +2428,7 @@ EditorPropertyTransform2D::EditorPropertyTransform2D(bool p_include_origin) {
 	for (int i = 0; i < 6; i++) {
 		spin[i] = memnew(EditorSpinSlider);
 		spin[i]->set_label(desc[i]);
+		spin[i]->set_accessibility_name(desc[i]);
 		spin[i]->set_flat(true);
 		if (p_include_origin || i % 3 != 2) {
 			g->add_child(spin[i]);
@@ -2395,6 +2511,7 @@ EditorPropertyBasis::EditorPropertyBasis() {
 	for (int i = 0; i < 9; i++) {
 		spin[i] = memnew(EditorSpinSlider);
 		spin[i]->set_label(desc[i]);
+		spin[i]->set_accessibility_name(desc[i]);
 		spin[i]->set_flat(true);
 		g->add_child(spin[i]);
 		spin[i]->set_h_size_flags(SIZE_EXPAND_FILL);
@@ -2484,6 +2601,7 @@ EditorPropertyTransform3D::EditorPropertyTransform3D() {
 	for (int i = 0; i < 12; i++) {
 		spin[i] = memnew(EditorSpinSlider);
 		spin[i]->set_label(desc[i]);
+		spin[i]->set_accessibility_name(desc[i]);
 		spin[i]->set_flat(true);
 		g->add_child(spin[i]);
 		spin[i]->set_h_size_flags(SIZE_EXPAND_FILL);
@@ -2581,6 +2699,7 @@ EditorPropertyProjection::EditorPropertyProjection() {
 	for (int i = 0; i < 16; i++) {
 		spin[i] = memnew(EditorSpinSlider);
 		spin[i]->set_label(desc[i]);
+		spin[i]->set_accessibility_name(desc[i]);
 		spin[i]->set_flat(true);
 		g->add_child(spin[i]);
 		spin[i]->set_h_size_flags(SIZE_EXPAND_FILL);
@@ -2637,7 +2756,7 @@ void EditorPropertyColor::_notification(int p_what) {
 }
 
 void EditorPropertyColor::update_property() {
-	picker->set_pick_color(get_edited_property_value());
+	picker->set_pick_color(get_edited_property_display_value());
 	const Color color = picker->get_pick_color();
 
 	// Add a tooltip to display each channel's values without having to click the ColorPickerButton
@@ -2732,6 +2851,13 @@ void EditorPropertyNodePath::_node_assign() {
 		n = Object::cast_to<Node>(val);
 	}
 	scene_tree->popup_scenetree_dialog(n, get_base_node());
+}
+
+void EditorPropertyNodePath::_assign_draw() {
+	if (dropping) {
+		Color color = get_theme_color(SNAME("accent_color"), EditorStringName(Editor));
+		assign->draw_rect(Rect2(Point2(), assign->get_size()), color, false);
+	}
 }
 
 void EditorPropertyNodePath::_update_menu() {
@@ -2914,6 +3040,20 @@ void EditorPropertyNodePath::_notification(int p_what) {
 			menu->get_popup()->set_item_icon(ACTION_EDIT, get_editor_theme_icon(SNAME("Edit")));
 			menu->get_popup()->set_item_icon(ACTION_SELECT, get_editor_theme_icon(SNAME("ExternalLink")));
 		} break;
+
+		case NOTIFICATION_DRAG_BEGIN: {
+			if (!is_read_only() && is_drop_valid(get_viewport()->gui_get_drag_data())) {
+				dropping = true;
+				assign->queue_redraw();
+			}
+		} break;
+
+		case NOTIFICATION_DRAG_END: {
+			if (dropping) {
+				dropping = false;
+				assign->queue_redraw();
+			}
+		} break;
 	}
 }
 
@@ -2948,12 +3088,14 @@ EditorPropertyNodePath::EditorPropertyNodePath() {
 	hbc->add_theme_constant_override("separation", 0);
 	add_child(hbc);
 	assign = memnew(Button);
+	assign->set_accessibility_name(TTRC("Assign Node"));
 	assign->set_flat(true);
 	assign->set_h_size_flags(SIZE_EXPAND_FILL);
 	assign->set_clip_text(true);
 	assign->set_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);
 	assign->set_expand_icon(true);
 	assign->connect(SceneStringName(pressed), callable_mp(this, &EditorPropertyNodePath::_node_assign));
+	assign->connect(SceneStringName(draw), callable_mp(this, &EditorPropertyNodePath::_assign_draw));
 	SET_DRAG_FORWARDING_CD(assign, EditorPropertyNodePath);
 	hbc->add_child(assign);
 
@@ -2969,6 +3111,7 @@ EditorPropertyNodePath::EditorPropertyNodePath() {
 	menu->get_popup()->connect(SceneStringName(id_pressed), callable_mp(this, &EditorPropertyNodePath::_menu_option));
 
 	edit = memnew(LineEdit);
+	edit->set_accessibility_name(TTRC("Node Path"));
 	edit->set_h_size_flags(SIZE_EXPAND_FILL);
 	edit->hide();
 	edit->connect(SceneStringName(focus_exited), callable_mp(this, &EditorPropertyNodePath::_accept_text));
@@ -3020,7 +3163,7 @@ void EditorPropertyResource::_resource_selected(const Ref<Resource> &p_resource,
 		bool unfold = !get_edited_object()->editor_is_section_unfolded(get_edited_property());
 		get_edited_object()->editor_set_section_unfold(get_edited_property(), unfold);
 		update_property();
-	} else {
+	} else if (!is_checkable() || is_checked()) {
 		emit_signal(SNAME("resource_selected"), get_edited_property(), p_resource);
 	}
 }
@@ -3041,15 +3184,14 @@ static bool _find_recursive_resources(const Variant &v, HashSet<Resource *> &res
 		} break;
 		case Variant::DICTIONARY: {
 			Dictionary d = v;
-			List<Variant> keys;
-			d.get_key_list(&keys);
-			for (const Variant &k : keys) {
+			for (const KeyValue<Variant, Variant> &kv : d) {
+				const Variant &k = kv.key;
+				const Variant &v2 = kv.value;
 				if (k.get_type() == Variant::ARRAY || k.get_type() == Variant::DICTIONARY || k.get_type() == Variant::OBJECT) {
 					if (_find_recursive_resources(k, resources_found)) {
 						return true;
 					}
 				}
-				Variant v2 = d[k];
 				if (v2.get_type() == Variant::ARRAY || v2.get_type() == Variant::DICTIONARY || v2.get_type() == Variant::OBJECT) {
 					if (_find_recursive_resources(v2, resources_found)) {
 						return true;
@@ -3233,8 +3375,9 @@ void EditorPropertyResource::_viewport_selected(const NodePath &p_path) {
 		return;
 	}
 
-	Ref<ViewportTexture> vt;
-	vt.instantiate();
+	Ref<ViewportTexture> vt = get_edited_property_value();
+	ERR_FAIL_COND(vt.is_null());
+
 	vt->set_viewport_path_in_scene(get_tree()->get_edited_scene_root()->get_path_to(to_node));
 
 	emit_changed(get_edited_property(), vt);
@@ -3281,7 +3424,7 @@ void EditorPropertyResource::setup(Object *p_object, const String &p_path, const
 }
 
 void EditorPropertyResource::update_property() {
-	Ref<Resource> res = get_edited_property_value();
+	Ref<Resource> res = get_edited_property_display_value();
 
 	if (use_sub_inspector) {
 		if (res.is_valid() != resource_picker->is_toggle_mode()) {
@@ -3308,11 +3451,11 @@ void EditorPropertyResource::update_property() {
 				sub_inspector->set_use_folding(is_using_folding());
 
 				sub_inspector->set_draw_focus_border(false);
+				sub_inspector->set_focus_mode(FocusMode::FOCUS_NONE);
 
 				sub_inspector->set_use_filter(use_filter);
 				sub_inspector->register_text_enter(parent_inspector->search_box);
 
-				sub_inspector->set_mouse_filter(MOUSE_FILTER_STOP);
 				add_child(sub_inspector);
 				set_bottom_editor(sub_inspector);
 
@@ -3332,6 +3475,8 @@ void EditorPropertyResource::update_property() {
 					opened_editor = true;
 				}
 			}
+
+			sub_inspector->set_read_only(is_checkable() && !is_checked());
 
 			if (res.ptr() != sub_inspector->get_edited_object()) {
 				sub_inspector->edit(res.ptr());
@@ -3521,8 +3666,11 @@ EditorProperty *EditorInspectorDefaultPlugin::get_editor_for_property(Object *p_
 	switch (p_type) {
 		// atomic types
 		case Variant::NIL: {
-			EditorPropertyNil *editor = memnew(EditorPropertyNil);
-			return editor;
+			if (p_usage & PROPERTY_USAGE_NIL_IS_VARIANT) {
+				return memnew(EditorPropertyVariant);
+			} else {
+				return memnew(EditorPropertyNil);
+			}
 		} break;
 		case Variant::BOOL: {
 			EditorPropertyCheck *editor = memnew(EditorPropertyCheck);

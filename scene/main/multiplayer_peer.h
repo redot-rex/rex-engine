@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef MULTIPLAYER_PEER_H
-#define MULTIPLAYER_PEER_H
+#pragma once
 
 #include "core/io/packet_peer.h"
 
@@ -148,5 +147,3 @@ public:
 	EXBIND0RC(int, get_unique_id);
 	EXBIND0RC(ConnectionStatus, get_connection_status);
 };
-
-#endif // MULTIPLAYER_PEER_H

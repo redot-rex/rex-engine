@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef PROJECT_MANAGER_H
-#define PROJECT_MANAGER_H
+#pragma once
 
 #include "scene/gui/dialogs.h"
 #include "scene/gui/scroll_container.h"
@@ -68,11 +67,19 @@ class ProjectManager : public Control {
 
 	void _build_icon_type_cache(Ref<Theme> p_theme);
 
+	enum PostDuplicateAction {
+		POST_DUPLICATE_ACTION_NONE,
+		POST_DUPLICATE_ACTION_OPEN,
+		POST_DUPLICATE_ACTION_FULL_CONVERSION,
+	};
+
+	PostDuplicateAction post_duplicate_action = POST_DUPLICATE_ACTION_NONE;
+
 	// Main layout.
 
 	Ref<Theme> theme;
 
-	void _update_size_limits(bool p_custom_res);
+	void _update_size_limits();
 	void _update_theme(bool p_skip_creation = false);
 	void _titlebar_resized();
 
@@ -129,6 +136,7 @@ class ProjectManager : public Control {
 	// Project list.
 
 	VBoxContainer *empty_list_placeholder = nullptr;
+	RichTextLabel *empty_list_message = nullptr;
 	Button *empty_list_create_project = nullptr;
 	Button *empty_list_import_project = nullptr;
 	Button *empty_list_open_assetlib = nullptr;
@@ -141,6 +149,7 @@ class ProjectManager : public Control {
 
 	LineEdit *search_box = nullptr;
 	Label *loading_label = nullptr;
+	Label *sort_label = nullptr;
 	OptionButton *filter_option = nullptr;
 	PanelContainer *project_list_panel = nullptr;
 
@@ -151,6 +160,7 @@ class ProjectManager : public Control {
 	Button *open_options_btn = nullptr;
 	Button *run_btn = nullptr;
 	Button *rename_btn = nullptr;
+	Button *duplicate_btn = nullptr;
 	Button *manage_tags_btn = nullptr;
 	Button *erase_btn = nullptr;
 	Button *erase_missing_btn = nullptr;
@@ -184,6 +194,8 @@ class ProjectManager : public Control {
 	void _import_project();
 	void _new_project();
 	void _rename_project();
+	void _duplicate_project();
+	void _duplicate_project_with_action(PostDuplicateAction p_action);
 	void _erase_project();
 	void _erase_missing_projects();
 	void _erase_project_confirm();
@@ -193,6 +205,7 @@ class ProjectManager : public Control {
 	void _open_recovery_mode_ask(bool manual = false);
 
 	void _on_project_created(const String &dir, bool edit);
+	void _on_project_duplicated(const String &p_original_path, const String &p_duplicate_path, bool p_edit);
 	void _on_projects_updated();
 	void _on_open_options_selected(int p_option);
 	void _on_recovery_mode_popup_open_normal();
@@ -229,10 +242,14 @@ class ProjectManager : public Control {
 
 	ConfirmationDialog *ask_full_convert_dialog = nullptr;
 	ConfirmationDialog *ask_update_settings = nullptr;
+	VBoxContainer *ask_update_vb = nullptr;
+	Label *ask_update_label = nullptr;
+	CheckBox *ask_update_backup = nullptr;
 	Button *full_convert_button = nullptr;
 
 	String version_convert_feature;
 	bool open_in_recovery_mode = false;
+	bool open_in_verbose_mode = false;
 
 #ifndef DISABLE_DEPRECATED
 	void _minor_project_migrate();
@@ -264,8 +281,6 @@ public:
 
 	void add_new_tag(const String &p_tag);
 
-	ProjectManager(bool p_custom_res);
+	ProjectManager();
 	~ProjectManager();
 };
-
-#endif // PROJECT_MANAGER_H

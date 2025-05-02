@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef EDITOR_EXPORT_PLATFORM_EXTENSION_H
-#define EDITOR_EXPORT_PLATFORM_EXTENSION_H
+#pragma once
 
 #include "editor_export_platform.h"
 #include "editor_export_preset.h"
@@ -153,5 +152,3 @@ public:
 	EditorExportPlatformExtension();
 	~EditorExportPlatformExtension();
 };
-
-#endif // EDITOR_EXPORT_PLATFORM_EXTENSION_H

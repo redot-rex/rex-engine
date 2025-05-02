@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef JOLT_SHAPE_INSTANCE_3D_H
-#define JOLT_SHAPE_INSTANCE_3D_H
+#pragma once
 
 #include "core/math/transform_3d.h"
 
@@ -101,5 +100,3 @@ public:
 
 	bool try_build();
 };
-
-#endif // JOLT_SHAPE_INSTANCE_3D_H

@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef MESH_STORAGE_RD_H
-#define MESH_STORAGE_RD_H
+#pragma once
 
 #include "../../rendering_server_globals.h"
 #include "core/templates/local_vector.h"
@@ -81,11 +80,14 @@ private:
 			RS::PrimitiveType primitive = RS::PRIMITIVE_POINTS;
 			uint64_t format = 0;
 
-			RID vertex_buffer;
-			RID attribute_buffer;
-			RID skin_buffer;
 			uint32_t vertex_count = 0;
+			RID vertex_buffer;
 			uint32_t vertex_buffer_size = 0;
+
+			RID attribute_buffer;
+			uint32_t attribute_buffer_size = 0;
+
+			RID skin_buffer;
 			uint32_t skin_buffer_size = 0;
 
 			// A different pipeline needs to be allocated
@@ -109,6 +111,7 @@ private:
 			uint32_t version_count = 0;
 
 			RID index_buffer;
+			uint32_t index_buffer_size = 0;
 			RID index_array;
 			uint32_t index_count = 0;
 
@@ -116,6 +119,7 @@ private:
 				float edge_length = 0.0;
 				uint32_t index_count = 0;
 				RID index_buffer;
+				uint32_t index_buffer_size = 0;
 				RID index_array;
 			};
 
@@ -133,6 +137,7 @@ private:
 			Vector4 uv_scale;
 
 			RID blend_shape_buffer;
+			uint32_t blend_shape_buffer_size = 0;
 
 			RID material;
 
@@ -399,6 +404,8 @@ public:
 
 	virtual void mesh_clear(RID p_mesh) override;
 	virtual void mesh_surface_remove(RID p_mesh, int p_surface) override;
+
+	virtual void mesh_debug_usage(List<RS::MeshInfo> *r_info) override;
 
 	virtual bool mesh_needs_instance(RID p_mesh, bool p_has_skeleton) override;
 
@@ -801,5 +808,3 @@ public:
 };
 
 } // namespace RendererRD
-
-#endif // MESH_STORAGE_RD_H

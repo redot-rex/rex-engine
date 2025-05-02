@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef EDITOR_HELP_H
-#define EDITOR_HELP_H
+#pragma once
 
 #include "core/os/thread.h"
 #include "editor/doc_tools.h"
@@ -42,8 +41,6 @@
 #include "scene/gui/split_container.h"
 #include "scene/gui/text_edit.h"
 #include "scene/main/timer.h"
-
-#include "modules/modules_enabled.gen.h" // For gdscript, mono.
 
 class FindBar : public HBoxContainer {
 	GDCLASS(FindBar, HBoxContainer);
@@ -85,6 +82,8 @@ public:
 	FindBar();
 };
 
+class EditorFileSystemDirectory;
+
 class EditorHelp : public VBoxContainer {
 	GDCLASS(EditorHelp, VBoxContainer);
 
@@ -114,14 +113,14 @@ class EditorHelp : public VBoxContainer {
 
 	RichTextLabel *class_desc = nullptr;
 	HSplitContainer *h_split = nullptr;
-	static DocTools *doc;
-	static DocTools *ext_doc;
+	inline static DocTools *doc = nullptr;
+	inline static DocTools *ext_doc = nullptr;
 
 	ConfirmationDialog *search_dialog = nullptr;
 	LineEdit *search = nullptr;
 	FindBar *find_bar = nullptr;
 	HBoxContainer *status_bar = nullptr;
-	Button *toggle_scripts_button = nullptr;
+	Button *toggle_files_button = nullptr;
 
 	String base_path;
 
@@ -188,16 +187,28 @@ class EditorHelp : public VBoxContainer {
 	void _request_help(const String &p_string);
 	void _search(bool p_search_previous = false);
 
-	void _toggle_scripts_pressed();
+	void _toggle_files_pressed();
 
-	static int doc_generation_count;
-	static String doc_version_hash;
-	static Thread worker_thread;
+	inline static int doc_generation_count = 0;
+	inline static String doc_version_hash;
+	inline static Thread worker_thread;
+	inline static Thread loader_thread; // Only load scripts here to avoid deadlocking with main thread.
 
-	static void _wait_for_thread();
+	inline static SafeFlag _script_docs_loaded = SafeFlag(false);
+	inline static LocalVector<DocData::ClassDoc> _docs_to_add;
+	inline static LocalVector<String> _docs_to_remove;
+	inline static LocalVector<String> _docs_to_remove_by_path;
+
+	static void _wait_for_thread(Thread &p_thread = worker_thread);
 	static void _load_doc_thread(void *p_udata);
 	static void _gen_doc_thread(void *p_udata);
 	static void _gen_extensions_docs();
+	static void _process_postponed_docs();
+	static void _load_script_doc_cache_thread(void *p_udata);
+	static void _regen_script_doc_thread(void *p_udata);
+	static void _finish_regen_script_doc_thread(void *p_udata);
+	static void _reload_scripts_documentation(EditorFileSystemDirectory *p_dir);
+	static void _delete_script_doc_cache();
 	static void _compute_doc_version_hash();
 
 	struct PropertyCompare {
@@ -217,10 +228,23 @@ protected:
 	static void _bind_methods();
 
 public:
-	static void generate_doc(bool p_use_cache = true);
-	static DocTools *get_doc_data();
+	static void generate_doc(bool p_use_cache = true, bool p_use_script_cache = true);
 	static void cleanup_doc();
+	static void load_script_doc_cache();
+	static void regenerate_script_doc_cache();
+	static void save_script_doc_cache();
 	static String get_cache_full_path();
+	static String get_script_doc_cache_full_path();
+
+	// Adding scripts to DocData directly may make script doc cache inconsistent. Use methods below when adding script docs.
+	// Usage during startup can also cause deadlocks.
+	static DocTools *get_doc_data();
+	// Method forwarding to underlying DocTools to keep script doc cache consistent.
+	static DocData::ClassDoc *get_doc(const String &p_class_name);
+	static void add_doc(const DocData::ClassDoc &p_class_doc);
+	static void remove_doc(const String &p_class_name);
+	static void remove_script_doc_by_path(const String &p_path);
+	static bool has_doc(const String &p_class_name);
 
 	static void load_xml_buffer(const uint8_t *p_buffer, int p_size);
 	static void remove_class(const String &p_class);
@@ -242,12 +266,11 @@ public:
 	int get_scroll() const;
 	void set_scroll(int p_scroll);
 
-	void update_toggle_scripts_button();
+	void update_toggle_files_button();
 
 	static void init_gdext_pointers();
 
 	EditorHelp();
-	~EditorHelp();
 };
 
 class EditorHelpBit : public VBoxContainer {
@@ -363,7 +386,6 @@ public:
 	EditorHelpBitTooltip(Control *p_target);
 };
 
-#if defined(MODULE_GDSCRIPT_ENABLED) || defined(MODULE_MONO_ENABLED)
 class EditorSyntaxHighlighter;
 
 class EditorHelpHighlighter {
@@ -398,6 +420,3 @@ public:
 	EditorHelpHighlighter();
 	virtual ~EditorHelpHighlighter();
 };
-#endif // defined(MODULE_GDSCRIPT_ENABLED) || defined(MODULE_MONO_ENABLED)
-
-#endif // EDITOR_HELP_H

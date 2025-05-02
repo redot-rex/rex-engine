@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef INPUT_H
-#define INPUT_H
+#pragma once
 
 #include "core/input/input_event.h"
 #include "core/object/object.h"
@@ -44,7 +43,7 @@ class Input : public Object {
 	GDCLASS(Input, Object);
 	_THREAD_SAFE_CLASS_
 
-	static Input *singleton;
+	static inline Input *singleton = nullptr;
 
 	static constexpr uint64_t MAX_EVENT = 32;
 
@@ -81,14 +80,12 @@ public:
 		CURSOR_MAX
 	};
 
-	enum {
-		JOYPADS_MAX = 16,
-	};
+	static constexpr int32_t JOYPADS_MAX = 16;
 
 	typedef void (*EventDispatchFunc)(const Ref<InputEvent> &p_event);
 
 private:
-	BitField<MouseButtonMask> mouse_button_mask;
+	BitField<MouseButtonMask> mouse_button_mask = MouseButtonMask::NONE;
 
 	RBSet<Key> key_label_pressed;
 	RBSet<Key> physical_keys_pressed;
@@ -405,5 +402,3 @@ public:
 
 VARIANT_ENUM_CAST(Input::MouseMode);
 VARIANT_ENUM_CAST(Input::CursorShape);
-
-#endif // INPUT_H

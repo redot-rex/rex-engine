@@ -32,7 +32,6 @@
 
 #include "java_godot_io_wrapper.h"
 
-#include "core/error/error_list.h"
 #include "core/math/rect2.h"
 #include "core/variant/variant.h"
 

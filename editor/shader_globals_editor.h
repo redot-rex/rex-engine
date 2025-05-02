@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SHADER_GLOBALS_EDITOR_H
-#define SHADER_GLOBALS_EDITOR_H
+#pragma once
 
 #include "editor/editor_sectioned_inspector.h"
 #include "scene/gui/box_container.h"
@@ -67,5 +66,3 @@ public:
 	ShaderGlobalsEditor();
 	~ShaderGlobalsEditor();
 };
-
-#endif // SHADER_GLOBALS_EDITOR_H

@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef NAVIGATION_GLOBALS_H
-#define NAVIGATION_GLOBALS_H
+#pragma once
 
 namespace NavigationDefaults3D {
 
@@ -57,6 +56,7 @@ namespace NavigationDefaults2D {
 
 // Same as in 3D but larger since 1px is treated as 1m.
 constexpr float navmesh_cell_size{ 1.0f }; // Must match ProjectSettings default 2D cell_size.
+constexpr float navmesh_cell_size_min{ 0.01f };
 constexpr auto navmesh_cell_size_hint{ "0.001,100,0.001,or_greater" };
 
 // Map.
@@ -65,5 +65,3 @@ constexpr float edge_connection_margin{ 1.0f };
 constexpr float link_connection_radius{ 4.0f };
 
 } //namespace NavigationDefaults2D
-
-#endif // NAVIGATION_GLOBALS_H

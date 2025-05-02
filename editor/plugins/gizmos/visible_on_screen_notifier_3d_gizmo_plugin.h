@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef VISIBLE_ON_SCREEN_NOTIFIER_3D_GIZMO_PLUGIN_H
-#define VISIBLE_ON_SCREEN_NOTIFIER_3D_GIZMO_PLUGIN_H
+#pragma once
 
 #include "editor/plugins/node_3d_editor_gizmos.h"
 
@@ -51,5 +50,3 @@ public:
 
 	VisibleOnScreenNotifier3DGizmoPlugin();
 };
-
-#endif // VISIBLE_ON_SCREEN_NOTIFIER_3D_GIZMO_PLUGIN_H

@@ -251,9 +251,6 @@ POTGenerator *POTGenerator::get_singleton() {
 	return singleton;
 }
 
-POTGenerator::POTGenerator() {
-}
-
 POTGenerator::~POTGenerator() {
 	memdelete(singleton);
 	singleton = nullptr;

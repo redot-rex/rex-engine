@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef TEST_SHADER_PREPROCESSOR_H
-#define TEST_SHADER_PREPROCESSOR_H
+#pragma once
 
 #include "servers/rendering/shader_preprocessor.h"
 
@@ -331,5 +330,3 @@ TEST_CASE("[ShaderPreprocessor] Invalid concatenations") {
 }
 
 } // namespace TestShaderPreprocessor
-
-#endif // TEST_SHADER_PREPROCESSOR_H

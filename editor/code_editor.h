@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef CODE_EDITOR_H
-#define CODE_EDITOR_H
+#pragma once
 
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
@@ -82,14 +81,13 @@ class FindReplaceBar : public HBoxContainer {
 	Button *find_next = nullptr;
 	CheckBox *case_sensitive = nullptr;
 	CheckBox *whole_words = nullptr;
-	TextureButton *hide_button = nullptr;
+	Button *hide_button = nullptr;
 
 	LineEdit *replace_text = nullptr;
 	Button *replace = nullptr;
 	Button *replace_all = nullptr;
 	CheckBox *selection_only = nullptr;
 
-	VBoxContainer *vbc_lineedit = nullptr;
 	HBoxContainer *hbc_button_replace = nullptr;
 	HBoxContainer *hbc_option_replace = nullptr;
 
@@ -168,8 +166,8 @@ class CodeTextEditor : public VBoxContainer {
 	FindReplaceBar *find_replace_bar = nullptr;
 	HBoxContainer *status_bar = nullptr;
 
-	Button *toggle_scripts_button = nullptr;
-	Control *toggle_scripts_list = nullptr;
+	Button *toggle_files_button = nullptr;
+	Control *toggle_files_list = nullptr;
 	Button *error_button = nullptr;
 	Button *warning_button = nullptr;
 
@@ -223,7 +221,7 @@ class CodeTextEditor : public VBoxContainer {
 
 	void _zoom_popup_id_pressed(int p_idx);
 
-	void _toggle_scripts_pressed();
+	void _toggle_files_pressed();
 
 protected:
 	virtual void _load_theme_settings() {}
@@ -301,10 +299,8 @@ public:
 	void validate_script();
 
 	void set_toggle_list_control(Control *p_control);
-	void show_toggle_scripts_button();
-	void update_toggle_scripts_button();
+	void show_toggle_files_button();
+	void update_toggle_files_button();
 
 	CodeTextEditor();
 };
-
-#endif // CODE_EDITOR_H

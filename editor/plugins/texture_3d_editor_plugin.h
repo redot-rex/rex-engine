@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef TEXTURE_3D_EDITOR_PLUGIN_H
-#define TEXTURE_3D_EDITOR_PLUGIN_H
+#pragma once
 
 #include "editor/editor_inspector.h"
 #include "editor/plugins/editor_plugin.h"
@@ -43,6 +42,10 @@ class ColorChannelSelector;
 
 class Texture3DEditor : public Control {
 	GDCLASS(Texture3DEditor, Control);
+
+	struct ThemeCache {
+		Color outline_color;
+	} theme_cache;
 
 	SpinBox *layer = nullptr;
 	Label *info = nullptr;
@@ -56,6 +59,8 @@ class Texture3DEditor : public Control {
 	ColorChannelSelector *channel_selector = nullptr;
 
 	bool setting = false;
+
+	void _draw_outline();
 
 	void _make_shaders();
 
@@ -101,5 +106,3 @@ public:
 
 	Texture3DEditorPlugin();
 };
-
-#endif // TEXTURE_3D_EDITOR_PLUGIN_H

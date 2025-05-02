@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef ENGINE_UPDATE_LABEL_H
-#define ENGINE_UPDATE_LABEL_H
+#pragma once
 
 #include "scene/gui/link_button.h"
 
@@ -103,5 +102,3 @@ protected:
 public:
 	EngineUpdateLabel();
 };
-
-#endif // ENGINE_UPDATE_LABEL_H

@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef ASSET_LIBRARY_EDITOR_PLUGIN_H
-#define ASSET_LIBRARY_EDITOR_PLUGIN_H
+#pragma once
 
 #include "editor/editor_asset_installer.h"
 #include "editor/plugins/editor_plugin.h"
@@ -341,7 +340,7 @@ class AssetLibraryEditorPlugin : public EditorPlugin {
 public:
 	static bool is_available();
 
-	virtual String get_plugin_name() const override { return "AssetLib"; }
+	virtual String get_plugin_name() const override { return TTRC("AssetLib"); }
 	bool has_main_screen() const override { return true; }
 	virtual void edit(Object *p_object) override {}
 	virtual bool handles(Object *p_object) const override { return false; }
@@ -351,7 +350,4 @@ public:
 	//virtual void set_state(const Dictionary& p_state);
 
 	AssetLibraryEditorPlugin();
-	~AssetLibraryEditorPlugin();
 };
-
-#endif // ASSET_LIBRARY_EDITOR_PLUGIN_H

@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef PATH_2D_H
-#define PATH_2D_H
+#pragma once
 
 #include "scene/2d/node_2d.h"
 #include "scene/resources/curve.h"
@@ -112,5 +111,3 @@ public:
 
 	PathFollow2D() {}
 };
-
-#endif // PATH_2D_H

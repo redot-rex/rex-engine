@@ -30,11 +30,10 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef NAVIGATION_LINK_2D_EDITOR_PLUGIN_H
-#define NAVIGATION_LINK_2D_EDITOR_PLUGIN_H
+#pragma once
 
 #include "editor/plugins/editor_plugin.h"
-#include "scene/2d/navigation_link_2d.h"
+#include "scene/2d/navigation/navigation_link_2d.h"
 
 class CanvasItemEditor;
 
@@ -77,5 +76,3 @@ public:
 
 	NavigationLink2DEditorPlugin();
 };
-
-#endif // NAVIGATION_LINK_2D_EDITOR_PLUGIN_H

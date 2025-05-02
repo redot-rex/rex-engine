@@ -30,6 +30,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
+#include "thorvg_svg_in_ot.h"
+
 #ifdef GDEXTENSION
 // Headers for building as GDExtension plug-in.
 
@@ -57,12 +59,9 @@ using namespace godot;
 #ifdef MODULE_SVG_ENABLED
 #ifdef MODULE_FREETYPE_ENABLED
 
-#include "thorvg_svg_in_ot.h"
-
 #include <freetype/otsvg.h>
 #include <ft2build.h>
 
-#include <math.h>
 #include <stdlib.h>
 
 FT_Error tvg_svg_in_ot_init(FT_Pointer *p_state) {

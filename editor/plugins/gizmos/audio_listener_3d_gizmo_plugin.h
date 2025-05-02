@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef AUDIO_LISTENER_3D_GIZMO_PLUGIN_H
-#define AUDIO_LISTENER_3D_GIZMO_PLUGIN_H
+#pragma once
 
 #include "editor/plugins/node_3d_editor_gizmos.h"
 
@@ -47,5 +46,3 @@ public:
 
 	AudioListener3DGizmoPlugin();
 };
-
-#endif // AUDIO_LISTENER_3D_GIZMO_PLUGIN_H

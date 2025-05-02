@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef THEME_EDITOR_PREVIEW_H
-#define THEME_EDITOR_PREVIEW_H
+#pragma once
 
 #include "scene/gui/box_container.h"
 #include "scene/resources/theme.h"
@@ -120,5 +119,3 @@ public:
 
 	SceneThemeEditorPreview();
 };
-
-#endif // THEME_EDITOR_PREVIEW_H

@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef GD_MONO_H
-#define GD_MONO_H
+#pragma once
 
 #include "../godotsharp_defs.h"
 
@@ -164,7 +163,7 @@ public:
 	~GDMono();
 };
 
-namespace mono_bind {
+namespace MonoBind {
 
 class GodotSharp : public Object {
 	GDCLASS(GodotSharp, Object);
@@ -181,6 +180,4 @@ public:
 	~GodotSharp();
 };
 
-} // namespace mono_bind
-
-#endif // GD_MONO_H
+} // namespace MonoBind

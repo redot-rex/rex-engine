@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef FBX_IMPORTER_MANAGER_H
-#define FBX_IMPORTER_MANAGER_H
+#pragma once
 
 #include "editor/gui/editor_file_dialog.h"
 #include "scene/gui/dialogs.h"
@@ -67,5 +66,3 @@ public:
 
 	FBXImporterManager();
 };
-
-#endif // FBX_IMPORTER_MANAGER_H

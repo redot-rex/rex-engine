@@ -89,6 +89,3 @@ ReparentDialog::ReparentDialog() {
 
 	set_ok_button_text(TTR("Reparent"));
 }
-
-ReparentDialog::~ReparentDialog() {
-}

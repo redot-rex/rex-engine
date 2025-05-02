@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SCRIPT_CREATE_DIALOG_H
-#define SCRIPT_CREATE_DIALOG_H
+#pragma once
 
 #include "core/object/script_language.h"
 #include "scene/gui/check_box.h"
@@ -109,8 +108,7 @@ class ScriptCreateDialog : public ConfirmationDialog {
 	void _built_in_pressed();
 	void _use_template_pressed();
 	bool _validate_parent(const String &p_string);
-	String _validate_path(const String &p_path, bool p_file_must_exist, bool p_try_match = true);
-	Error _extension_update_selected_language(const String &p_extension);
+	String _validate_path(const String &p_path, bool p_file_must_exist, bool *r_path_valid = nullptr);
 	void _parent_name_changed(const String &p_parent);
 	void _template_changed(int p_template = 0);
 	void _browse_path(bool browse_parent, bool p_save);
@@ -138,5 +136,3 @@ public:
 	void set_languages_list(const bool p_only_attachable);
 	ScriptCreateDialog();
 };
-
-#endif // SCRIPT_CREATE_DIALOG_H

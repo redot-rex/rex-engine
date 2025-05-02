@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef AUDIO_DRIVER_COREAUDIO_H
-#define AUDIO_DRIVER_COREAUDIO_H
+#pragma once
 
 #ifdef COREAUDIO_ENABLED
 
@@ -128,5 +127,3 @@ public:
 };
 
 #endif // COREAUDIO_ENABLED
-
-#endif // AUDIO_DRIVER_COREAUDIO_H
