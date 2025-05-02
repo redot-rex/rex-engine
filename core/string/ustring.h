@@ -103,6 +103,30 @@ constexpr size_t _strlen_clipped(const char32_t *p_str, int p_clip_to_len) {
 	return len;
 }
 
+/*************************************************************************/
+/*  StrRange                                                             */
+/*************************************************************************/
+
+template <typename Element>
+struct StrRange {
+	const Element *c_str;
+	size_t len;
+
+	explicit StrRange(const std::nullptr_t p_cstring) :
+			c_str(nullptr), len(0) {}
+
+	explicit StrRange(const Element *p_cstring, const size_t p_len) :
+			c_str(p_cstring), len(p_len) {}
+
+	template <size_t len>
+	explicit StrRange(const Element (&p_cstring)[len]) :
+			c_str(p_cstring), len(strlen(p_cstring)) {}
+
+	static StrRange from_c_str(const Element *p_cstring) {
+		return StrRange(p_cstring, p_cstring ? strlen(p_cstring) : 0);
+	}
+};
+
 template <typename L, typename R>
 constexpr int64_t str_compare(const L *l_ptr, const R *r_ptr) {
 	while (true) {
@@ -267,16 +291,24 @@ class String {
 	static constexpr char32_t _replacement_char = 0xfffd;
 
 	// Known-length copy.
+	void append_latin1(const StrRange<char> &p_cstr);
+	void append_utf32(const StrRange<char32_t> &p_cstr);
+	void append_utf32(const char32_t &p_char);
 	void copy_from_unchecked(const char32_t *p_char, int p_length);
 
 	// NULL-terminated c string copy - automatically parse the string to find the length.
 	void append_latin1(const char *p_cstr) {
 		append_latin1(Span(p_cstr, p_cstr ? strlen(p_cstr) : 0));
 	}
+	void append_latin1(const char *p_cstr, int p_clip_to) {
+		append_latin1(StrRange(p_cstr, p_cstr ? _strlen_clipped(p_cstr, p_clip_to) : 0));
+	}
 	void append_utf32(const char32_t *p_cstr) {
 		append_utf32(Span(p_cstr, p_cstr ? strlen(p_cstr) : 0));
 	}
-
+	void append_utf32(const char32_t *p_cstr, int p_clip_to) {
+		append_utf32(StrRange(p_cstr, p_cstr ? _strlen_clipped(p_cstr, p_clip_to) : 0));
+	}
 	// wchar_t copy_from depends on the platform.
 	void append_wstring(const Span<wchar_t> &p_cstr) {
 #ifdef WINDOWS_ENABLED
@@ -294,6 +326,15 @@ class String {
 #else
 		// wchar_t is 32-bit, copy directly
 		append_utf32((const char32_t *)p_cstr);
+#endif
+	}
+	void append_wstring(const wchar_t *p_cstr, int p_clip_to) {
+#ifdef WINDOWS_ENABLED
+		// wchar_t is 16-bit, parse as UTF-16
+		append_utf16((const char16_t *)p_cstr, p_clip_to);
+#else
+		// wchar_t is 32-bit, copy directly
+		append_utf32((const char32_t *)p_cstr, p_clip_to);
 #endif
 	}
 
@@ -654,6 +695,15 @@ public:
 	}
 	String(const char32_t *p_cstr) {
 		append_utf32(p_cstr);
+	}
+	String(const char *p_cstr, int p_clip_to_len) {
+		append_latin1(p_cstr, p_clip_to_len);
+	}
+	String(const wchar_t *p_cstr, int p_clip_to_len) {
+		append_wstring(p_cstr, p_clip_to_len);
+	}
+	String(const char32_t *p_cstr, int p_clip_to_len) {
+		append_utf32(p_cstr, p_clip_to_len);
 	}
 
 	// Copy assignment for NULL terminated C strings.

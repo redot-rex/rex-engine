@@ -216,6 +216,56 @@ void String::append_utf32(const Span<char32_t> &p_cstr) {
 	}
 	*dst = 0;
 }
+void String::append_latin1(const StrRange<char> &p_cstr) {
+	if (p_cstr.len == 0) {
+		resize(0);
+		return;
+	}
+
+	resize(p_cstr.len + 1); // include 0
+
+	const char *src = p_cstr.c_str;
+	const char *end = src + p_cstr.len;
+	char32_t *dst = ptrw();
+
+	for (; src < end; ++src, ++dst) {
+		// If char is int8_t, a set sign bit will be reinterpreted as 256 - val implicitly.
+		*dst = static_cast<uint8_t>(*src);
+	}
+	*dst = 0;
+}
+
+void String::append_utf32(const StrRange<char32_t> &p_cstr) {
+	if (p_cstr.len == 0) {
+		resize(0);
+		return;
+	}
+
+	copy_from_unchecked(p_cstr.c_str, p_cstr.len);
+}
+
+void String::append_utf32(const char32_t &p_char) {
+	if (p_char == 0) {
+		print_unicode_error("NUL character", true);
+		return;
+	}
+
+	resize(2);
+
+	char32_t *dst = ptrw();
+
+	if ((p_char & 0xfffff800) == 0xd800) {
+		print_unicode_error(vformat("Unpaired surrogate (%x)", (uint32_t)p_char));
+		dst[0] = _replacement_char;
+	} else if (p_char > 0x10ffff) {
+		print_unicode_error(vformat("Invalid unicode codepoint (%x)", (uint32_t)p_char));
+		dst[0] = _replacement_char;
+	} else {
+		dst[0] = p_char;
+	}
+
+	dst[1] = 0;
+}
 
 // assumes the following have already been validated:
 // p_char != nullptr
