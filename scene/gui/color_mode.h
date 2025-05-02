@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef COLOR_MODE_H
-#define COLOR_MODE_H
+#pragma once
 
 #include "scene/gui/color_picker.h"
 
@@ -48,7 +47,7 @@ public:
 	virtual float get_spinbox_arrow_step() const { return get_slider_step(); }
 	virtual String get_slider_label(int idx) const = 0;
 	virtual float get_slider_max(int idx) const = 0;
-	virtual bool can_allow_greater() const { return false; }
+	virtual bool get_allow_greater() const { return false; }
 	virtual float get_slider_value(int idx) const = 0;
 
 	virtual Color get_color() const = 0;
@@ -57,7 +56,6 @@ public:
 
 	virtual void slider_draw(int p_which) = 0;
 	virtual bool apply_theme() const { return false; }
-	virtual ColorPicker::PickerShapeType get_shape_override() const { return ColorPicker::SHAPE_MAX; }
 
 	ColorMode(ColorPicker *p_color_picker);
 	virtual ~ColorMode() {}
@@ -90,14 +88,13 @@ public:
 class ColorModeRGB : public ColorMode {
 public:
 	String labels[3] = { "R", "G", "B" };
-	float slider_max[4] = { 255, 255, 255, 255 };
 
 	virtual String get_name() const override { return "RGB"; }
 
 	virtual float get_slider_step() const override { return 1; }
 	virtual String get_slider_label(int idx) const override;
-	virtual float get_slider_max(int idx) const override;
-	virtual bool can_allow_greater() const override { return true; }
+	virtual float get_slider_max(int idx) const override { return 255; }
+	virtual bool get_allow_greater() const override { return true; }
 	virtual float get_slider_value(int idx) const override;
 
 	virtual Color get_color() const override;
@@ -118,7 +115,7 @@ public:
 	virtual float get_slider_step() const override { return 1.0 / 255.0; }
 	virtual String get_slider_label(int idx) const override;
 	virtual float get_slider_max(int idx) const override;
-	virtual bool can_allow_greater() const override { return true; }
+	virtual bool get_allow_greater() const override { return true; }
 	virtual float get_slider_value(int idx) const override;
 
 	virtual Color get_color() const override;
@@ -135,7 +132,7 @@ public:
 	float slider_max[4] = { 359, 100, 100, 255 };
 	float cached_hue = 0.0;
 	float cached_saturation = 0.0;
-	Ref<GradientTexture2D> hue_texture = nullptr;
+	Ref<GradientTexture2D> hue_texture;
 
 	virtual String get_name() const override { return "OKHSL"; }
 
@@ -152,8 +149,4 @@ public:
 
 	ColorModeOKHSL(ColorPicker *p_color_picker) :
 			ColorMode(p_color_picker) {}
-
-	~ColorModeOKHSL() {}
 };
-
-#endif // COLOR_MODE_H

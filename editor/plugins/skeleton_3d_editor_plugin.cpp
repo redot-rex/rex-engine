@@ -43,9 +43,9 @@
 #include "editor/plugins/node_3d_editor_plugin.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/3d/mesh_instance_3d.h"
-#include "scene/3d/physical_bone_simulator_3d.h"
 #include "scene/3d/physics/collision_shape_3d.h"
 #include "scene/3d/physics/physical_bone_3d.h"
+#include "scene/3d/physics/physical_bone_simulator_3d.h"
 #include "scene/gui/separator.h"
 #include "scene/gui/texture_rect.h"
 #include "scene/resources/3d/capsule_shape_3d.h"
@@ -703,7 +703,7 @@ Variant Skeleton3DEditor::get_drag_data_fw(const Point2 &p_point, Control *p_fro
 }
 
 bool Skeleton3DEditor::can_drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from) const {
-	TreeItem *target = joint_tree->get_item_at_position(p_point);
+	TreeItem *target = (p_point == Vector2(Math::INF, Math::INF)) ? joint_tree->get_selected() : joint_tree->get_item_at_position(p_point);
 	if (!target) {
 		return false;
 	}
@@ -731,7 +731,7 @@ void Skeleton3DEditor::drop_data_fw(const Point2 &p_point, const Variant &p_data
 		return;
 	}
 
-	TreeItem *target = joint_tree->get_item_at_position(p_point);
+	TreeItem *target = (p_point == Vector2(Math::INF, Math::INF)) ? joint_tree->get_selected() : joint_tree->get_item_at_position(p_point);
 	TreeItem *selected = Object::cast_to<TreeItem>(Dictionary(p_data)["node"]);
 
 	const BoneId target_boneidx = String(target->get_metadata(0)).get_slicec('/', 1).to_int();
@@ -1028,6 +1028,7 @@ void Skeleton3DEditor::create_editors() {
 	edit_mode_button->set_toggle_mode(true);
 	edit_mode_button->set_focus_mode(FOCUS_NONE);
 	edit_mode_button->set_tooltip_text(TTR("Edit Mode\nShow buttons on joints."));
+	edit_mode_button->set_accessibility_name(TTRC("Edit Mode"));
 	edit_mode_button->connect(SceneStringName(toggled), callable_mp(this, &Skeleton3DEditor::edit_mode_toggled));
 
 	edit_mode = false;
@@ -1049,6 +1050,7 @@ void Skeleton3DEditor::create_editors() {
 	key_loc_button->set_pressed(false);
 	key_loc_button->set_focus_mode(FOCUS_NONE);
 	key_loc_button->set_tooltip_text(TTR("Translation mask for inserting keys."));
+	key_loc_button->set_accessibility_name(TTRC("Translation Mask"));
 	animation_hb->add_child(key_loc_button);
 
 	key_rot_button = memnew(Button);
@@ -1057,6 +1059,7 @@ void Skeleton3DEditor::create_editors() {
 	key_rot_button->set_pressed(true);
 	key_rot_button->set_focus_mode(FOCUS_NONE);
 	key_rot_button->set_tooltip_text(TTR("Rotation mask for inserting keys."));
+	key_rot_button->set_accessibility_name(TTRC("Rotation Mask"));
 	animation_hb->add_child(key_rot_button);
 
 	key_scale_button = memnew(Button);
@@ -1065,6 +1068,7 @@ void Skeleton3DEditor::create_editors() {
 	key_scale_button->set_pressed(false);
 	key_scale_button->set_focus_mode(FOCUS_NONE);
 	key_scale_button->set_tooltip_text(TTR("Scale mask for inserting keys."));
+	key_scale_button->set_accessibility_name(TTRC("Scale Mask"));
 	animation_hb->add_child(key_scale_button);
 
 	key_insert_button = memnew(Button);
@@ -1073,6 +1077,7 @@ void Skeleton3DEditor::create_editors() {
 	key_insert_button->connect(SceneStringName(pressed), callable_mp(this, &Skeleton3DEditor::insert_keys).bind(false));
 	key_insert_button->set_tooltip_text(TTRC("Insert key (based on mask) for bones with an existing track."));
 	key_insert_button->set_shortcut(ED_SHORTCUT("skeleton_3d_editor/insert_key_to_existing_tracks", TTRC("Insert Key (Existing Tracks)"), Key::INSERT));
+	key_insert_button->set_accessibility_name(TTRC("Insert Key"));
 	animation_hb->add_child(key_insert_button);
 
 	key_insert_all_button = memnew(Button);
@@ -1080,6 +1085,7 @@ void Skeleton3DEditor::create_editors() {
 	key_insert_all_button->set_focus_mode(FOCUS_NONE);
 	key_insert_all_button->connect(SceneStringName(pressed), callable_mp(this, &Skeleton3DEditor::insert_keys).bind(true));
 	key_insert_all_button->set_tooltip_text(TTRC("Insert key (based on mask) for all bones."));
+	key_insert_all_button->set_accessibility_name(TTRC("Insert Key for All Bones"));
 	key_insert_all_button->set_shortcut(ED_SHORTCUT("skeleton_3d_editor/insert_key_of_all_bones", TTRC("Insert Key (All Bones)"), KeyModifierMask::CMD_OR_CTRL + Key::INSERT));
 	animation_hb->add_child(key_insert_all_button);
 
@@ -1123,12 +1129,11 @@ void Skeleton3DEditor::_notification(int p_what) {
 			joint_tree->connect(SceneStringName(item_selected), callable_mp(this, &Skeleton3DEditor::_joint_tree_selection_changed));
 			joint_tree->connect("item_mouse_selected", callable_mp(this, &Skeleton3DEditor::_joint_tree_rmb_select));
 			joint_tree->connect("button_clicked", callable_mp(this, &Skeleton3DEditor::_joint_tree_button_clicked));
-#ifdef TOOLS_ENABLED
+
 			skeleton->connect(SceneStringName(pose_updated), callable_mp(this, &Skeleton3DEditor::_draw_gizmo));
 			skeleton->connect(SceneStringName(pose_updated), callable_mp(this, &Skeleton3DEditor::_update_properties));
 			skeleton->connect(SceneStringName(bone_enabled_changed), callable_mp(this, &Skeleton3DEditor::_bone_enabled_changed));
 			skeleton->connect(SceneStringName(show_rest_only_changed), callable_mp(this, &Skeleton3DEditor::_update_gizmo_visible));
-#endif
 
 			get_tree()->connect("node_removed", callable_mp(this, &Skeleton3DEditor::_node_removed), Object::CONNECT_ONE_SHOT);
 		} break;
@@ -1151,13 +1156,12 @@ void Skeleton3DEditor::_notification(int p_what) {
 		case NOTIFICATION_PREDELETE: {
 			if (skeleton) {
 				select_bone(-1); // Requires that the joint_tree has not been deleted.
-#ifdef TOOLS_ENABLED
 				skeleton->disconnect(SceneStringName(show_rest_only_changed), callable_mp(this, &Skeleton3DEditor::_update_gizmo_visible));
 				skeleton->disconnect(SceneStringName(bone_enabled_changed), callable_mp(this, &Skeleton3DEditor::_bone_enabled_changed));
 				skeleton->disconnect(SceneStringName(pose_updated), callable_mp(this, &Skeleton3DEditor::_draw_gizmo));
 				skeleton->disconnect(SceneStringName(pose_updated), callable_mp(this, &Skeleton3DEditor::_update_properties));
 				skeleton->set_transform_gizmo_visible(true);
-#endif
+
 				if (handles_mesh_instance->get_parent()) {
 					handles_mesh_instance->get_parent()->remove_child(handles_mesh_instance);
 				}
@@ -1439,22 +1443,16 @@ void Skeleton3DEditor::_update_gizmo_visible() {
 	_subgizmo_selection_change();
 	if (edit_mode) {
 		if (selected_bone == -1) {
-#ifdef TOOLS_ENABLED
 			skeleton->set_transform_gizmo_visible(false);
-#endif
 		} else {
-#ifdef TOOLS_ENABLED
 			if (skeleton->is_bone_enabled(selected_bone) && !skeleton->is_show_rest_only()) {
 				skeleton->set_transform_gizmo_visible(true);
 			} else {
 				skeleton->set_transform_gizmo_visible(false);
 			}
-#endif
 		}
 	} else {
-#ifdef TOOLS_ENABLED
 		skeleton->set_transform_gizmo_visible(true);
-#endif
 	}
 	_draw_gizmo();
 }

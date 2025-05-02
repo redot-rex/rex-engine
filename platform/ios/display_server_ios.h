@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef DISPLAY_SERVER_IOS_H
-#define DISPLAY_SERVER_IOS_H
+#pragma once
 
 #include "core/input/input.h"
 #include "servers/display_server.h"
@@ -47,7 +46,7 @@
 #endif // VULKAN_ENABLED
 
 #if defined(METAL_ENABLED)
-#include "drivers/metal/rendering_context_driver_metal.h"
+#import "drivers/metal/rendering_context_driver_metal.h"
 #endif // METAL_ENABLED
 #endif // RD_ENABLED
 
@@ -59,7 +58,7 @@
 #import <QuartzCore/CAMetalLayer.h>
 
 class DisplayServerIOS : public DisplayServer {
-	// No need to register with GDCLASS, it's platform-specific and nothing is added.
+	GDSOFTCLASS(DisplayServerIOS, DisplayServer);
 
 	_THREAD_SAFE_CLASS_
 
@@ -85,6 +84,8 @@ class DisplayServerIOS : public DisplayServer {
 	int virtual_keyboard_height = 0;
 
 	void perform_event(const Ref<InputEvent> &p_event);
+
+	void initialize_tts() const;
 
 	DisplayServerIOS(const String &p_rendering_driver, DisplayServer::WindowMode p_mode, DisplayServer::VSyncMode p_vsync_mode, uint32_t p_flags, const Vector2i *p_position, const Vector2i &p_resolution, int p_screen, Context p_context, int64_t p_parent_window, Error &r_error);
 	~DisplayServerIOS();
@@ -237,5 +238,3 @@ public:
 	void resize_window(CGSize size);
 	virtual void swap_buffers() override {}
 };
-
-#endif // DISPLAY_SERVER_IOS_H

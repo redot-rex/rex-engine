@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SPIN_LOCK_H
-#define SPIN_LOCK_H
+#pragma once
 
 #include "core/os/thread.h"
 #include "core/typedefs.h"
@@ -129,5 +128,3 @@ public:
 };
 
 #endif // THREADS_ENABLED
-
-#endif // SPIN_LOCK_H

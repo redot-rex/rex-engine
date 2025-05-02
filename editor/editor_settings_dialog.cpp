@@ -58,13 +58,13 @@ void EditorSettingsDialog::ok_pressed() {
 	if (!EditorSettings::get_singleton()) {
 		return;
 	}
-
 	_settings_save();
-	timer->stop();
 }
 
 void EditorSettingsDialog::_settings_changed() {
-	timer->start();
+	if (is_visible()) {
+		timer->start();
+	}
 }
 
 void EditorSettingsDialog::_settings_property_edited(const String &p_name) {
@@ -176,6 +176,9 @@ void EditorSettingsDialog::_set_shortcut_input(const String &p_name, Ref<InputEv
 }
 
 void EditorSettingsDialog::_settings_save() {
+	if (!timer->is_stopped()) {
+		timer->stop();
+	}
 	EditorSettings::get_singleton()->notify_changes();
 	EditorSettings::get_singleton()->save();
 }
@@ -574,7 +577,7 @@ void EditorSettingsDialog::_update_shortcuts() {
 	// Create all sections first.
 	for (const String &E : slist) {
 		Ref<Shortcut> sc = EditorSettings::get_singleton()->get_shortcut(E);
-		String section_name = E.get_slice("/", 0);
+		String section_name = E.get_slicec('/', 0);
 
 		if (sections.has(section_name)) {
 			continue;
@@ -607,7 +610,7 @@ void EditorSettingsDialog::_update_shortcuts() {
 			continue;
 		}
 
-		String section_name = E.get_slice("/", 0);
+		String section_name = E.get_slicec('/', 0);
 		TreeItem *section = sections[section_name];
 
 		if (!_should_display_shortcut(sc->get_name(), sc->get_events(), true)) {
@@ -758,7 +761,7 @@ Variant EditorSettingsDialog::get_drag_data_fw(const Point2 &p_point, Control *p
 
 bool EditorSettingsDialog::can_drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from) const {
 	TreeItem *selected = shortcuts->get_selected();
-	TreeItem *item = shortcuts->get_item_at_position(p_point);
+	TreeItem *item = (p_point == Vector2(Math::INF, Math::INF)) ? shortcuts->get_selected() : shortcuts->get_item_at_position(p_point);
 	if (!selected || !item || item == selected || (String)item->get_meta("type", "") != "event") {
 		return false;
 	}
@@ -777,7 +780,7 @@ void EditorSettingsDialog::drop_data_fw(const Point2 &p_point, const Variant &p_
 	}
 
 	TreeItem *selected = shortcuts->get_selected();
-	TreeItem *target = shortcuts->get_item_at_position(p_point);
+	TreeItem *target = (p_point == Vector2(Math::INF, Math::INF)) ? shortcuts->get_selected() : shortcuts->get_item_at_position(p_point);
 
 	if (!target) {
 		return;
@@ -900,6 +903,7 @@ EditorSettingsDialog::EditorSettingsDialog() {
 
 	search_box = memnew(LineEdit);
 	search_box->set_placeholder(TTR("Filter Settings"));
+	search_box->set_accessibility_name(TTRC("Filter Settings"));
 	search_box->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	hbc->add_child(search_box);
 
@@ -927,6 +931,7 @@ EditorSettingsDialog::EditorSettingsDialog() {
 	restart_icon->set_v_size_flags(Control::SIZE_SHRINK_CENTER);
 	restart_hb->add_child(restart_icon);
 	restart_label = memnew(Label);
+	restart_label->set_focus_mode(Control::FOCUS_ACCESSIBILITY);
 	restart_label->set_text(TTR("The editor must be restarted for changes to take effect."));
 	restart_hb->add_child(restart_label);
 	restart_hb->add_spacer();
@@ -935,6 +940,7 @@ EditorSettingsDialog::EditorSettingsDialog() {
 	restart_hb->add_child(restart_button);
 	restart_button->set_text(TTR("Save & Restart"));
 	restart_close_button = memnew(Button);
+	restart_close_button->set_accessibility_name(TTRC("Close"));
 	restart_close_button->set_flat(true);
 	restart_close_button->connect(SceneStringName(pressed), callable_mp(this, &EditorSettingsDialog::_editor_restart_close));
 	restart_hb->add_child(restart_close_button);
@@ -953,6 +959,7 @@ EditorSettingsDialog::EditorSettingsDialog() {
 
 	shortcut_search_box = memnew(LineEdit);
 	shortcut_search_box->set_placeholder(TTR("Filter by Name"));
+	shortcut_search_box->set_accessibility_name(TTRC("Filter by Name"));
 	shortcut_search_box->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	top_hbox->add_child(shortcut_search_box);
 	shortcut_search_box->connect(SceneStringName(text_changed), callable_mp(this, &EditorSettingsDialog::_filter_shortcuts));
@@ -974,6 +981,7 @@ EditorSettingsDialog::EditorSettingsDialog() {
 	top_hbox->add_child(clear_all_search);
 
 	shortcuts = memnew(Tree);
+	shortcuts->set_accessibility_name(TTRC("Shortcuts"));
 	shortcuts->set_v_size_flags(Control::SIZE_EXPAND_FILL);
 	shortcuts->set_columns(2);
 	shortcuts->set_hide_root(true);
@@ -1001,7 +1009,4 @@ EditorSettingsDialog::EditorSettingsDialog() {
 	add_child(timer);
 	EditorSettings::get_singleton()->connect("settings_changed", callable_mp(this, &EditorSettingsDialog::_settings_changed));
 	set_ok_button_text(TTR("Close"));
-}
-
-EditorSettingsDialog::~EditorSettingsDialog() {
 }

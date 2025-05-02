@@ -181,9 +181,6 @@ EditorTranslationParser *EditorTranslationParser::get_singleton() {
 	return singleton;
 }
 
-EditorTranslationParser::EditorTranslationParser() {
-}
-
 EditorTranslationParser::~EditorTranslationParser() {
 	memdelete(singleton);
 	singleton = nullptr;

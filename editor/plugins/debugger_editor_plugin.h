@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef DEBUGGER_EDITOR_PLUGIN_H
-#define DEBUGGER_EDITOR_PLUGIN_H
+#pragma once
 
 #include "editor/plugins/editor_plugin.h"
 
@@ -75,5 +74,3 @@ public:
 	DebuggerEditorPlugin(PopupMenu *p_menu);
 	~DebuggerEditorPlugin();
 };
-
-#endif // DEBUGGER_EDITOR_PLUGIN_H

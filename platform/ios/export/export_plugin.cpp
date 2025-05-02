@@ -366,7 +366,7 @@ void EditorExportPlatformIOS::get_export_options(List<ExportOption> *r_options) 
 	r_options->push_back(ExportOption(PropertyInfo(Variant::STRING, "privacy/photolibrary_usage_description", PROPERTY_HINT_PLACEHOLDER_TEXT, "Provide a message if you need access to the photo library"), ""));
 	r_options->push_back(ExportOption(PropertyInfo(Variant::DICTIONARY, "privacy/photolibrary_usage_description_localized", PROPERTY_HINT_LOCALIZABLE_STRING), Dictionary()));
 
-	for (uint64_t i = 0; i < sizeof(api_info) / sizeof(api_info[0]); ++i) {
+	for (uint64_t i = 0; i < std::size(api_info); ++i) {
 		String prop_name = vformat("privacy/%s_access_reasons", api_info[i].prop_name);
 		String hint;
 		for (int j = 0; j < api_info[i].prop_flag_value.size(); j++) {
@@ -383,13 +383,13 @@ void EditorExportPlatformIOS::get_export_options(List<ExportOption> *r_options) 
 
 	{
 		String hint;
-		for (uint64_t i = 0; i < sizeof(data_collect_purpose_info) / sizeof(data_collect_purpose_info[0]); ++i) {
+		for (uint64_t i = 0; i < std::size(data_collect_purpose_info); ++i) {
 			if (i != 0) {
 				hint += ",";
 			}
 			hint += vformat("%s:%d", data_collect_purpose_info[i].prop_name, (1 << i));
 		}
-		for (uint64_t i = 0; i < sizeof(data_collect_type_info) / sizeof(data_collect_type_info[0]); ++i) {
+		for (uint64_t i = 0; i < std::size(data_collect_type_info); ++i) {
 			r_options->push_back(ExportOption(PropertyInfo(Variant::BOOL, vformat("privacy/collected_data/%s/collected", data_collect_type_info[i].prop_name)), false));
 			r_options->push_back(ExportOption(PropertyInfo(Variant::BOOL, vformat("privacy/collected_data/%s/linked_to_user", data_collect_type_info[i].prop_name)), false));
 			r_options->push_back(ExportOption(PropertyInfo(Variant::BOOL, vformat("privacy/collected_data/%s/used_for_tracking", data_collect_type_info[i].prop_name)), false));
@@ -402,7 +402,7 @@ void EditorExportPlatformIOS::get_export_options(List<ExportOption> *r_options) 
 	r_options->push_back(ExportOption(PropertyInfo(Variant::STRING, "icons/icon_1024x1024_tinted", PROPERTY_HINT_FILE, "*.svg,*.png,*.webp,*.jpg,*.jpeg"), ""));
 
 	HashSet<String> used_names;
-	for (uint64_t i = 0; i < sizeof(icon_infos) / sizeof(icon_infos[0]); ++i) {
+	for (uint64_t i = 0; i < std::size(icon_infos); ++i) {
 		if (!used_names.has(icon_infos[i].preset_key)) {
 			used_names.insert(icon_infos[i].preset_key);
 			r_options->push_back(ExportOption(PropertyInfo(Variant::STRING, String(icon_infos[i].preset_key), PROPERTY_HINT_FILE, "*.png,*.jpg,*.jpeg"), ""));
@@ -425,8 +425,8 @@ HashMap<String, Variant> EditorExportPlatformIOS::get_custom_project_settings(co
 
 	switch (image_scale_mode) {
 		case 0: {
-			String logo_path = GLOBAL_GET("application/boot_splash/image");
-			bool is_on = GLOBAL_GET("application/boot_splash/fullsize");
+			String logo_path = get_project_setting(p_preset, "application/boot_splash/image");
+			bool is_on = get_project_setting(p_preset, "application/boot_splash/fullsize");
 			// If custom logo is not specified, Godot does not scale default one, so we should do the same.
 			value = (is_on && logo_path.length() > 0) ? "scaleAspectFit" : "center";
 		} break;
@@ -452,9 +452,8 @@ void EditorExportPlatformIOS::_fix_config_file(const Ref<EditorExportPreset> &p_
 	bool valid_rel_specifier = !provisioning_profile_specifier_rel.is_empty();
 	rel_manual |= valid_rel_specifier;
 
-	String str;
+	String str = String::utf8((const char *)pfile.ptr(), pfile.size());
 	String strnew;
-	str.parse_utf8((const char *)pfile.ptr(), pfile.size());
 	Vector<String> lines = str.split("\n");
 	for (int i = 0; i < lines.size(); i++) {
 		if (lines[i].contains("$binary")) {
@@ -589,7 +588,7 @@ void EditorExportPlatformIOS::_fix_config_file(const Ref<EditorExportPreset> &p_
 		} else if (lines[i].contains("$interface_orientations")) {
 			String orientations;
 			const DisplayServer::ScreenOrientation screen_orientation =
-					DisplayServer::ScreenOrientation(int(GLOBAL_GET("display/window/handheld/orientation")));
+					DisplayServer::ScreenOrientation(int(get_project_setting(p_preset, "display/window/handheld/orientation")));
 
 			switch (screen_orientation) {
 				case DisplayServer::SCREEN_LANDSCAPE:
@@ -627,7 +626,7 @@ void EditorExportPlatformIOS::_fix_config_file(const Ref<EditorExportPreset> &p_
 		} else if (lines[i].contains("$ipad_interface_orientations")) {
 			String orientations;
 			const DisplayServer::ScreenOrientation screen_orientation =
-					DisplayServer::ScreenOrientation(int(GLOBAL_GET("display/window/handheld/orientation")));
+					DisplayServer::ScreenOrientation(int(get_project_setting(p_preset, "display/window/handheld/orientation")));
 
 			switch (screen_orientation) {
 				case DisplayServer::SCREEN_LANDSCAPE:
@@ -696,8 +695,8 @@ void EditorExportPlatformIOS::_fix_config_file(const Ref<EditorExportPreset> &p_
 
 			switch (image_scale_mode) {
 				case 0: {
-					String logo_path = GLOBAL_GET("application/boot_splash/image");
-					bool is_on = GLOBAL_GET("application/boot_splash/fullsize");
+					String logo_path = get_project_setting(p_preset, "application/boot_splash/image");
+					bool is_on = get_project_setting(p_preset, "application/boot_splash/fullsize");
 					// If custom logo is not specified, Godot does not scale default one, so we should do the same.
 					value = (is_on && logo_path.length() > 0) ? "scaleAspectFit" : "center";
 				} break;
@@ -709,7 +708,7 @@ void EditorExportPlatformIOS::_fix_config_file(const Ref<EditorExportPreset> &p_
 			strnew += lines[i].replace("$launch_screen_image_mode", value) + "\n";
 		} else if (lines[i].contains("$launch_screen_background_color")) {
 			bool use_custom = p_preset->get("storyboard/use_custom_bg_color");
-			Color color = use_custom ? p_preset->get("storyboard/custom_bg_color") : GLOBAL_GET("application/boot_splash/bg_color");
+			Color color = use_custom ? p_preset->get("storyboard/custom_bg_color") : get_project_setting(p_preset, "application/boot_splash/bg_color");
 			const String value_format = "red=\"$red\" green=\"$green\" blue=\"$blue\" alpha=\"$alpha\"";
 
 			Dictionary value_dictionary;
@@ -722,7 +721,7 @@ void EditorExportPlatformIOS::_fix_config_file(const Ref<EditorExportPreset> &p_
 			strnew += lines[i].replace("$launch_screen_background_color", value) + "\n";
 		} else if (lines[i].contains("$pbx_locale_file_reference")) {
 			String locale_files;
-			Vector<String> translations = GLOBAL_GET("internationalization/locale/translations");
+			Vector<String> translations = get_project_setting(p_preset, "internationalization/locale/translations");
 			if (translations.size() > 0) {
 				HashSet<String> languages;
 				for (const String &E : translations) {
@@ -741,7 +740,7 @@ void EditorExportPlatformIOS::_fix_config_file(const Ref<EditorExportPreset> &p_
 			strnew += lines[i].replace("$pbx_locale_file_reference", locale_files);
 		} else if (lines[i].contains("$pbx_locale_build_reference")) {
 			String locale_files;
-			Vector<String> translations = GLOBAL_GET("internationalization/locale/translations");
+			Vector<String> translations = get_project_setting(p_preset, "internationalization/locale/translations");
 			if (translations.size() > 0) {
 				HashSet<String> languages;
 				for (const String &E : translations) {
@@ -789,7 +788,7 @@ void EditorExportPlatformIOS::_fix_config_file(const Ref<EditorExportPreset> &p_
 			strnew += lines[i].replace("$swift_runtime_build_phase", value) + "\n";
 		} else if (lines[i].contains("$priv_collection")) {
 			bool section_opened = false;
-			for (uint64_t j = 0; j < sizeof(data_collect_type_info) / sizeof(data_collect_type_info[0]); ++j) {
+			for (uint64_t j = 0; j < std::size(data_collect_type_info); ++j) {
 				bool data_collected = p_preset->get(vformat("privacy/collected_data/%s/collected", data_collect_type_info[j].prop_name));
 				bool linked = p_preset->get(vformat("privacy/collected_data/%s/linked_to_user", data_collect_type_info[j].prop_name));
 				bool tracking = p_preset->get(vformat("privacy/collected_data/%s/used_for_tracking", data_collect_type_info[j].prop_name));
@@ -818,7 +817,7 @@ void EditorExportPlatformIOS::_fix_config_file(const Ref<EditorExportPreset> &p_
 					if (purposes != 0) {
 						strnew += "\t\t\t\t<key>NSPrivacyCollectedDataTypePurposes</key>\n";
 						strnew += "\t\t\t\t<array>\n";
-						for (uint64_t k = 0; k < sizeof(data_collect_purpose_info) / sizeof(data_collect_purpose_info[0]); ++k) {
+						for (uint64_t k = 0; k < std::size(data_collect_purpose_info); ++k) {
 							if (purposes & (1 << k)) {
 								strnew += vformat("\t\t\t\t\t<string>%s</string>\n", data_collect_purpose_info[k].type_name);
 							}
@@ -850,7 +849,7 @@ void EditorExportPlatformIOS::_fix_config_file(const Ref<EditorExportPreset> &p_
 			}
 		} else if (lines[i].contains("$priv_api_types")) {
 			strnew += "\t<array>\n";
-			for (uint64_t j = 0; j < sizeof(api_info) / sizeof(api_info[0]); ++j) {
+			for (uint64_t j = 0; j < std::size(api_info); ++j) {
 				int api_access = p_preset->get(vformat("privacy/%s_access_reasons", api_info[j].prop_name));
 				if (api_access != 0) {
 					strnew += "\t\t<dict>\n";
@@ -960,7 +959,7 @@ Error EditorExportPlatformIOS::_export_icons(const Ref<EditorExportPreset> &p_pr
 		return ERR_CANT_OPEN;
 	}
 
-	Color boot_bg_color = GLOBAL_GET("application/boot_splash/bg_color");
+	Color boot_bg_color = get_project_setting(p_preset, "application/boot_splash/bg_color");
 
 	enum IconColorMode {
 		ICON_NORMAL,
@@ -970,7 +969,7 @@ Error EditorExportPlatformIOS::_export_icons(const Ref<EditorExportPreset> &p_pr
 	};
 
 	bool first_icon = true;
-	for (uint64_t i = 0; i < (sizeof(icon_infos) / sizeof(icon_infos[0])); ++i) {
+	for (uint64_t i = 0; i < std::size(icon_infos); ++i) {
 		for (int color_mode = ICON_NORMAL; color_mode < ICON_MAX; color_mode++) {
 			IconInfo info = icon_infos[i];
 			int side_size = String(info.actual_size_side).to_int();
@@ -1002,7 +1001,7 @@ Error EditorExportPlatformIOS::_export_icons(const Ref<EditorExportPreset> &p_pr
 					continue;
 				}
 				// Resize main app icon.
-				icon_path = GLOBAL_GET("application/config/icon");
+				icon_path = get_project_setting(p_preset, "application/config/icon");
 				Error err = OK;
 				Ref<Image> img = _load_icon_or_splash_image(icon_path, &err);
 				if (err != OK || img.is_null() || img->is_empty()) {
@@ -1136,7 +1135,7 @@ Error EditorExportPlatformIOS::_export_loading_screen_file(const Ref<EditorExpor
 		Error err = OK;
 		Ref<Image> splash;
 
-		const String splash_path = GLOBAL_GET("application/boot_splash/image");
+		const String splash_path = get_project_setting(p_preset, "application/boot_splash/image");
 
 		if (!splash_path.is_empty()) {
 			splash = _load_icon_or_splash_image(splash_path, &err);
@@ -2122,8 +2121,8 @@ Error EditorExportPlatformIOS::_export_project_helper(const Ref<EditorExportPres
 
 	print_line("Static framework: " + library_to_use);
 	String pkg_name;
-	if (String(GLOBAL_GET("application/config/name")) != "") {
-		pkg_name = String(GLOBAL_GET("application/config/name"));
+	if (String(get_project_setting(p_preset, "application/config/name")) != "") {
+		pkg_name = String(get_project_setting(p_preset, "application/config/name"));
 	} else {
 		pkg_name = "Unnamed";
 	}
@@ -2284,14 +2283,12 @@ Error EditorExportPlatformIOS::_export_project_helper(const Ref<EditorExportPres
 		return ERR_FILE_NOT_FOUND;
 	}
 
-	// Generate translations files.
-
-	Dictionary appnames = GLOBAL_GET("application/config/name_localized");
+	Dictionary appnames = get_project_setting(p_preset, "application/config/name_localized");
 	Dictionary camera_usage_descriptions = p_preset->get("privacy/camera_usage_description_localized");
 	Dictionary microphone_usage_descriptions = p_preset->get("privacy/microphone_usage_description_localized");
 	Dictionary photolibrary_usage_descriptions = p_preset->get("privacy/photolibrary_usage_description_localized");
 
-	Vector<String> translations = GLOBAL_GET("internationalization/locale/translations");
+	Vector<String> translations = get_project_setting(p_preset, "internationalization/locale/translations");
 	if (translations.size() > 0) {
 		{
 			String fname = binary_dir + "/en.lproj";
@@ -2299,7 +2296,7 @@ Error EditorExportPlatformIOS::_export_project_helper(const Ref<EditorExportPres
 			Ref<FileAccess> f = FileAccess::open(fname + "/InfoPlist.strings", FileAccess::WRITE);
 			f->store_line("/* Localized versions of Info.plist keys */");
 			f->store_line("");
-			f->store_line("CFBundleDisplayName = \"" + GLOBAL_GET("application/config/name").operator String() + "\";");
+			f->store_line("CFBundleDisplayName = \"" + get_project_setting(p_preset, "application/config/name").operator String() + "\";");
 			f->store_line("NSCameraUsageDescription = \"" + p_preset->get("privacy/camera_usage_description").operator String() + "\";");
 			f->store_line("NSMicrophoneUsageDescription = \"" + p_preset->get("privacy/microphone_usage_description").operator String() + "\";");
 			f->store_line("NSPhotoLibraryUsageDescription = \"" + p_preset->get("privacy/photolibrary_usage_description").operator String() + "\";");
@@ -2542,8 +2539,8 @@ bool EditorExportPlatformIOS::has_valid_export_configuration(const Ref<EditorExp
 		}
 	}
 
-	String rendering_method = GLOBAL_GET("rendering/renderer/rendering_method.mobile");
-	String rendering_driver = GLOBAL_GET("rendering/rendering_device/driver.ios");
+	String rendering_method = get_project_setting(p_preset, "rendering/renderer/rendering_method.mobile");
+	String rendering_driver = get_project_setting(p_preset, "rendering/rendering_device/driver.ios");
 	if ((rendering_method == "forward_plus" || rendering_method == "mobile") && rendering_driver == "metal") {
 		float version = p_preset->get("application/min_ios_version").operator String().to_float();
 		if (version < 14.0) {
@@ -2730,6 +2727,42 @@ void EditorExportPlatformIOS::_check_for_changes_poll_thread(void *ud) {
 							nd.name = device_info["DeviceName"].operator String() + " (ios_deploy, " + ((device_event["Interface"] == "WIFI") ? "network" : "wired") + ")";
 							nd.wifi = device_event["Interface"] == "WIFI";
 							nd.use_ios_deploy = true;
+							ldevices.push_back(nd);
+						}
+					}
+				}
+			}
+		}
+
+		// Enum devices (via Xcode).
+		if (ea->has_runnable_preset.is_set() && _check_xcode_install() && (FileAccess::exists("/usr/bin/xcrun") || FileAccess::exists("/bin/xcrun"))) {
+			String devices;
+			List<String> args;
+			args.push_back("devicectl");
+			args.push_back("list");
+			args.push_back("devices");
+			args.push_back("-j");
+			args.push_back("-");
+			args.push_back("-q");
+			int ec = 0;
+			Error err = OS::get_singleton()->execute("xcrun", args, &devices, &ec, true);
+			if (err == OK && ec == 0) {
+				Ref<JSON> json;
+				json.instantiate();
+				err = json->parse(devices);
+				if (err == OK) {
+					const Dictionary &data = json->get_data();
+					const Dictionary &result = data["result"];
+					const Array &devices = result["devices"];
+					for (int i = 0; i < devices.size(); i++) {
+						const Dictionary &device_info = devices[i];
+						const Dictionary &conn_props = device_info["connectionProperties"];
+						const Dictionary &dev_props = device_info["deviceProperties"];
+						if (conn_props["pairingState"] == "paired" && dev_props["developerModeStatus"] == "enabled") {
+							Device nd;
+							nd.id = device_info["identifier"];
+							nd.name = dev_props["name"].operator String() + " (devicectl, " + ((conn_props["transportType"] == "localNetwork") ? "network" : "wired") + ")";
+							nd.wifi = conn_props["transportType"] == "localNetwork";
 							ldevices.push_back(nd);
 						}
 					}
@@ -2924,7 +2957,7 @@ Error EditorExportPlatformIOS::run(const Ref<EditorExportPreset> &p_preset, int 
 			}
 		}
 	} else {
-		// Deploy and run on real device.
+		// Deploy and run on real device (via Xcode).
 		if (ep.step("Installing to device...", 3)) {
 			CLEANUP_AND_RETURN(ERR_SKIP);
 		} else {

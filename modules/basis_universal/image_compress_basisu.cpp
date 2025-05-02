@@ -103,13 +103,13 @@ Vector<uint8_t> basis_universal_packer(const Ref<Image> &p_image, Image::UsedCha
 	basisu::basis_compressor_params params;
 
 	params.m_uastc = true;
-	params.m_quality_level = basisu::BASISU_QUALITY_MIN;
-	params.m_pack_uastc_flags &= ~basisu::cPackUASTCLevelMask;
-	params.m_pack_uastc_flags |= basisu::cPackUASTCLevelFastest;
+	params.m_etc1s_quality_level = basisu::BASISU_QUALITY_MIN;
+	params.m_pack_uastc_ldr_4x4_flags &= ~basisu::cPackUASTCLevelMask;
+	params.m_pack_uastc_ldr_4x4_flags |= basisu::cPackUASTCLevelFastest;
 
-	params.m_rdo_uastc = 0.0f;
-	params.m_rdo_uastc_quality_scalar = 0.0f;
-	params.m_rdo_uastc_dict_size = 1024;
+	params.m_rdo_uastc_ldr_4x4 = 0.0f;
+	params.m_rdo_uastc_ldr_4x4_quality_scalar = 0.0f;
+	params.m_rdo_uastc_ldr_4x4_dict_size = 1024;
 
 	params.m_mip_fast = true;
 	params.m_multithreading = true;
@@ -129,7 +129,7 @@ Vector<uint8_t> basis_universal_packer(const Ref<Image> &p_image, Image::UsedCha
 	if (is_hdr) {
 		decompress_format = BASIS_DECOMPRESS_HDR_RGB;
 		params.m_hdr = true;
-		params.m_uastc_hdr_options.set_quality_level(0);
+		params.m_uastc_hdr_4x4_options.set_quality_level(0);
 
 	} else {
 		switch (p_channels) {
@@ -277,6 +277,7 @@ Ref<Image> basis_universal_unpacker_ptr(const uint8_t *p_data, int p_size) {
 	bool rgtc_supported = RS::get_singleton()->has_os_feature("rgtc");
 	bool s3tc_supported = RS::get_singleton()->has_os_feature("s3tc");
 	bool etc2_supported = RS::get_singleton()->has_os_feature("etc2");
+	bool astc_hdr_supported = RS::get_singleton()->has_os_feature("astc_hdr");
 
 	bool needs_ra_rg_swap = false;
 	bool needs_rg_trim = false;
@@ -381,7 +382,7 @@ Ref<Image> basis_universal_unpacker_ptr(const uint8_t *p_data, int p_size) {
 			if (bptc_supported) {
 				basisu_format = basist::transcoder_texture_format::cTFBC6H;
 				image_format = Image::FORMAT_BPTC_RGBFU;
-			} else if (astc_supported) {
+			} else if (astc_hdr_supported) {
 				basisu_format = basist::transcoder_texture_format::cTFASTC_HDR_4x4_RGBA;
 				image_format = Image::FORMAT_ASTC_4x4_HDR;
 			} else {

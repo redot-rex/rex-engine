@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef JOLT_SHAPED_OBJECT_3D_H
-#define JOLT_SHAPED_OBJECT_3D_H
+#pragma once
 
 #include "jolt_object_3d.h"
 
@@ -131,5 +130,3 @@ public:
 	bool is_shape_disabled(int p_index) const;
 	void set_shape_disabled(int p_index, bool p_disabled);
 };
-
-#endif // JOLT_SHAPED_OBJECT_3D_H

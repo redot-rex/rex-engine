@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef DIR_ACCESS_MACOS_H
-#define DIR_ACCESS_MACOS_H
+#pragma once
 
 #if defined(UNIX_ENABLED)
 
@@ -44,6 +43,8 @@
 #include <unistd.h>
 
 class DirAccessMacOS : public DirAccessUnix {
+	GDSOFTCLASS(DirAccessMacOS, DirAccessUnix);
+
 protected:
 	virtual String fix_unicode_name(const char *p_name) const override;
 
@@ -57,5 +58,3 @@ protected:
 };
 
 #endif // UNIX ENABLED
-
-#endif // DIR_ACCESS_MACOS_H

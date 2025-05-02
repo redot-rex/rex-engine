@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef HASH_MAP_H
-#define HASH_MAP_H
+#pragma once
 
 #include "core/os/memory.h"
 #include "core/templates/hashfuncs.h"
@@ -435,6 +434,7 @@ public:
 	// Reserves space for a number of elements, useful to avoid many resizes and rehashes.
 	// If adding a known (possibly large) number of elements at once, must be larger than old capacity.
 	void reserve(uint32_t p_new_capacity) {
+		ERR_FAIL_COND_MSG(p_new_capacity < size(), "reserve() called with a capacity smaller than the current size. This is likely a mistake.");
 		uint32_t new_index = capacity_index;
 
 		while (hash_table_size_primes[new_index] < p_new_capacity) {
@@ -673,5 +673,3 @@ public:
 		}
 	}
 };
-
-#endif // HASH_MAP_H

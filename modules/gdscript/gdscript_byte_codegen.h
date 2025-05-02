@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef GDSCRIPT_BYTE_CODEGEN_H
-#define GDSCRIPT_BYTE_CODEGEN_H
+#pragma once
 
 #include "gdscript_codegen.h"
 #include "gdscript_function.h"
@@ -554,5 +553,3 @@ public:
 
 	virtual ~GDScriptByteCodeGenerator();
 };
-
-#endif // GDSCRIPT_BYTE_CODEGEN_H

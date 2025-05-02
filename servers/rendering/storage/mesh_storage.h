@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef MESH_STORAGE_H
-#define MESH_STORAGE_H
+#pragma once
 
 #include "servers/rendering_server.h"
 #include "utilities.h"
@@ -78,6 +77,8 @@ public:
 
 	virtual void mesh_surface_remove(RID p_mesh, int p_surface) = 0;
 	virtual void mesh_clear(RID p_mesh) = 0;
+
+	virtual void mesh_debug_usage(List<RS::MeshInfo> *r_info) = 0;
 
 	virtual bool mesh_needs_instance(RID p_mesh, bool p_has_skeleton) = 0;
 
@@ -229,5 +230,3 @@ public:
 	void update_interpolation_tick(bool p_process = true);
 	void update_interpolation_frame(bool p_process = true);
 };
-
-#endif // MESH_STORAGE_H

@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef PAIR_H
-#define PAIR_H
+#pragma once
 
 #include "core/templates/hashfuncs.h"
 #include "core/typedefs.h"
@@ -80,6 +79,10 @@ struct PairHash {
 	}
 };
 
+// Pair is zero-constructible if and only if both constrained types are zero-constructible.
+template <typename F, typename S>
+struct is_zero_constructible<Pair<F, S>> : std::conjunction<is_zero_constructible<F>, is_zero_constructible<S>> {};
+
 template <typename K, typename V>
 struct KeyValue {
 	const K key;
@@ -113,4 +116,6 @@ struct KeyValueSort {
 	}
 };
 
-#endif // PAIR_H
+// KeyValue is zero-constructible if and only if both constrained types are zero-constructible.
+template <typename K, typename V>
+struct is_zero_constructible<KeyValue<K, V>> : std::conjunction<is_zero_constructible<K>, is_zero_constructible<V>> {};

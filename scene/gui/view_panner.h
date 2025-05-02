@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef VIEW_PANNER_H
-#define VIEW_PANNER_H
+#pragma once
 
 #include "core/object/ref_counted.h"
 
@@ -95,5 +94,3 @@ public:
 
 	ViewPanner();
 };
-
-#endif // VIEW_PANNER_H

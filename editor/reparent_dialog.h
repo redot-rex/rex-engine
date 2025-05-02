@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef REPARENT_DIALOG_H
-#define REPARENT_DIALOG_H
+#pragma once
 
 #include "scene/gui/dialogs.h"
 
@@ -55,7 +54,4 @@ public:
 	void set_current(const HashSet<Node *> &p_selection);
 
 	ReparentDialog();
-	~ReparentDialog();
 };
-
-#endif // REPARENT_DIALOG_H

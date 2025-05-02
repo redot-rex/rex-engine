@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef GODOT_JS_H
-#define GODOT_JS_H
+#pragma once
 
 #define WASM_EXPORT __attribute__((visibility("default")))
 
@@ -138,5 +137,3 @@ extern void godot_js_display_vk_hide();
 #ifdef __cplusplus
 }
 #endif
-
-#endif // GODOT_JS_H

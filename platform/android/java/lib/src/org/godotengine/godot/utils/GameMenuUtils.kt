@@ -92,6 +92,9 @@ object GameMenuUtils {
 	@JvmStatic
 	external fun playMainScene()
 
+	@JvmStatic
+	external fun setDebugMuteAudio(enabled: Boolean)
+
 	/**
 	 * Returns [GameEmbedMode] stored in the editor settings.
 	 *

@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef RENAME_DIALOG_H
-#define RENAME_DIALOG_H
+#pragma once
 
 #include "editor/gui/scene_tree_editor.h"
 #include "scene/gui/dialogs.h"
@@ -112,5 +111,3 @@ public:
 
 	RenameDialog(SceneTreeEditor *p_scene_tree_editor);
 };
-
-#endif // RENAME_DIALOG_H

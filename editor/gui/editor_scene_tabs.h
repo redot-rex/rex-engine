@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef EDITOR_SCENE_TABS_H
-#define EDITOR_SCENE_TABS_H
+#pragma once
 
 #include "scene/gui/margin_container.h"
 
@@ -108,5 +107,3 @@ public:
 
 	EditorSceneTabs();
 };
-
-#endif // EDITOR_SCENE_TABS_H

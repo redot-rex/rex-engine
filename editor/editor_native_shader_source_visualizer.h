@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef EDITOR_NATIVE_SHADER_SOURCE_VISUALIZER_H
-#define EDITOR_NATIVE_SHADER_SOURCE_VISUALIZER_H
+#pragma once
 
 #include "scene/gui/dialogs.h"
 #include "scene/gui/tab_container.h"
@@ -51,5 +50,3 @@ protected:
 public:
 	EditorNativeShaderSourceVisualizer();
 };
-
-#endif // EDITOR_NATIVE_SHADER_SOURCE_VISUALIZER_H

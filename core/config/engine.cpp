@@ -128,18 +128,18 @@ double Engine::get_unfrozen_time_scale() const {
 
 Dictionary Engine::get_version_info() const {
 	Dictionary dict;
-	dict["major"] = VERSION_MAJOR;
-	dict["minor"] = VERSION_MINOR;
-	dict["patch"] = VERSION_PATCH;
-	dict["hex"] = VERSION_HEX;
-	dict["status"] = VERSION_STATUS;
-	dict["build"] = VERSION_BUILD;
-	dict["status_version"] = VERSION_STATUS_VERSION;
+	dict["major"] = REDOT_VERSION_MAJOR;
+	dict["minor"] = REDOT_VERSION_MINOR;
+	dict["patch"] = REDOT_VERSION_PATCH;
+	dict["hex"] = REDOT_VERSION_HEX;
+	dict["status"] = REDOT_VERSION_STATUS;
+	dict["build"] = REDOT_VERSION_BUILD;
+	dict["status_version"] = REDOT_VERSION_STATUS_VERSION;
 
-	String hash = String(VERSION_HASH);
+	String hash = String(REDOT_VERSION_HASH);
 	dict["hash"] = hash.is_empty() ? String("unknown") : hash;
 
-	dict["timestamp"] = VERSION_TIMESTAMP;
+	dict["timestamp"] = REDOT_VERSION_TIMESTAMP;
 
 	String stringver = String(dict["major"]) + "." + String(dict["minor"]);
 	if ((int)dict["patch"] != 0) {
@@ -164,13 +164,13 @@ Dictionary Engine::get_godot_compatible_version_info() const {
 	dict["patch"] = GODOT_VERSION_PATCH;
 	dict["hex"] = GODOT_VERSION_HEX;
 	dict["status"] = GODOT_VERSION_STATUS;
+	dict["build"] = GODOT_VERSION_BUILD;
 
 	String stringver = String(dict["major"]) + "." + String(dict["minor"]);
 	if ((int)dict["patch"] != 0) {
 		stringver += "." + String(dict["patch"]);
 	}
-	// stringver += "-" + String(dict["status"]) + " (" + String(dict["build"]) + ")"; TODO: add godot automated build identification?
-	stringver += "-" + String(dict["status"]);
+	stringver += "-" + String(dict["status"]) + " (" + String(dict["build"]) + ")";
 	dict["string"] = stringver;
 
 	return dict;
@@ -452,8 +452,6 @@ void Engine::set_shader_cache_path(const String &p_path) {
 String Engine::get_shader_cache_path() const {
 	return shader_cache_path;
 }
-
-Engine *Engine::singleton = nullptr;
 
 Engine *Engine::get_singleton() {
 	return singleton;

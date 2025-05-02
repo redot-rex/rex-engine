@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef JOYPAD_LINUX_H
-#define JOYPAD_LINUX_H
+#pragma once
 
 #ifdef JOYDEV_ENABLED
 
@@ -65,7 +64,7 @@ private:
 		float curr_axis[MAX_ABS];
 		int key_map[MAX_KEY];
 		int abs_map[MAX_ABS];
-		BitField<HatMask> dpad;
+		BitField<HatMask> dpad = HatMask::CENTER;
 		int fd = -1;
 
 		String devpath;
@@ -137,5 +136,3 @@ private:
 };
 
 #endif // JOYDEV_ENABLED
-
-#endif // JOYPAD_LINUX_H

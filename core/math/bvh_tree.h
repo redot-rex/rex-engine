@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef BVH_TREE_H
-#define BVH_TREE_H
+#pragma once
 
 // BVH Tree
 // This is an implementation of a dynamic BVH with templated leaf size.
@@ -43,7 +42,6 @@
 
 #include "core/math/aabb.h"
 #include "core/math/bvh_abb.h"
-#include "core/math/geometry_3d.h"
 #include "core/math/vector3.h"
 #include "core/templates/local_vector.h"
 #include "core/templates/pooled_list.h"
@@ -456,5 +454,3 @@ private:
 };
 
 #undef VERBOSE_PRINT
-
-#endif // BVH_TREE_H

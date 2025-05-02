@@ -79,7 +79,6 @@ import org.redotengine.godot.xr.XRMode
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
-import java.lang.Exception
 import java.security.MessageDigest
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -716,11 +715,15 @@ class Godot(private val context: Context) {
 		val longPressEnabled = java.lang.Boolean.parseBoolean(GodotLib.getGlobal("input_devices/pointing/android/enable_long_press_as_right_click"))
 		val panScaleEnabled = java.lang.Boolean.parseBoolean(GodotLib.getGlobal("input_devices/pointing/android/enable_pan_and_scale_gestures"))
 		val rotaryInputAxisValue = GodotLib.getGlobal("input_devices/pointing/android/rotary_input_scroll_axis")
+		val overrideVolumeButtons = java.lang.Boolean.parseBoolean(GodotLib.getGlobal("input_devices/pointing/android/override_volume_buttons"))
+		val scrollDeadzoneDisabled = java.lang.Boolean.parseBoolean(GodotLib.getGlobal("input_devices/pointing/android/disable_scroll_deadzone"))
 
 		runOnUiThread {
 			renderView?.inputHandler?.apply {
 				enableLongPress(longPressEnabled)
 				enablePanningAndScalingGestures(panScaleEnabled)
+				setOverrideVolumeButtons(overrideVolumeButtons)
+				disableScrollDeadzone(scrollDeadzoneDisabled)
 				try {
 					setRotaryInputAxis(Integer.parseInt(rotaryInputAxisValue))
 				} catch (e: NumberFormatException) {

@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef GRAPH_ELEMENT_H
-#define GRAPH_ELEMENT_H
+#pragma once
 
 #include "scene/gui/container.h"
 
@@ -95,5 +94,3 @@ public:
 
 	GraphElement() {}
 };
-
-#endif // GRAPH_ELEMENT_H

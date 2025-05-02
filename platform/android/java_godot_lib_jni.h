@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef JAVA_GODOT_LIB_JNI_H
-#define JAVA_GODOT_LIB_JNI_H
+#pragma once
 
 #include <android/log.h>
 #include <jni.h>
@@ -71,6 +70,7 @@ JNIEXPORT void JNICALL Java_org_redotengine_godot_GodotLib_setEditorProjectMetad
 JNIEXPORT void JNICALL Java_org_redotengine_godot_GodotLib_setVirtualKeyboardHeight(JNIEnv *env, jclass clazz, jint p_height);
 JNIEXPORT void JNICALL Java_org_redotengine_godot_GodotLib_requestPermissionResult(JNIEnv *env, jclass clazz, jstring p_permission, jboolean p_result);
 JNIEXPORT void JNICALL Java_org_redotengine_godot_GodotLib_onNightModeChanged(JNIEnv *env, jclass clazz);
+JNIEXPORT void JNICALL Java_org_redotengine_godot_GodotLib_hardwareKeyboardConnected(JNIEnv *env, jclass clazz, jboolean p_connected);
 JNIEXPORT void JNICALL Java_org_redotengine_godot_GodotLib_filePickerCallback(JNIEnv *env, jclass clazz, jboolean p_ok, jobjectArray p_selected_paths);
 JNIEXPORT void JNICALL Java_org_redotengine_godot_GodotLib_onRendererResumed(JNIEnv *env, jclass clazz);
 JNIEXPORT void JNICALL Java_org_redotengine_godot_GodotLib_onRendererPaused(JNIEnv *env, jclass clazz);
@@ -79,5 +79,3 @@ JNIEXPORT jstring JNICALL Java_org_redotengine_godot_GodotLib_getProjectResource
 JNIEXPORT jboolean JNICALL Java_org_redotengine_godot_GodotLib_isEditorHint(JNIEnv *env, jclass clazz);
 JNIEXPORT jboolean JNICALL Java_org_redotengine_godot_GodotLib_isProjectManagerHint(JNIEnv *env, jclass clazz);
 }
-
-#endif // JAVA_GODOT_LIB_JNI_H

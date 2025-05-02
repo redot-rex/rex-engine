@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef TEST_HASH_SET_H
-#define TEST_HASH_SET_H
+#pragma once
 
 #include "core/templates/hash_set.h"
 
@@ -242,5 +241,3 @@ TEST_CASE("[HashSet] Copy") {
 }
 
 } // namespace TestHashSet
-
-#endif // TEST_HASH_SET_H

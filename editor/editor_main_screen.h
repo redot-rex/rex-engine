@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef EDITOR_MAIN_SCREEN_H
-#define EDITOR_MAIN_SCREEN_H
+#pragma once
 
 #include "scene/gui/panel_container.h"
 
@@ -92,5 +91,3 @@ public:
 
 	EditorMainScreen();
 };
-
-#endif // EDITOR_MAIN_SCREEN_H

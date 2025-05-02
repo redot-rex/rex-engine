@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef GLTF_ACCESSOR_H
-#define GLTF_ACCESSOR_H
+#pragma once
 
 #include "../gltf_defines.h"
 
@@ -135,5 +134,3 @@ public:
 
 VARIANT_ENUM_CAST(GLTFAccessor::GLTFAccessorType);
 VARIANT_ENUM_CAST(GLTFAccessor::GLTFComponentType);
-
-#endif // GLTF_ACCESSOR_H

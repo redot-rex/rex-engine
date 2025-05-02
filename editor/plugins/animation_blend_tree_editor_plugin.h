@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef ANIMATION_BLEND_TREE_EDITOR_PLUGIN_H
-#define ANIMATION_BLEND_TREE_EDITOR_PLUGIN_H
+#pragma once
 
 #include "core/object/script_language.h"
 #include "editor/editor_inspector.h"
@@ -171,7 +170,6 @@ public:
 	void update_graph();
 
 	AnimationNodeBlendTreeEditor();
-	~AnimationNodeBlendTreeEditor();
 };
 
 // EditorPluginAnimationNodeAnimation
@@ -194,7 +192,6 @@ class AnimationNodeAnimationEditorDialog : public ConfirmationDialog {
 
 public:
 	AnimationNodeAnimationEditorDialog();
-	~AnimationNodeAnimationEditorDialog();
 };
 
 class AnimationNodeAnimationEditor : public VBoxContainer {
@@ -209,10 +206,7 @@ class AnimationNodeAnimationEditor : public VBoxContainer {
 
 public:
 	AnimationNodeAnimationEditor(Ref<AnimationNodeAnimation> p_animation_node_animation);
-	~AnimationNodeAnimationEditor();
 
 protected:
 	void _notification(int p_what);
 };
-
-#endif // ANIMATION_BLEND_TREE_EDITOR_PLUGIN_H

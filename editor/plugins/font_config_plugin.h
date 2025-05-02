@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef FONT_CONFIG_PLUGIN_H
-#define FONT_CONFIG_PLUGIN_H
+#pragma once
 
 #include "editor/editor_properties.h"
 #include "editor/editor_properties_array_dict.h"
@@ -51,8 +50,6 @@ protected:
 public:
 	void set_dict(const Dictionary &p_dict);
 	Dictionary get_dict();
-
-	EditorPropertyFontMetaObject() {}
 };
 
 /*************************************************************************/
@@ -75,8 +72,6 @@ public:
 
 	void set_defaults(const Dictionary &p_dict);
 	Dictionary get_defaults();
-
-	EditorPropertyFontOTObject() {}
 };
 
 /*************************************************************************/
@@ -231,8 +226,6 @@ public:
 	virtual Size2 get_minimum_size() const override;
 
 	void set_data(const Ref<Font> &p_f);
-
-	FontPreview();
 };
 
 /*************************************************************************/
@@ -283,5 +276,3 @@ public:
 
 	virtual String get_plugin_name() const override { return "Font"; }
 };
-
-#endif // FONT_CONFIG_PLUGIN_H

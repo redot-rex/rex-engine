@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SHADER_GLOBALS_OVERRIDE_H
-#define SHADER_GLOBALS_OVERRIDE_H
+#pragma once
 
 #include "scene/main/node.h"
 
@@ -64,5 +63,3 @@ public:
 
 	ShaderGlobalsOverride();
 };
-
-#endif // SHADER_GLOBALS_OVERRIDE_H

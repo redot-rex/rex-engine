@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef TEXTURE_EDITOR_PLUGIN_H
-#define TEXTURE_EDITOR_PLUGIN_H
+#pragma once
 
 #include "editor/editor_inspector.h"
 #include "editor/plugins/editor_plugin.h"
@@ -48,6 +47,10 @@ class TexturePreview : public MarginContainer {
 	GDCLASS(TexturePreview, MarginContainer);
 
 private:
+	struct ThemeCache {
+		Color outline_color;
+	} theme_cache;
+
 	TextureRect *texture_display = nullptr;
 
 	MarginContainer *margin_container = nullptr;
@@ -59,8 +62,6 @@ private:
 	Ref<ShaderMaterial> material;
 
 	ColorChannelSelector *channel_selector = nullptr;
-
-	Color cached_outline_color;
 
 	void _draw_outline();
 	void _update_metadata_label_text();
@@ -92,5 +93,3 @@ public:
 
 	TextureEditorPlugin();
 };
-
-#endif // TEXTURE_EDITOR_PLUGIN_H

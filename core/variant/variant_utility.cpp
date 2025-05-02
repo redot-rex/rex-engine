@@ -34,6 +34,7 @@
 
 #include "core/io/marshalls.h"
 #include "core/object/ref_counted.h"
+#include "core/object/script_language.h"
 #include "core/os/os.h"
 #include "core/templates/oa_hash_map.h"
 #include "core/templates/rid.h"
@@ -246,10 +247,10 @@ Variant VariantUtilityFunctions::abs(const Variant &x, Callable::CallError &r_er
 	r_error.error = Callable::CallError::CALL_OK;
 	switch (x.get_type()) {
 		case Variant::INT: {
-			return ABS(VariantInternalAccessor<int64_t>::get(&x));
+			return Math::abs(VariantInternalAccessor<int64_t>::get(&x));
 		} break;
 		case Variant::FLOAT: {
-			return Math::absd(VariantInternalAccessor<double>::get(&x));
+			return Math::abs(VariantInternalAccessor<double>::get(&x));
 		} break;
 		case Variant::VECTOR2: {
 			return VariantInternalAccessor<Vector2>::get(&x).abs();
@@ -279,11 +280,11 @@ Variant VariantUtilityFunctions::abs(const Variant &x, Callable::CallError &r_er
 }
 
 double VariantUtilityFunctions::absf(double x) {
-	return Math::absd(x);
+	return Math::abs(x);
 }
 
 int64_t VariantUtilityFunctions::absi(int64_t x) {
-	return ABS(x);
+	return Math::abs(x);
 }
 
 Variant VariantUtilityFunctions::sign(const Variant &x, Callable::CallError &r_error) {
@@ -1696,7 +1697,7 @@ template <typename T>
 static void register_utility_function(const String &p_name, const Vector<String> &argnames) {
 	String name = p_name;
 	if (name.begins_with("_")) {
-		name = name.substr(1, name.length() - 1);
+		name = name.substr(1);
 	}
 	StringName sname = name;
 	ERR_FAIL_COND(utility_function_table.has(sname));

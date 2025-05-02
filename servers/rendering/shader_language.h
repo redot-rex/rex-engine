@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SHADER_LANGUAGE_H
-#define SHADER_LANGUAGE_H
+#pragma once
 
 #include "core/object/script_language.h"
 #include "core/string/string_name.h"
@@ -179,6 +178,7 @@ public:
 		TK_HINT_ROUGHNESS_GRAY,
 		TK_HINT_ANISOTROPY_TEXTURE,
 		TK_HINT_SOURCE_COLOR,
+		TK_HINT_COLOR_CONVERSION_DISABLED,
 		TK_HINT_RANGE,
 		TK_HINT_ENUM,
 		TK_HINT_INSTANCE_INDEX,
@@ -664,6 +664,7 @@ public:
 				HINT_RANGE,
 				HINT_ENUM,
 				HINT_SOURCE_COLOR,
+				HINT_COLOR_CONVERSION_DISABLED,
 				HINT_NORMAL,
 				HINT_ROUGHNESS_NORMAL,
 				HINT_ROUGHNESS_R,
@@ -847,6 +848,7 @@ public:
 	static bool is_scalar_type(DataType p_type);
 	static bool is_float_type(DataType p_type);
 	static bool is_sampler_type(DataType p_type);
+	static bool is_hint_color(ShaderNode::Uniform::Hint p_hint);
 	static Variant constant_value_to_variant(const Vector<Scalar> &p_value, DataType p_type, int p_array_size, ShaderLanguage::ShaderNode::Uniform::Hint p_hint = ShaderLanguage::ShaderNode::Uniform::HINT_NONE);
 	static Variant get_default_datatype_value(DataType p_type, int p_array_size, ShaderLanguage::ShaderNode::Uniform::Hint p_hint);
 	static PropertyInfo uniform_to_property_info(const ShaderNode::Uniform &p_uniform);
@@ -862,12 +864,14 @@ public:
 	struct BuiltInInfo {
 		DataType type = TYPE_VOID;
 		bool constant = false;
+		Vector<Scalar> values;
 
 		BuiltInInfo() {}
 
-		BuiltInInfo(DataType p_type, bool p_constant = false) :
+		BuiltInInfo(DataType p_type, bool p_constant = false, const Vector<Scalar> &p_values = {}) :
 				type(p_type),
-				constant(p_constant) {}
+				constant(p_constant),
+				values(p_values) {}
 	};
 
 	struct StageFunctionInfo {
@@ -1119,10 +1123,10 @@ private:
 #endif // DEBUG_ENABLED
 	bool _is_operator_assign(Operator p_op) const;
 	bool _validate_assign(Node *p_node, const FunctionInfo &p_function_info, String *r_message = nullptr);
-	bool _validate_operator(const BlockNode *p_block, OperatorNode *p_op, DataType *r_ret_type = nullptr, int *r_ret_size = nullptr);
+	bool _validate_operator(const BlockNode *p_block, const FunctionInfo &p_function_info, OperatorNode *p_op, DataType *r_ret_type = nullptr, int *r_ret_size = nullptr);
 
-	Vector<Scalar> _get_node_values(const BlockNode *p_block, Node *p_node);
-	bool _eval_operator(const BlockNode *p_block, OperatorNode *p_op);
+	Vector<Scalar> _get_node_values(const BlockNode *p_block, const FunctionInfo &p_function_info, Node *p_node);
+	bool _eval_operator(const BlockNode *p_block, const FunctionInfo &p_function_info, OperatorNode *p_op);
 	Scalar _eval_unary_scalar(const Scalar &p_a, Operator p_op, DataType p_ret_type);
 	Scalar _eval_scalar(const Scalar &p_a, const Scalar &p_b, Operator p_op, DataType p_ret_type, bool &r_is_valid);
 	Vector<Scalar> _eval_unary_vector(const Vector<Scalar> &p_va, DataType p_ret_type, Operator p_op);
@@ -1212,6 +1216,7 @@ private:
 	String _get_shader_type_list(const HashSet<String> &p_shader_types) const;
 	String _get_qualifier_str(ArgumentQualifier p_qualifier) const;
 
+	bool _parse_numeric_constant_expression(const FunctionInfo &p_function_info, float &r_constant);
 	Error _parse_shader(const HashMap<StringName, FunctionInfo> &p_functions, const Vector<ModeInfo> &p_render_modes, const HashSet<String> &p_shader_types);
 
 	Error _find_last_flow_op_in_block(BlockNode *p_block, FlowOperation p_op);
@@ -1259,5 +1264,3 @@ public:
 	ShaderLanguage();
 	~ShaderLanguage();
 };
-
-#endif // SHADER_LANGUAGE_H

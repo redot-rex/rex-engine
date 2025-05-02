@@ -32,8 +32,6 @@
 
 #include "editor_scene_importer_blend.h"
 
-#ifdef TOOLS_ENABLED
-
 #include "../gltf_defines.h"
 #include "../gltf_document.h"
 #include "editor_import_blend_runner.h"
@@ -46,11 +44,6 @@
 #include "editor/themes/editor_scale.h"
 #include "main/main.h"
 #include "scene/gui/line_edit.h"
-
-#ifdef MINGW_ENABLED
-#define near
-#define far
-#endif
 
 #ifdef WINDOWS_ENABLED
 #include <shlwapi.h>
@@ -383,7 +376,7 @@ static bool _test_blender_path(const String &p_path, String *r_err = nullptr) {
 }
 
 bool EditorFileSystemImportFormatSupportQueryBlend::is_active() const {
-	bool blend_enabled = GLOBAL_GET("filesystem/import/blender/enabled");
+	bool blend_enabled = GLOBAL_GET_CACHED(bool, "filesystem/import/blender/enabled");
 
 	if (blend_enabled && !_test_blender_path(EDITOR_GET("filesystem/import/blender/blender_path").operator String())) {
 		// Intending to import Blender, but blend not configured.
@@ -519,6 +512,7 @@ bool EditorFileSystemImportFormatSupportQueryBlend::query() {
 
 		blender_path = memnew(LineEdit);
 		blender_path->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		blender_path->set_accessibility_name(TTRC("Path"));
 		hb->add_child(blender_path);
 
 		blender_path_browse = memnew(Button);
@@ -532,6 +526,7 @@ bool EditorFileSystemImportFormatSupportQueryBlend::query() {
 		vb->add_child(hb);
 
 		path_status = memnew(Label);
+		path_status->set_focus_mode(Control::FOCUS_ACCESSIBILITY);
 		vb->add_child(path_status);
 
 		configure_blender_dialog->add_child(vb);
@@ -597,8 +592,3 @@ bool EditorFileSystemImportFormatSupportQueryBlend::query() {
 
 	return false;
 }
-
-EditorFileSystemImportFormatSupportQueryBlend::EditorFileSystemImportFormatSupportQueryBlend() {
-}
-
-#endif // TOOLS_ENABLED

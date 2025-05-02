@@ -676,7 +676,7 @@
 		<method name="get_tracked_object_type_count" qualifiers="const">
 			<return type="int" />
 			<description>
-				Returns how many types of trackable objects are.
+				Returns how many types of trackable objects there are.
 				This is only used by Vulkan in debug builds. Redot must also be started with the [code]--extra-gpu-memory-tracking[/code] [url=$DOCS_URL/tutorials/editor/command_line_tutorial.html]command line argument[/url].
 			</description>
 		</method>
@@ -1112,7 +1112,7 @@
 			<param index="1" name="data" type="PackedByteArray" default="PackedByteArray()" />
 			<param index="2" name="creation_bits" type="int" enum="RenderingDevice.BufferCreationBits" is_bitfield="true" default="0" />
 			<description>
-				It can be accessed with the RID that is returned.
+				Creates a new vertex buffer. It can be accessed with the RID that is returned.
 				Once finished with your RID, you will want to free the RID using the RenderingDevice's [method free_rid] method.
 			</description>
 		</method>
@@ -1302,7 +1302,7 @@
 			8-bit-per-channel signed integer red/green/blue channel data format. Values are in the [code][-127, 127][/code] range.
 		</constant>
 		<constant name="DATA_FORMAT_R8G8B8_SRGB" value="28" enum="DataFormat">
-			8-bit-per-channel unsigned floating-point red/green/blue/blue channel data format with normalized value and non-linear sRGB encoding. Values are in the [code][0.0, 1.0][/code] range.
+			8-bit-per-channel unsigned floating-point red/green/blue channel data format with normalized value and non-linear sRGB encoding. Values are in the [code][0.0, 1.0][/code] range.
 		</constant>
 		<constant name="DATA_FORMAT_B8G8R8_UNORM" value="29" enum="DataFormat">
 			8-bit-per-channel unsigned floating-point blue/green/red channel data format with normalized value. Values are in the [code][0.0, 1.0][/code] range.
@@ -1871,7 +1871,35 @@
 		<constant name="DATA_FORMAT_G16_B16_R16_3PLANE_444_UNORM" value="217" enum="DataFormat">
 			16-bit-per-channel unsigned floating-point green/blue/red channel data with normalized value, plus 6 unused bits after each channel. Stored across 3 separate planes (green + blue + red). Values are in the [code][0.0, 1.0][/code] range.
 		</constant>
-		<constant name="DATA_FORMAT_MAX" value="218" enum="DataFormat">
+		<constant name="DATA_FORMAT_ASTC_4x4_SFLOAT_BLOCK" value="218" enum="DataFormat">
+		</constant>
+		<constant name="DATA_FORMAT_ASTC_5x4_SFLOAT_BLOCK" value="219" enum="DataFormat">
+		</constant>
+		<constant name="DATA_FORMAT_ASTC_5x5_SFLOAT_BLOCK" value="220" enum="DataFormat">
+		</constant>
+		<constant name="DATA_FORMAT_ASTC_6x5_SFLOAT_BLOCK" value="221" enum="DataFormat">
+		</constant>
+		<constant name="DATA_FORMAT_ASTC_6x6_SFLOAT_BLOCK" value="222" enum="DataFormat">
+		</constant>
+		<constant name="DATA_FORMAT_ASTC_8x5_SFLOAT_BLOCK" value="223" enum="DataFormat">
+		</constant>
+		<constant name="DATA_FORMAT_ASTC_8x6_SFLOAT_BLOCK" value="224" enum="DataFormat">
+		</constant>
+		<constant name="DATA_FORMAT_ASTC_8x8_SFLOAT_BLOCK" value="225" enum="DataFormat">
+		</constant>
+		<constant name="DATA_FORMAT_ASTC_10x5_SFLOAT_BLOCK" value="226" enum="DataFormat">
+		</constant>
+		<constant name="DATA_FORMAT_ASTC_10x6_SFLOAT_BLOCK" value="227" enum="DataFormat">
+		</constant>
+		<constant name="DATA_FORMAT_ASTC_10x8_SFLOAT_BLOCK" value="228" enum="DataFormat">
+		</constant>
+		<constant name="DATA_FORMAT_ASTC_10x10_SFLOAT_BLOCK" value="229" enum="DataFormat">
+		</constant>
+		<constant name="DATA_FORMAT_ASTC_12x10_SFLOAT_BLOCK" value="230" enum="DataFormat">
+		</constant>
+		<constant name="DATA_FORMAT_ASTC_12x12_SFLOAT_BLOCK" value="231" enum="DataFormat">
+		</constant>
+		<constant name="DATA_FORMAT_MAX" value="232" enum="DataFormat">
 			Represents the size of the [enum DataFormat] enum.
 		</constant>
 		<constant name="BARRIER_MASK_VERTEX" value="1" enum="BarrierMask" is_bitfield="true">
@@ -2450,6 +2478,12 @@
 		</constant>
 		<constant name="PIPELINE_SPECIALIZATION_CONSTANT_TYPE_FLOAT" value="2" enum="PipelineSpecializationConstantType">
 			Floating-point specialization constant.
+		</constant>
+		<constant name="SUPPORTS_METALFX_SPATIAL" value="3" enum="Features">
+			Support for MetalFX spatial upscaling.
+		</constant>
+		<constant name="SUPPORTS_METALFX_TEMPORAL" value="4" enum="Features">
+			Support for MetalFX temporal upscaling.
 		</constant>
 		<constant name="SUPPORTS_BUFFER_DEVICE_ADDRESS" value="6" enum="Features">
 			Features support for buffer device address extension.

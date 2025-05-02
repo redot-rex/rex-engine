@@ -374,7 +374,7 @@ void PostImportPluginSkeletonRestFixer::internal_process(InternalImportCategory 
 				if (Math::abs(Math::rad_to_deg(src_dir.angle_to(prof_dir))) > float(p_options["retarget/rest_fixer/fix_silhouette/threshold"])) {
 					// Get rotation difference.
 					Vector3 up_vec; // Need to rotate other than roll axis.
-					switch (Vector3(abs(src_dir.x), abs(src_dir.y), abs(src_dir.z)).min_axis_index()) {
+					switch (Vector3(std::abs(src_dir.x), std::abs(src_dir.y), std::abs(src_dir.z)).min_axis_index()) {
 						case Vector3::AXIS_X: {
 							up_vec = Vector3(1, 0, 0);
 						} break;
@@ -467,7 +467,7 @@ void PostImportPluginSkeletonRestFixer::internal_process(InternalImportCategory 
 		if (bool(p_options["retarget/rest_fixer/normalize_position_tracks"])) {
 			int src_bone_idx = src_skeleton->find_bone(profile->get_scale_base_bone());
 			if (src_bone_idx >= 0) {
-				real_t motion_scale = abs(src_skeleton->get_bone_global_rest(src_bone_idx).origin.y);
+				real_t motion_scale = std::abs(src_skeleton->get_bone_global_rest(src_bone_idx).origin.y);
 				if (motion_scale > 0) {
 					src_skeleton->set_motion_scale(motion_scale);
 				}
@@ -973,7 +973,4 @@ void PostImportPluginSkeletonRestFixer::internal_process(InternalImportCategory 
 
 		memdelete(prof_skeleton);
 	}
-}
-
-PostImportPluginSkeletonRestFixer::PostImportPluginSkeletonRestFixer() {
 }

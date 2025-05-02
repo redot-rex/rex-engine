@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef IMPORT_DEFAULTS_EDITOR_H
-#define IMPORT_DEFAULTS_EDITOR_H
+#pragma once
 
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
@@ -66,5 +65,3 @@ public:
 	ImportDefaultsEditor();
 	~ImportDefaultsEditor();
 };
-
-#endif // IMPORT_DEFAULTS_EDITOR_H

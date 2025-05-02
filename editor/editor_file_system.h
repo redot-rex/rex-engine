@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef EDITOR_FILE_SYSTEM_H
-#define EDITOR_FILE_SYSTEM_H
+#pragma once
 
 #include "core/io/dir_access.h"
 #include "core/io/resource_importer.h"
@@ -282,6 +281,7 @@ class EditorFileSystem : public Node {
 
 	bool _test_for_reimport(const String &p_path, const String &p_expected_import_md5);
 	bool _is_test_for_reimport_needed(const String &p_path, uint64_t p_last_modification_time, uint64_t p_modification_time, uint64_t p_last_import_modification_time, uint64_t p_import_modification_time, const Vector<String> &p_import_dest_paths);
+	bool _can_import_file(const String &p_path);
 	Vector<String> _get_import_dest_paths(const String &p_path);
 
 	bool reimport_on_missing_imported_files;
@@ -426,5 +426,3 @@ public:
 	EditorFileSystem();
 	~EditorFileSystem();
 };
-
-#endif // EDITOR_FILE_SYSTEM_H
