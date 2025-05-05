@@ -249,6 +249,13 @@ String module_AES::encrypt(const String &plaintext, const String &hex_key, const
 	int len = 0;
 	int ciphertext_len = 0;
 
+	// We need to change the plaintext into a PackedByteArray.
+	PackedByteArray plaintext_bytes;
+	const CharString &utf8 = plaintext.utf8();
+	int utf8_len = utf8.length();
+	plaintext_bytes.resize(utf8_len);
+	memcpy(plaintext_bytes.ptrw(), utf8.get_data(), utf8_len);
+
 	// De-hex that key.
 	std::vector<uint8_t> key = hex_to_bytes(hex_key);
 	if (key.empty()) {
@@ -313,15 +320,9 @@ String module_AES::encrypt(const String &plaintext, const String &hex_key, const
 			break;
 	}
 
-	// We're going to need to change that String into a utf-8 byte vector.
-	const char *utf8_data = plaintext.utf8().get_data();
-	std::vector<uint8_t> plaintext_bytes(utf8_data, utf8_data + strlen(utf8_data));
+	std::vector<uint8_t> ciphertext(plaintext_bytes.size() + EVP_CIPHER_block_size(cipher));
 
-	// Alloc. buffer for ciphertext.
-	int block_size = EVP_CIPHER_block_size(cipher);
-	std::vector<uint8_t> ciphertext(plaintext_bytes.size() + block_size);
-
-	if (!EVP_EncryptUpdate(ctx.get(), ciphertext.data(), &len, plaintext_bytes.data(), plaintext_bytes.size())) {
+	if (!EVP_EncryptUpdate(ctx.get(), ciphertext.data(), &len, plaintext_bytes.ptr(), plaintext_bytes.size())) {
 		// Welcome to the magic that encrypts the plaintext.
 		print_openssl_err();
 		return "";
@@ -393,10 +394,15 @@ String module_AES::decrypt(const String &ciphertext, const String &hex_key, cons
 	}
 
 	// Decode Base64 ciphertext
-	std::vector<unsigned char> ciphertext_bytes = b64_decode(ciphertext);
-	if (ciphertext_bytes.empty()) {
+	std::vector<unsigned char> raw_ciphertext_bytes = b64_decode(ciphertext);
+	if (raw_ciphertext_bytes.empty()) {
 		return "Error: Invalid Base64 ciphertext.";
 	}
+
+	// Convert to PBA
+	PackedByteArray ciphertext_bytes;
+	ciphertext_bytes.resize(raw_ciphertext_bytes.size());
+	memcpy(ciphertext_bytes.ptrw(), raw_ciphertext_bytes.data(), raw_ciphertext_bytes.size());
 
 	// Convert to proper mode.
 	const EVP_CIPHER *cipher = nullptr;
@@ -424,25 +430,25 @@ String module_AES::decrypt(const String &ciphertext, const String &hex_key, cons
 	}
 
 	// Extract IV from ciphertext
-	int iv_length = EVP_CIPHER_iv_length(cipher);
+	long int iv_length = EVP_CIPHER_iv_length(cipher);
 
-	if (ciphertext_bytes.size() < (size_t)iv_length) {
+	if (ciphertext_bytes.size() < iv_length) {
 		print_error("Ciphertext is too short.");
 		return "";
 	}
 
-	std::vector<uint8_t> iv(ciphertext_bytes.begin(), ciphertext_bytes.begin() + iv_length);
+	std::vector<uint8_t> iv(ciphertext_bytes.ptr(), ciphertext_bytes.ptr() + iv_length);
 
 	std::vector<uint8_t> auth_tag(AES_GCM_TAG_LEN);
 
 	switch (mode_string) {
 		case AESMode::GCM:
-			if (ciphertext_bytes.size() < (size_t)(iv_length + AES_GCM_TAG_LEN)) {
+			if (ciphertext_bytes.size() < (iv_length + AES_GCM_TAG_LEN)) {
 				print_error("ciphertext too short for GCM.");
 				return "";
 			}
 			// GCM tag is at the end of the text.
-			auth_tag.assign(ciphertext_bytes.end() - AES_GCM_TAG_LEN, ciphertext_bytes.end());
+			auth_tag.assign(ciphertext_bytes.ptr() + ciphertext_bytes.size() - AES_GCM_TAG_LEN, ciphertext_bytes.ptr() + ciphertext_bytes.size());
 			// Then remove the tag from the ciphertext.
 			ciphertext_bytes.resize(ciphertext_bytes.size() - AES_GCM_TAG_LEN);
 			break;
@@ -450,8 +456,12 @@ String module_AES::decrypt(const String &ciphertext, const String &hex_key, cons
 			break;
 	}
 
-	// Oh yeah, don't forget to remove the IV from ciphertext
-	ciphertext_bytes.erase(ciphertext_bytes.begin(), ciphertext_bytes.begin() + iv_length);
+	PackedByteArray sliced;
+	// This has to be done because PackedByteArray.subarray() doesn't exist
+	// within the context of Redot (at the moment.)
+	sliced.resize(ciphertext_bytes.size() - iv_length);
+	memcpy(sliced.ptrw(), ciphertext_bytes.ptr() + iv_length, sliced.size());
+	ciphertext_bytes = sliced;
 
 	// Context needed.
 	std::unique_ptr<EVP_CIPHER_CTX, EVP_CTX_Deleter> ctx(EVP_CIPHER_CTX_new());
@@ -492,7 +502,7 @@ String module_AES::decrypt(const String &ciphertext, const String &hex_key, cons
 	// Alloc. buffer for decrypted plaintext.
 	std::vector<uint8_t> plaintext(ciphertext_bytes.size());
 
-	if (!EVP_DecryptUpdate(ctx.get(), plaintext.data(), &len, ciphertext_bytes.data(), ciphertext_bytes.size())) {
+	if (!EVP_DecryptUpdate(ctx.get(), plaintext.data(), &len, ciphertext_bytes.ptr(), ciphertext_bytes.size())) {
 		print_openssl_err();
 		return "";
 	}

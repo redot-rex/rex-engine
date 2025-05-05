@@ -62,6 +62,7 @@ std::vector<unsigned char> module_RSA::b64_decode(const String &s) {
 	/*
 	 * Decodes given b64 as String
 	 */
+
 	std::string padded_s = s.utf8().get_data();
 	while (padded_s.length() % 4 != 0) {
 		// Stupid hack to fix lack of padding.
@@ -99,6 +100,31 @@ std::vector<unsigned char> module_RSA::b64_decode(const String &s) {
 	un_b64.resize(len);
 
 	return un_b64;
+}
+
+bool setup_oaep_sha256(EVP_PKEY_CTX *ctx) {
+	/*
+	 * Set padding to sha256.
+	 */
+
+	if (EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_OAEP_PADDING) <= 0) {
+		print_error("Failed to set RSA OAEP padding.");
+		return false;
+	}
+
+	// Use SHA-256 as the OAEP digest.
+	if (EVP_PKEY_CTX_set_rsa_oaep_md(ctx, EVP_sha256()) <= 0) {
+		print_error("Failed to set OAEP digest to SHA-256.");
+		return false;
+	}
+
+	// Match MGF1 hash to SHA-256 as well (required).
+	if (EVP_PKEY_CTX_set_rsa_mgf1_md(ctx, EVP_sha256()) <= 0) {
+		print_error("Failed to set MGF1 digest to SHA-256.");
+		return false;
+	}
+
+	return true;
 }
 
 bool module_RSA::generate_keys(int bits) {
@@ -196,9 +222,7 @@ String module_RSA::encrypt(const String &plaintext, bool self) {
 		return "ERR: Encryption context init failed.";
 	}
 
-	// https://docs.openssl.org/3.2/man3/EVP_PKEY_CTX_ctrl/#rsa-parameters
-	if (EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_OAEP_PADDING) <= 0) {
-		// Sets padding.
+	if (!setup_oaep_sha256(ctx)) {
 		EVP_PKEY_CTX_free(ctx);
 		print_error("Encryption padding failed.");
 		return "ERR: Encryption padding failed.";
@@ -263,12 +287,10 @@ String module_RSA::decrypt(const String &ciphertext) {
 		return "ERR: Decryption context init failed.";
 	}
 
-	// https://docs.openssl.org/3.2/man3/EVP_PKEY_CTX_ctrl/#rsa-parameters
-	if (EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_OAEP_PADDING) <= 0) {
-		// Set padding.
+	if (!setup_oaep_sha256(ctx)) {
 		EVP_PKEY_CTX_free(ctx);
 		print_error("Decryption padding failed.");
-		return "Decryption padding failed.";
+		return "ERR: Decryption padding failed.";
 	}
 
 	if (EVP_PKEY_decrypt(ctx, nullptr, &enc_len, encrypted_data.data(), encrypted_data.size()) <= 0) {
