@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef AUDIO_RB_RESAMPLER_H
-#define AUDIO_RB_RESAMPLER_H
+#pragma once
 
 #include "core/math/audio_frame.h"
 #include "core/templates/safe_refcount.h"
@@ -88,7 +87,7 @@ public:
 		} else if (w < r) {
 			space = r - w - 1;
 		} else {
-			space = (rb_len - r) + w - 1;
+			space = (rb_len - w) + (r - 1);
 		}
 
 		return space;
@@ -170,5 +169,3 @@ public:
 	AudioRBResampler();
 	~AudioRBResampler();
 };
-
-#endif // AUDIO_RB_RESAMPLER_H

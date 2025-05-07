@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SPLIT_CONTAINER_H
-#define SPLIT_CONTAINER_H
+#pragma once
 
 #include "scene/gui/container.h"
 
@@ -44,6 +43,10 @@ protected:
 	void _notification(int p_what);
 	virtual void gui_input(const Ref<InputEvent> &p_event) override;
 
+	void _accessibility_action_inc(const Variant &p_data);
+	void _accessibility_action_dec(const Variant &p_data);
+	void _accessibility_action_set_value(const Variant &p_data);
+
 private:
 	bool dragging = false;
 	int drag_from = 0;
@@ -52,6 +55,8 @@ private:
 
 public:
 	virtual CursorShape get_cursor_shape(const Point2 &p_pos = Point2i()) const override;
+
+	SplitContainerDragger();
 };
 
 class SplitContainer : public Container {
@@ -159,5 +164,3 @@ public:
 	VSplitContainer() :
 			SplitContainer(true) { is_fixed = true; }
 };
-
-#endif // SPLIT_CONTAINER_H

@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef AUDIO_STREAM_H
-#define AUDIO_STREAM_H
+#pragma once
 
 #include "core/io/resource.h"
 #include "scene/property_list_helper.h"
@@ -375,5 +374,3 @@ public:
 };
 
 VARIANT_ENUM_CAST(AudioStreamRandomizer::PlaybackMode);
-
-#endif // AUDIO_STREAM_H

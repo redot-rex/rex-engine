@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef MESH_STORAGE_GLES3_H
-#define MESH_STORAGE_GLES3_H
+#pragma once
 
 #ifdef GLES3_ENABLED
 
@@ -322,6 +321,7 @@ public:
 
 	virtual void mesh_clear(RID p_mesh) override;
 	virtual void mesh_surface_remove(RID p_mesh, int p_surface) override;
+	virtual void mesh_debug_usage(List<RS::MeshInfo> *r_info) override {}
 
 	_FORCE_INLINE_ const RID *mesh_get_surface_count_and_materials(RID p_mesh, uint32_t &r_surface_count) {
 		Mesh *mesh = mesh_owner.get_or_null(p_mesh);
@@ -606,5 +606,3 @@ public:
 } // namespace GLES3
 
 #endif // GLES3_ENABLED
-
-#endif // MESH_STORAGE_GLES3_H

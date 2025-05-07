@@ -147,4 +147,9 @@ public interface GodotHost {
 	default boolean supportsFeature(String featureTag) {
 		return false;
 	}
+
+	/**
+	 * Invoked on the render thread when an editor workspace has been selected.
+	 */
+	default void onEditorWorkspaceSelected(String workspace) {}
 }

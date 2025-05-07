@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef PORTABLE_COMPRESSED_TEXTURE_H
-#define PORTABLE_COMPRESSED_TEXTURE_H
+#pragma once
 
 #include "scene/resources/texture.h"
 
@@ -56,6 +55,7 @@ public:
 		COMPRESSION_MODE_S3TC,
 		COMPRESSION_MODE_ETC2,
 		COMPRESSION_MODE_BPTC,
+		COMPRESSION_MODE_ASTC,
 	};
 
 private:
@@ -116,5 +116,3 @@ public:
 };
 
 VARIANT_ENUM_CAST(PortableCompressedTexture2D::CompressionMode)
-
-#endif // PORTABLE_COMPRESSED_TEXTURE_H

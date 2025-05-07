@@ -107,7 +107,7 @@ void GDScriptDocGen::_doctype_from_gdtype(const GDType &p_gdtype, String &r_type
 			return;
 		case GDType::SCRIPT:
 			if (p_gdtype.is_meta_type) {
-				r_type = p_gdtype.script_type.is_valid() ? p_gdtype.script_type->get_class() : Script::get_class_static();
+				r_type = p_gdtype.script_type.is_valid() ? p_gdtype.script_type->get_class_name() : Script::get_class_static();
 				return;
 			}
 			if (p_gdtype.script_type.is_valid()) {
@@ -126,6 +126,7 @@ void GDScriptDocGen::_doctype_from_gdtype(const GDType &p_gdtype, String &r_type
 			}
 			r_type = "Object";
 			return;
+		case GDType::TRAIT:
 		case GDType::CLASS:
 			if (p_gdtype.is_meta_type) {
 				r_type = GDScript::get_class_static();
@@ -218,15 +219,15 @@ String GDScriptDocGen::_docvalue_from_variant(const Variant &p_variant, int p_re
 			} else {
 				result += "{";
 
-				List<Variant> keys;
-				dict.get_key_list(&keys);
+				LocalVector<Variant> keys = dict.get_key_list();
 				keys.sort_custom<StringLikeVariantOrder>();
 
-				for (List<Variant>::Element *E = keys.front(); E; E = E->next()) {
-					if (E->prev()) {
+				for (uint32_t i = 0; i < keys.size(); i++) {
+					const Variant &key = keys[i];
+					if (i > 0) {
 						result += ", ";
 					}
-					result += _docvalue_from_variant(E->get(), p_recursion_level + 1) + ": " + _docvalue_from_variant(dict[E->get()], p_recursion_level + 1);
+					result += _docvalue_from_variant(key, p_recursion_level + 1) + ": " + _docvalue_from_variant(dict[key], p_recursion_level + 1);
 				}
 
 				result += "}";
@@ -367,6 +368,10 @@ void GDScriptDocGen::_generate_docs(GDScript *p_script, const GDP::ClassNode *p_
 	for (const GDP::ClassNode::Member &member : p_class->members) {
 		switch (member.type) {
 			case GDP::ClassNode::Member::CLASS: {
+				if (p_class->type == GDP::Node::TRAIT) {
+					// Trait do not have scripts for there inner classes.
+					continue;
+				}
 				const GDP::ClassNode *inner_class = member.m_class;
 				const StringName &class_name = inner_class->identifier->name;
 

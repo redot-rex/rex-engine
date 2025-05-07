@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef PCK_PACKER_H
-#define PCK_PACKER_H
+#pragma once
 
 #include "core/object/ref_counted.h"
 
@@ -68,5 +67,3 @@ public:
 
 	PCKPacker() {}
 };
-
-#endif // PCK_PACKER_H

@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef EDITOR_DEBUGGER_PLUGIN_H
-#define EDITOR_DEBUGGER_PLUGIN_H
+#pragma once
 
 #include "scene/gui/control.h"
 
@@ -105,5 +104,3 @@ public:
 	EditorDebuggerPlugin();
 	~EditorDebuggerPlugin();
 };
-
-#endif // EDITOR_DEBUGGER_PLUGIN_H

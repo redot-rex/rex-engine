@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef TWEEN_H
-#define TWEEN_H
+#pragma once
 
 #include "core/object/ref_counted.h"
 
@@ -203,6 +202,8 @@ VARIANT_ENUM_CAST(Tween::EaseType);
 class PropertyTweener : public Tweener {
 	GDCLASS(PropertyTweener, Tweener);
 
+	double _get_custom_interpolated_value(const Variant &p_value);
+
 public:
 	Ref<PropertyTweener> from(const Variant &p_value);
 	Ref<PropertyTweener> from_current();
@@ -327,5 +328,3 @@ protected:
 private:
 	double delay = 0;
 };
-
-#endif // TWEEN_H

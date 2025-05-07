@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef COPY_EFFECTS_GLES3_H
-#define COPY_EFFECTS_GLES3_H
+#pragma once
 
 #ifdef GLES3_ENABLED
 
@@ -79,5 +78,3 @@ public:
 } //namespace GLES3
 
 #endif // GLES3_ENABLED
-
-#endif // COPY_EFFECTS_GLES3_H

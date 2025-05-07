@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef GDSCRIPT_CODEGEN_H
-#define GDSCRIPT_CODEGEN_H
+#pragma once
 
 #include "gdscript_function.h"
 #include "gdscript_utility_functions.h"
@@ -161,11 +160,9 @@ public:
 	virtual void write_break() = 0;
 	virtual void write_continue() = 0;
 	virtual void write_breakpoint() = 0;
-	virtual void write_newline(int p_line) = 0;
+	virtual void write_newline(int p_line, const StringName &p_external_source = "", int p_uses_line = 0) = 0;
 	virtual void write_return(const Address &p_return_value) = 0;
 	virtual void write_assert(const Address &p_test, const Address &p_message) = 0;
 
 	virtual ~GDScriptCodeGenerator() {}
 };
-
-#endif // GDSCRIPT_CODEGEN_H

@@ -94,7 +94,7 @@ protected:
 	}
 
 	virtual void _export_file(const String &p_path, const String &p_type, const HashSet<String> &p_features) override {
-		if (p_path.get_extension() != "gd" || script_mode == EditorExportPreset::MODE_SCRIPT_TEXT) {
+		if (!(p_path.get_extension() == "gd" || p_path.get_extension() == "gdt") || script_mode == EditorExportPreset::MODE_SCRIPT_TEXT) {
 			return;
 		}
 
@@ -103,15 +103,17 @@ protected:
 			return;
 		}
 
-		String source;
-		source.parse_utf8(reinterpret_cast<const char *>(file.ptr()), file.size());
+		String source = String::utf8(reinterpret_cast<const char *>(file.ptr()), file.size());
 		GDScriptTokenizerBuffer::CompressMode compress_mode = script_mode == EditorExportPreset::MODE_SCRIPT_BINARY_TOKENS_COMPRESSED ? GDScriptTokenizerBuffer::COMPRESS_ZSTD : GDScriptTokenizerBuffer::COMPRESS_NONE;
 		file = GDScriptTokenizerBuffer::parse_code_string(source, compress_mode);
 		if (file.is_empty()) {
 			return;
 		}
-
-		add_file(p_path.get_basename() + ".gdc", file, true);
+		String export_extension = ".gdc";
+		if (p_path.get_extension() == "gdt") {
+			export_extension = ".t.gdc";
+		}
+		add_file(p_path.get_basename() + export_extension, file, true);
 	}
 
 public:
@@ -142,6 +144,7 @@ static void _editor_init() {
 void initialize_gdscript_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SERVERS) {
 		GDREGISTER_CLASS(GDScript);
+		GDREGISTER_CLASS(GDScriptTrait);
 
 		script_language_gd = memnew(GDScriptLanguage);
 		ScriptServer::register_language(script_language_gd);
@@ -164,12 +167,7 @@ void initialize_gdscript_module(ModuleInitializationLevel p_level) {
 		gdscript_translation_parser_plugin.instantiate();
 		EditorTranslationParser::get_singleton()->add_parser(gdscript_translation_parser_plugin, EditorTranslationParser::STANDARD);
 	} else if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
-		ClassDB::APIType prev_api = ClassDB::get_current_api();
-		ClassDB::set_current_api(ClassDB::API_EDITOR);
-
 		GDREGISTER_CLASS(GDScriptSyntaxHighlighter);
-
-		ClassDB::set_current_api(prev_api);
 	}
 #endif // TOOLS_ENABLED
 }

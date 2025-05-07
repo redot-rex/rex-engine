@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SPATIAL_UPSCALER_RD_H
-#define SPATIAL_UPSCALER_RD_H
+#pragma once
 
 #include "core/object/ref_counted.h"
 
@@ -46,5 +45,3 @@ public:
 	SpatialUpscaler() = default;
 	virtual ~SpatialUpscaler() = default;
 };
-
-#endif // SPATIAL_UPSCALER_RD_H

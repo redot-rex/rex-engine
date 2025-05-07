@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef TTS_ANDROID_H
-#define TTS_ANDROID_H
+#pragma once
 
 #include "core/config/project_settings.h"
 #include "core/string/ustring.h"
@@ -57,6 +56,8 @@ class TTS_Android {
 
 	static HashMap<int, Char16String> ids;
 
+	static void initialize_tts();
+
 public:
 	static void setup(jobject p_tts);
 	static void terminate();
@@ -70,5 +71,3 @@ public:
 	static void resume();
 	static void stop();
 };
-
-#endif // TTS_ANDROID_H

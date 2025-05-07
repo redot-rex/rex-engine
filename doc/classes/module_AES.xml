@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="module_AES" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		An AES implementation for GDScript.
+	</brief_description>
+	<description>
+		This is a basic AES implementation for GDScript. You can generate (or import) keys, encrypted, and decrypt with it.
+		[codeblocks]
+		[gdscript]
+		var aes = module_AES.new() # Initialize the AES module.
+		var key = aes.generate_keys(16); # Generate a key.
+		var plaintext = "Hello, Redot.";
+
+		var ciphertext= aes.encrypt(msg, key, "gcm") # Encrypts using AES-GCM, returns base64-encoded String.
+		print("encrypted: ", ciphertext);
+
+		var decrypted_text = aes.decrypt(ciphertext, key, "gcm"); # Decrypts AES-GCM, decodes base64 and returns String.
+		print("decrypted: ", decrypted_text);
+		[/gdscript]
+		[/codeblocks]
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="decrypt">
+			<return type="String" />
+			<param index="0" name="ciphertext" type="String" />
+			<param index="1" name="key" type="String" />
+			<param index="2" name="mode" type="String" default="&quot;GCM&quot;" />
+			<description>
+				Returns decrypted ciphertext as a String. There are three modes: CBC, CTR, GCM.
+			</description>
+		</method>
+		<method name="encrypt">
+			<return type="String" />
+			<param index="0" name="plaintext" type="String" />
+			<param index="1" name="key" type="String" />
+			<param index="2" name="mode" type="String" default="&quot;GCM&quot;" />
+			<description>
+				Returns encrypted plaintext as a base64 encoded String. There are three modes: CBC, CTR, GCM.
+			</description>
+		</method>
+		<method name="generate_key">
+			<return type="String" />
+			<param index="0" name="bytes" type="int" default="16" />
+			<description>
+				Generates key. There are three byte-sizes: 16, 24, 32.
+			</description>
+		</method>
+		<method name="import_key">
+			<return type="String" />
+			<param index="0" name="key" type="String" />
+			<description>
+				Imports given key. It must be in hex format and it must be 32, 48, 64 chars long.
+			</description>
+		</method>
+	</methods>
+</class>

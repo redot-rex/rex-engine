@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef TRANSLATION_DOMAIN_H
-#define TRANSLATION_DOMAIN_H
+#pragma once
 
 #include "core/object/ref_counted.h"
 
@@ -105,5 +104,3 @@ public:
 
 	TranslationDomain();
 };
-
-#endif // TRANSLATION_DOMAIN_H

@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef PRIMITIVE_MESHES_H
-#define PRIMITIVE_MESHES_H
+#pragma once
 
 #include "scene/resources/font.h"
 #include "scene/resources/mesh.h"
@@ -584,8 +583,8 @@ private:
 		Vector<Vector2> triangles;
 		Vector<Vector<ContourPoint>> contours;
 		Vector<ContourInfo> contours_info;
-		Vector2 min_p = Vector2(INFINITY, INFINITY);
-		Vector2 max_p = Vector2(-INFINITY, -INFINITY);
+		Vector2 min_p = Vector2(Math::INF, Math::INF);
+		Vector2 max_p = Vector2(-Math::INF, -Math::INF);
 	};
 	mutable HashMap<GlyphMeshKey, GlyphMeshData, GlyphMeshKeyHasher> cache;
 
@@ -693,5 +692,3 @@ public:
 };
 
 VARIANT_ENUM_CAST(RibbonTrailMesh::Shape)
-
-#endif // PRIMITIVE_MESHES_H

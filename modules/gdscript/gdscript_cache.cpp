@@ -93,12 +93,20 @@ Error GDScriptParserRef::raise_status(Status p_new_status) {
 				result = get_analyzer()->resolve_inheritance();
 			} break;
 			case INHERITANCE_SOLVED: {
+				status = USES_SOLVED;
+				result = get_analyzer()->resolve_uses();
+			} break;
+			case USES_SOLVED: {
 				status = INTERFACE_SOLVED;
 				result = get_analyzer()->resolve_interface();
 			} break;
 			case INTERFACE_SOLVED: {
-				status = FULLY_SOLVED;
+				status = BODY_SOLVED;
 				result = get_analyzer()->resolve_body();
+			} break;
+			case BODY_SOLVED: {
+				status = FULLY_SOLVED;
+				result = get_analyzer()->resolve_dependencies();
 			} break;
 			case FULLY_SOLVED: {
 				return result;
@@ -191,7 +199,7 @@ void GDScriptCache::remove_script(const String &p_path) {
 
 	if (HashMap<String, Vector<ObjectID>>::Iterator E = singleton->abandoned_parser_map.find(p_path)) {
 		for (ObjectID parser_ref_id : E->value) {
-			Ref<GDScriptParserRef> parser_ref{ ObjectDB::get_instance(parser_ref_id) };
+			Ref<GDScriptParserRef> parser_ref = { ObjectDB::get_instance(parser_ref_id) };
 			if (parser_ref.is_valid()) {
 				parser_ref->clear();
 			}
@@ -277,7 +285,7 @@ String GDScriptCache::get_source_code(const String &p_path) {
 	source_file.write[len] = 0;
 
 	String source;
-	if (source.parse_utf8((const char *)source_file.ptr(), len) != OK) {
+	if (source.append_utf8((const char *)source_file.ptr(), len) != OK) {
 		ERR_FAIL_V_MSG("", "Script '" + p_path + "' contains invalid unicode (UTF-8), so it was not loaded. Please ensure that scripts are saved in valid UTF-8 unicode.");
 	}
 	return source;
@@ -313,8 +321,16 @@ Ref<GDScript> GDScriptCache::get_shallow_script(const String &p_path, Error &r_e
 	const String remapped_path = ResourceLoader::path_remap(p_path);
 
 	Ref<GDScript> script;
-	script.instantiate();
-	script->set_path_cache(p_path);
+	if (p_path.get_extension().to_lower() == "gdt") {
+		// Affects Icon appearing on script editor tab.
+		Ref<GDScriptTrait> trait_script;
+		trait_script.instantiate();
+		trait_script->set_path_cache(p_path);
+		script = trait_script;
+	} else {
+		script.instantiate();
+		script->set_path_cache(p_path);
+	}
 	if (remapped_path.get_extension().to_lower() == "gdc") {
 		Vector<uint8_t> buffer = get_binary_tokens(remapped_path);
 		if (buffer.is_empty()) {
@@ -463,7 +479,7 @@ void GDScriptCache::clear() {
 
 	for (const KeyValue<String, Vector<ObjectID>> &KV : singleton->abandoned_parser_map) {
 		for (ObjectID parser_ref_id : KV.value) {
-			Ref<GDScriptParserRef> parser_ref{ ObjectDB::get_instance(parser_ref_id) };
+			Ref<GDScriptParserRef> parser_ref = { ObjectDB::get_instance(parser_ref_id) };
 			if (parser_ref.is_valid()) {
 				parser_ref->clear();
 			}
@@ -488,6 +504,7 @@ void GDScriptCache::clear() {
 	parser_map_refs.clear();
 	singleton->shallow_gdscript_cache.clear();
 	singleton->full_gdscript_cache.clear();
+	singleton->static_gdscript_cache.clear();
 }
 
 GDScriptCache::GDScriptCache() {

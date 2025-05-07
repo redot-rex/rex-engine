@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef DEPENDENCY_EDITOR_H
-#define DEPENDENCY_EDITOR_H
+#pragma once
 
 #include "scene/gui/box_container.h"
 #include "scene/gui/dialogs.h"
@@ -67,10 +66,6 @@ public:
 	DependencyEditor();
 };
 
-#ifdef MINGW_ENABLED
-#undef FILE_OPEN
-#endif
-
 class DependencyEditorOwners : public AcceptDialog {
 	GDCLASS(DependencyEditorOwners, AcceptDialog);
 
@@ -87,7 +82,7 @@ class DependencyEditorOwners : public AcceptDialog {
 
 private:
 	enum FileMenu {
-		FILE_OPEN
+		FILE_MENU_OPEN,
 	};
 
 public:
@@ -122,6 +117,8 @@ class DependencyRemoveDialog : public ConfirmationDialog {
 		}
 	};
 
+	LocalVector<StringName> path_project_settings;
+
 	void _find_files_in_removed_folder(EditorFileSystemDirectory *efsd, const String &p_folder);
 	void _find_all_removed_dependencies(EditorFileSystemDirectory *efsd, Vector<RemovedDependency> &p_removed);
 	void _find_localization_remaps_of_removed_files(Vector<RemovedDependency> &p_removed);
@@ -140,12 +137,6 @@ public:
 class DependencyErrorDialog : public ConfirmationDialog {
 	GDCLASS(DependencyErrorDialog, ConfirmationDialog);
 
-public:
-	enum Mode {
-		MODE_SCENE,
-		MODE_RESOURCE,
-	};
-
 private:
 	String for_file;
 	Mode mode;
@@ -156,7 +147,7 @@ private:
 	void custom_action(const String &) override;
 
 public:
-	void show(Mode p_mode, const String &p_for_file, const Vector<String> &report);
+	void show(const String &p_for_file, const Vector<String> &report);
 	DependencyErrorDialog();
 };
 
@@ -181,5 +172,3 @@ public:
 	void show();
 	OrphanResourcesDialog();
 };
-
-#endif // DEPENDENCY_EDITOR_H

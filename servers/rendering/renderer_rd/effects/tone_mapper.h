@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef TONE_MAPPER_RD_H
-#define TONE_MAPPER_RD_H
+#pragma once
 
 #include "servers/rendering/renderer_rd/pipeline_cache_rd.h"
 #include "servers/rendering/renderer_rd/shaders/effects/tonemap.glsl.gen.h"
@@ -156,5 +155,3 @@ public:
 };
 
 } // namespace RendererRD
-
-#endif // TONE_MAPPER_RD_H

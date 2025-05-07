@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef STYLE_BOX_EDITOR_PLUGIN_H
-#define STYLE_BOX_EDITOR_PLUGIN_H
+#pragma once
 
 #include "editor/editor_inspector.h"
 #include "editor/plugins/editor_plugin.h"
@@ -76,5 +75,3 @@ public:
 
 	StyleBoxEditorPlugin();
 };
-
-#endif // STYLE_BOX_EDITOR_PLUGIN_H

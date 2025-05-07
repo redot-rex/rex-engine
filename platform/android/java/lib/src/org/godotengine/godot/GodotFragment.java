@@ -511,4 +511,11 @@ public class GodotFragment extends Fragment implements IDownloaderClient, GodotH
 		}
 		return false;
 	}
+
+	@Override
+	public void onEditorWorkspaceSelected(String workspace) {
+		if (parentHost != null) {
+			parentHost.onEditorWorkspaceSelected(workspace);
+		}
+	}
 }

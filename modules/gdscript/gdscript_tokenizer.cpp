@@ -109,11 +109,11 @@ static const char *token_names[] = {
 	"breakpoint", // BREAKPOINT,
 	"class", // CLASS,
 	"class_name", // CLASS_NAME,
-	"const", // CONST,
+	"const", // TK_CONST,
 	"enum", // ENUM,
 	"extends", // EXTENDS,
 	"func", // FUNC,
-	"in", // IN,
+	"in", // TK_IN,
 	"is", // IS,
 	"namespace", // NAMESPACE
 	"preload", // PRELOAD,
@@ -122,8 +122,10 @@ static const char *token_names[] = {
 	"static", // STATIC,
 	"super", // SUPER,
 	"trait", // TRAIT,
+	"trait_name", // TRAIT_NAME,
+	"uses", // USES,
 	"var", // VAR,
-	"void", // VOID,
+	"void", // TK_VOID,
 	"yield", // YIELD,
 	// Punctuation
 	"[", // BRACKET_OPEN,
@@ -159,7 +161,7 @@ static const char *token_names[] = {
 };
 
 // Avoid desync.
-static_assert(sizeof(token_names) / sizeof(token_names[0]) == GDScriptTokenizer::Token::TK_MAX, "Amount of token names don't match the amount of token types.");
+static_assert(std::size(token_names) == GDScriptTokenizer::Token::TK_MAX, "Amount of token names don't match the amount of token types.");
 
 const char *GDScriptTokenizer::Token::get_name() const {
 	ERR_FAIL_INDEX_V_MSG(type, TK_MAX, "<error>", "Using token type out of the enum.");
@@ -223,7 +225,7 @@ bool GDScriptTokenizer::Token::is_node_name() const {
 		case BREAKPOINT:
 		case CLASS_NAME:
 		case CLASS:
-		case CONST:
+		case TK_CONST:
 		case CONST_PI:
 		case CONST_INF:
 		case CONST_NAN:
@@ -236,7 +238,7 @@ bool GDScriptTokenizer::Token::is_node_name() const {
 		case FOR:
 		case FUNC:
 		case IF:
-		case IN:
+		case TK_IN:
 		case IS:
 		case MATCH:
 		case NAMESPACE:
@@ -250,9 +252,11 @@ bool GDScriptTokenizer::Token::is_node_name() const {
 		case STATIC:
 		case SUPER:
 		case TRAIT:
+		case TRAIT_NAME:
+		case USES:
 		case UNDERSCORE:
 		case VAR:
-		case VOID:
+		case TK_VOID:
 		case WHILE:
 		case WHEN:
 		case YIELD:
@@ -368,7 +372,7 @@ GDScriptTokenizer::Token GDScriptTokenizerText::make_token(Token::Type p_type) {
 	token.end_column = column;
 	token.leftmost_column = leftmost_column;
 	token.rightmost_column = rightmost_column;
-	token.source = String(_start, _current - _start);
+	token.source = String::utf32(Span(_start, _current - _start));
 
 	if (p_type != Token::ERROR && cursor_line > -1) {
 		// Also count whitespace after token.
@@ -507,7 +511,7 @@ GDScriptTokenizer::Token GDScriptTokenizerText::annotation() {
 	KEYWORD_GROUP('c')                       \
 	KEYWORD("class", Token::CLASS)           \
 	KEYWORD("class_name", Token::CLASS_NAME) \
-	KEYWORD("const", Token::CONST)           \
+	KEYWORD("const", Token::TK_CONST)        \
 	KEYWORD("continue", Token::CONTINUE)     \
 	KEYWORD_GROUP('e')                       \
 	KEYWORD("elif", Token::ELIF)             \
@@ -519,7 +523,7 @@ GDScriptTokenizer::Token GDScriptTokenizerText::annotation() {
 	KEYWORD("func", Token::FUNC)             \
 	KEYWORD_GROUP('i')                       \
 	KEYWORD("if", Token::IF)                 \
-	KEYWORD("in", Token::IN)                 \
+	KEYWORD("in", Token::TK_IN)              \
 	KEYWORD("is", Token::IS)                 \
 	KEYWORD_GROUP('m')                       \
 	KEYWORD("match", Token::MATCH)           \
@@ -540,9 +544,12 @@ GDScriptTokenizer::Token GDScriptTokenizerText::annotation() {
 	KEYWORD("super", Token::SUPER)           \
 	KEYWORD_GROUP('t')                       \
 	KEYWORD("trait", Token::TRAIT)           \
+	KEYWORD("trait_name", Token::TRAIT_NAME) \
+	KEYWORD_GROUP('u')                       \
+	KEYWORD("uses", Token::USES)             \
 	KEYWORD_GROUP('v')                       \
 	KEYWORD("var", Token::VAR)               \
-	KEYWORD("void", Token::VOID)             \
+	KEYWORD("void", Token::TK_VOID)          \
 	KEYWORD_GROUP('w')                       \
 	KEYWORD("while", Token::WHILE)           \
 	KEYWORD("when", Token::WHEN)             \
@@ -590,7 +597,7 @@ GDScriptTokenizer::Token GDScriptTokenizerText::potential_identifier() {
 		return token;
 	}
 
-	String name(_start, len);
+	String name = String::utf32(Span(_start, len));
 	if (len < MIN_KEYWORD_LENGTH || len > MAX_KEYWORD_LENGTH) {
 		// Cannot be a keyword, as the length doesn't match any.
 		return make_identifier(name);
@@ -698,13 +705,13 @@ GDScriptTokenizer::Token GDScriptTokenizerText::number() {
 	if (_peek(-1) == '.') {
 		has_decimal = true;
 	} else if (_peek(-1) == '0') {
-		if (_peek() == 'x') {
+		if (_peek() == 'x' || _peek() == 'X') {
 			// Hexadecimal.
 			base = 16;
 			digit_check_func = is_hex_digit;
 			need_digits = true;
 			_advance();
-		} else if (_peek() == 'b') {
+		} else if (_peek() == 'b' || _peek() == 'B') {
 			// Binary.
 			base = 2;
 			digit_check_func = is_binary_digit;
@@ -865,7 +872,7 @@ GDScriptTokenizer::Token GDScriptTokenizerText::number() {
 
 	// Create a string with the whole number.
 	int len = _current - _start;
-	String number = String(_start, len).replace("_", "");
+	String number = String::utf32(Span(_start, len)).remove_char('_');
 
 	// Convert to the appropriate literal type.
 	if (base == 16) {
@@ -1339,7 +1346,7 @@ void GDScriptTokenizerText::check_indent() {
 }
 
 String GDScriptTokenizerText::_get_indent_char_name(char32_t ch) {
-	ERR_FAIL_COND_V(ch != ' ' && ch != '\t', String(&ch, 1).c_escape());
+	ERR_FAIL_COND_V(ch != ' ' && ch != '\t', String::chr(ch).c_escape());
 
 	return ch == ' ' ? "space" : "tab";
 }

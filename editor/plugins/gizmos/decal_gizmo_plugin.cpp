@@ -49,9 +49,6 @@ DecalGizmoPlugin::DecalGizmoPlugin() {
 	create_handle_material("handles");
 }
 
-DecalGizmoPlugin::~DecalGizmoPlugin() {
-}
-
 bool DecalGizmoPlugin::has_gizmo(Node3D *p_spatial) {
 	return Object::cast_to<Decal>(p_spatial) != nullptr;
 }

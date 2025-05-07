@@ -93,9 +93,9 @@ Error PCKPacker::pck_start(const String &p_pck_path, int p_alignment, const Stri
 
 	file->store_32(PACK_HEADER_MAGIC);
 	file->store_32(PACK_FORMAT_VERSION);
-	file->store_32(VERSION_MAJOR);
-	file->store_32(VERSION_MINOR);
-	file->store_32(VERSION_PATCH);
+	file->store_32(REDOT_VERSION_MAJOR);
+	file->store_32(REDOT_VERSION_MINOR);
+	file->store_32(REDOT_VERSION_PATCH);
 
 	uint32_t pack_flags = 0;
 	if (enc_dir) {
@@ -120,8 +120,7 @@ Error PCKPacker::add_file_removal(const String &p_target_path) {
 	pf.size = 0;
 	pf.removal = true;
 
-	pf.md5.resize(16);
-	pf.md5.fill(0);
+	pf.md5.resize_zeroed(16);
 
 	files.push_back(pf);
 

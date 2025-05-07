@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef MULTIMESH_EDITOR_PLUGIN_H
-#define MULTIMESH_EDITOR_PLUGIN_H
+#pragma once
 
 #include "editor/plugins/editor_plugin.h"
 #include "scene/3d/multimesh_instance_3d.h"
@@ -100,7 +99,4 @@ public:
 	virtual void make_visible(bool p_visible) override;
 
 	MultiMeshEditorPlugin();
-	~MultiMeshEditorPlugin();
 };
-
-#endif // MULTIMESH_EDITOR_PLUGIN_H

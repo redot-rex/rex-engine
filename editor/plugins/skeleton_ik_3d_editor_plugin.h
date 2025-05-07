@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SKELETON_IK_3D_EDITOR_PLUGIN_H
-#define SKELETON_IK_3D_EDITOR_PLUGIN_H
+#pragma once
 
 #include "editor/plugins/editor_plugin.h"
 
@@ -55,7 +54,4 @@ public:
 	virtual void make_visible(bool p_visible) override;
 
 	SkeletonIK3DEditorPlugin();
-	~SkeletonIK3DEditorPlugin();
 };
-
-#endif // SKELETON_IK_3D_EDITOR_PLUGIN_H

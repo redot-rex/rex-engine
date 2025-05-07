@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef RASTERIZER_SCENE_GLES3_H
-#define RASTERIZER_SCENE_GLES3_H
+#pragma once
 
 #ifdef GLES3_ENABLED
 
@@ -742,7 +741,7 @@ protected:
 		float baked_exposure = 1.0;
 
 		//State to track when radiance cubemap needs updating
-		GLES3::SkyMaterialData *prev_material;
+		GLES3::SkyMaterialData *prev_material = nullptr;
 		Vector3 prev_position = Vector3(0.0, 0.0, 0.0);
 		float prev_time = 0.0f;
 	};
@@ -881,5 +880,3 @@ public:
 };
 
 #endif // GLES3_ENABLED
-
-#endif // RASTERIZER_SCENE_GLES3_H

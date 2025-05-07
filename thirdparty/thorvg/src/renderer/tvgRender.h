@@ -35,6 +35,8 @@ namespace tvg
 using RenderData = void*;
 using pixel_t = uint32_t;
 
+#define DASH_PATTERN_THRESHOLD 0.001f
+
 enum RenderUpdateFlag : uint8_t {None = 0, Path = 1, Color = 2, Gradient = 4, Stroke = 8, Transform = 16, Image = 32, GradientStroke = 64, Blend = 128, All = 255};
 enum CompositionFlag : uint8_t {Invalid = 0, Opacity = 1, Blending = 2, Masking = 4, PostProcessing = 8};  //Composition Purpose
 
@@ -352,7 +354,7 @@ struct RenderEffectTint : RenderEffect
         inst->white[0] = va_arg(args, int);
         inst->white[1] = va_arg(args, int);
         inst->white[2] = va_arg(args, int);
-        inst->intensity = (uint8_t)(va_arg(args, double) * 2.55f);
+        inst->intensity = (uint8_t)(va_arg(args, double) * 2.55);
         inst->type = SceneEffect::Tint;
         return inst;
     }
@@ -413,8 +415,9 @@ public:
     virtual bool beginComposite(RenderCompositor* cmp, CompositeMethod method, uint8_t opacity) = 0;
     virtual bool endComposite(RenderCompositor* cmp) = 0;
 
-    virtual bool prepare(RenderEffect* effect) = 0;
-    virtual bool effect(RenderCompositor* cmp, const RenderEffect* effect, bool direct) = 0;
+    virtual void prepare(RenderEffect* effect, const Matrix& transform) = 0;
+    virtual bool region(RenderEffect* effect) = 0;
+    virtual bool render(RenderCompositor* cmp, const RenderEffect* effect, bool direct) = 0;
 };
 
 static inline bool MASK_REGION_MERGING(CompositeMethod method)

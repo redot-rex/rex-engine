@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef POT_GENERATOR_H
-#define POT_GENERATOR_H
+#pragma once
 
 #include "core/io/file_access.h"
 #include "core/templates/hash_map.h"
@@ -63,8 +62,5 @@ public:
 	static POTGenerator *get_singleton();
 	void generate_pot(const String &p_file);
 
-	POTGenerator();
 	~POTGenerator();
 };
-
-#endif // POT_GENERATOR_H

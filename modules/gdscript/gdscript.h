@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef GDSCRIPT_H
-#define GDSCRIPT_H
+#pragma once
 
 #include "gdscript_function.h"
 
@@ -166,6 +165,7 @@ private:
 	Vector<DocData::ClassDoc> docs;
 	void _add_doc(const DocData::ClassDoc &p_doc);
 	void _clear_doc();
+	Vector<String> traits_path; // File path from used traits for reload.
 #endif
 
 	GDScriptFunction *initializer = nullptr; // Direct pointer to `new()`/`_init()` member function, faster to locate.
@@ -191,6 +191,7 @@ private:
 	String fully_qualified_name;
 	String simplified_icon_path;
 	SelfList<GDScript> script_list;
+	Vector<String> traits_fqtn; // List of used Traits.
 
 	SelfList<GDScriptFunctionState>::List pending_func_states;
 
@@ -246,6 +247,9 @@ public:
 
 	void clear(GDScript::ClearData *p_clear_data = nullptr);
 
+	// Cancels all functions of the script that are are waiting to be resumed after using await.
+	void cancel_pending_functions(bool warn);
+
 	virtual bool is_valid() const override { return valid; }
 	virtual bool is_abstract() const override { return false; } // GDScript does not support abstract classes.
 
@@ -292,6 +296,7 @@ public:
 
 	virtual Ref<Script> get_base_script() const override;
 	virtual StringName get_global_name() const override;
+	virtual bool has_script_type(const String &p_type) const override;
 
 	virtual StringName get_instance_base_type() const override; // this may not work in all scripts, will return empty if so
 	virtual ScriptInstance *instance_create(Object *p_this) override;
@@ -311,7 +316,6 @@ public:
 
 	virtual Error reload(bool p_keep_state = false) override;
 
-	virtual void set_path_cache(const String &p_path) override;
 	virtual void set_path(const String &p_path, bool p_take_over = false) override;
 	String get_script_path() const;
 	Error load_source_code(const String &p_path);
@@ -356,6 +360,13 @@ public:
 
 	GDScript();
 	~GDScript();
+};
+
+class GDScriptTrait : public GDScript {
+	GDCLASS(GDScriptTrait, GDScript);
+
+public:
+	virtual bool is_attachable() const override { return false; }
 };
 
 class GDScriptInstance : public ScriptInstance {
@@ -437,6 +448,7 @@ class GDScriptLanguage : public ScriptLanguage {
 		GDScriptInstance *instance = nullptr;
 		int *ip = nullptr;
 		int *line = nullptr;
+		String external_source; // File path for trait where line is implemented.
 	};
 
 	static thread_local int _debug_parse_err_line;
@@ -445,6 +457,7 @@ class GDScriptLanguage : public ScriptLanguage {
 	struct CallStack {
 		CallLevel *levels = nullptr;
 		int stack_pos = 0;
+		int to_external_stack_pos = -1; // Stack position of where external source is linked to.
 
 		void free() {
 			if (levels) {
@@ -459,6 +472,8 @@ class GDScriptLanguage : public ScriptLanguage {
 
 	static thread_local CallStack _call_stack;
 	int _debug_max_call_stack = 0;
+	bool track_call_stack = false;
+	bool track_locals = false;
 
 	void _add_global(const StringName &p_name, const Variant &p_value);
 	void _remove_global(const StringName &p_name);
@@ -491,41 +506,88 @@ public:
 	bool debug_break_parse(const String &p_file, int p_line, const String &p_error);
 
 	_FORCE_INLINE_ void enter_function(GDScriptInstance *p_instance, GDScriptFunction *p_function, Variant *p_stack, int *p_ip, int *p_line) {
+		if (!track_call_stack) {
+			return;
+		}
+
 		if (unlikely(_call_stack.levels == nullptr)) {
 			_call_stack.levels = memnew_arr(CallLevel, _debug_max_call_stack + 1);
 		}
 
-		if (EngineDebugger::get_script_debugger()->get_lines_left() > 0 && EngineDebugger::get_script_debugger()->get_depth() >= 0) {
-			EngineDebugger::get_script_debugger()->set_depth(EngineDebugger::get_script_debugger()->get_depth() + 1);
+#ifdef DEBUG_ENABLED
+		ScriptDebugger *script_debugger = EngineDebugger::get_script_debugger();
+		if (script_debugger != nullptr && script_debugger->get_lines_left() > 0 && script_debugger->get_depth() >= 0) {
+			script_debugger->set_depth(script_debugger->get_depth() + 1);
 		}
+#endif
 
-		if (_call_stack.stack_pos >= _debug_max_call_stack) {
-			//stack overflow
+		if (unlikely(_call_stack.stack_pos >= _debug_max_call_stack)) {
 			_debug_error = vformat("Stack overflow (stack size: %s). Check for infinite recursion in your script.", _debug_max_call_stack);
-			EngineDebugger::get_script_debugger()->debug(this);
+
+#ifdef DEBUG_ENABLED
+			if (script_debugger != nullptr) {
+				script_debugger->debug(this);
+			}
+#endif
+
 			return;
 		}
 
-		_call_stack.levels[_call_stack.stack_pos].stack = p_stack;
-		_call_stack.levels[_call_stack.stack_pos].instance = p_instance;
-		_call_stack.levels[_call_stack.stack_pos].function = p_function;
-		_call_stack.levels[_call_stack.stack_pos].ip = p_ip;
-		_call_stack.levels[_call_stack.stack_pos].line = p_line;
+		CallLevel &call_level = _call_stack.levels[_call_stack.stack_pos];
+		call_level.stack = p_stack;
+		call_level.instance = p_instance;
+		call_level.function = p_function;
+		call_level.ip = p_ip;
+		call_level.line = p_line;
 		_call_stack.stack_pos++;
 	}
 
+	_FORCE_INLINE_ void entered_function_to_external(String p_external_source, int *p_uses_line) {
+		if (_call_stack.stack_pos <= 0) {
+			return;
+		}
+		CallLevel last_stack_entry = _call_stack.levels[_call_stack.stack_pos - 1];
+		if (_call_stack.to_external_stack_pos == -1) {
+			CallLevel new_stack_entry = last_stack_entry;
+			new_stack_entry.line = p_uses_line;
+			_call_stack.levels[_call_stack.stack_pos - 1] = new_stack_entry;
+			_call_stack.to_external_stack_pos = _call_stack.stack_pos - 1;
+			_call_stack.stack_pos++;
+		}
+		last_stack_entry.external_source = p_external_source;
+		_call_stack.levels[_call_stack.stack_pos - 1] = last_stack_entry;
+	}
+
 	_FORCE_INLINE_ void exit_function() {
-		if (EngineDebugger::get_script_debugger()->get_lines_left() > 0 && EngineDebugger::get_script_debugger()->get_depth() >= 0) {
-			EngineDebugger::get_script_debugger()->set_depth(EngineDebugger::get_script_debugger()->get_depth() - 1);
+		if (!track_call_stack) {
+			return;
 		}
 
-		if (_call_stack.stack_pos == 0) {
+#ifdef DEBUG_ENABLED
+		ScriptDebugger *script_debugger = EngineDebugger::get_script_debugger();
+		if (script_debugger != nullptr && script_debugger->get_lines_left() > 0 && script_debugger->get_depth() >= 0) {
+			script_debugger->set_depth(script_debugger->get_depth() - 1);
+		}
+#endif
+
+		if (unlikely(_call_stack.stack_pos == 0)) {
 			_debug_error = "Stack Underflow (Engine Bug)";
-			EngineDebugger::get_script_debugger()->debug(this);
+
+#ifdef DEBUG_ENABLED
+			if (script_debugger != nullptr) {
+				script_debugger->debug(this);
+			}
+#endif
+
 			return;
 		}
 
 		_call_stack.stack_pos--;
+
+		if (_call_stack.to_external_stack_pos > -1 && _call_stack.to_external_stack_pos == _call_stack.stack_pos - 1) {
+			_call_stack.to_external_stack_pos = -1;
+			_call_stack.stack_pos--;
+		}
 	}
 
 	virtual Vector<StackInfo> debug_get_current_stack_info() override {
@@ -536,6 +598,9 @@ public:
 			if (_call_stack.levels[i].function) {
 				csi.write[_call_stack.stack_pos - i - 1].func = _call_stack.levels[i].function->get_name();
 				csi.write[_call_stack.stack_pos - i - 1].file = _call_stack.levels[i].function->get_script()->get_script_path();
+			}
+			if (!_call_stack.levels[i].external_source.is_empty()) {
+				csi.write[_call_stack.stack_pos - i - 1].file = _call_stack.levels[i].external_source;
 			}
 		}
 		return csi;
@@ -555,6 +620,7 @@ public:
 
 	} strings;
 
+	_FORCE_INLINE_ bool should_track_locals() const { return track_locals; }
 	_FORCE_INLINE_ int get_global_array_size() const { return global_array.size(); }
 	_FORCE_INLINE_ Variant *get_global_array() { return _global_array; }
 	_FORCE_INLINE_ const HashMap<StringName, int> &get_global_map() const { return globals; }
@@ -569,8 +635,10 @@ public:
 
 	/* LANGUAGE FUNCTIONS */
 	virtual void init() override;
-	virtual String get_type() const override;
-	virtual String get_extension() const override;
+	virtual String get_type_from_extension(const String &p_extension) const override;
+	virtual String get_type() const override { return get_type_from_extension(""); }
+	virtual Vector<String> get_extensions() const override;
+	virtual String get_extension() const override { return get_extensions()[0]; }
 	virtual void finish() override;
 
 	/* EDITOR FUNCTIONS */
@@ -580,10 +648,12 @@ public:
 	virtual void get_doc_comment_delimiters(List<String> *p_delimiters) const override;
 	virtual void get_string_delimiters(List<String> *p_delimiters) const override;
 	virtual bool is_using_templates() override;
-	virtual Ref<Script> make_template(const String &p_template, const String &p_class_name, const String &p_base_class_name) const override;
+	virtual Ref<Script> make_template_using_extension(const String &p_template, const String &p_class_name, const String &p_base_class_name, const String &p_extension) const override;
 	virtual Vector<ScriptTemplate> get_built_in_templates(const StringName &p_object) override;
 	virtual bool validate(const String &p_script, const String &p_path = "", List<String> *r_functions = nullptr, List<ScriptLanguage::ScriptError> *r_errors = nullptr, List<ScriptLanguage::Warning> *r_warnings = nullptr, HashSet<int> *r_safe_lines = nullptr) const override;
-	virtual Script *create_script() const override;
+	virtual bool is_script_attachable(const String &p_extension) const override;
+	virtual Script *create_script_from_extension(const String &p_extension) const override;
+	virtual Script *create_script() const override { return create_script_from_extension(""); }
 #ifndef DISABLE_DEPRECATED
 	virtual bool has_named_classes() const override { return false; }
 #endif
@@ -601,6 +671,9 @@ public:
 	virtual void add_global_constant(const StringName &p_variable, const Variant &p_value) override;
 	virtual void add_named_global_constant(const StringName &p_name, const Variant &p_value) override;
 	virtual void remove_named_global_constant(const StringName &p_name) override;
+#ifdef TOOLS_ENABLED
+	void ensure_docs_update(const Ref<GDScript> p_script); // needed when trait are saved.
+#endif
 
 	/* DEBUGGER FUNCTIONS */
 
@@ -640,7 +713,7 @@ public:
 	/* GLOBAL CLASSES */
 
 	virtual bool handles_global_class_type(const String &p_type) const override;
-	virtual String get_global_class_name(const String &p_path, String *r_base_type = nullptr, String *r_icon_path = nullptr) const override;
+	virtual String get_global_class_name(const String &p_path, String *r_base_type = nullptr, String *r_icon_path = nullptr, bool *r_is_abstract = nullptr, bool *r_is_tool = nullptr) const override;
 
 	void add_orphan_subclass(const String &p_qualified_name, const ObjectID &p_subclass);
 	Ref<GDScript> get_orphan_subclass(const String &p_qualified_name);
@@ -658,6 +731,7 @@ public:
 	virtual bool handles_type(const String &p_type) const override;
 	virtual String get_resource_type(const String &p_path) const override;
 	virtual void get_dependencies(const String &p_path, List<String> *p_dependencies, bool p_add_types = false) override;
+	virtual void get_classes_used(const String &p_path, HashSet<StringName> *r_classes) override;
 };
 
 class ResourceFormatSaverGDScript : public ResourceFormatSaver {
@@ -666,5 +740,3 @@ public:
 	virtual void get_recognized_extensions(const Ref<Resource> &p_resource, List<String> *p_extensions) const override;
 	virtual bool recognize(const Ref<Resource> &p_resource) const override;
 };
-
-#endif // GDSCRIPT_H

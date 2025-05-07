@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef ATLAS_TEXTURE_H
-#define ATLAS_TEXTURE_H
+#pragma once
 
 #include "scene/resources/texture.h"
 
@@ -79,5 +78,3 @@ public:
 
 	AtlasTexture();
 };
-
-#endif // ATLAS_TEXTURE_H

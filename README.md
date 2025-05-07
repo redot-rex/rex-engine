@@ -39,3 +39,9 @@ Follow [Redot on X/Twitter](https://x.com/Redot_Engine)!
 ## Documentation and demos
 
 The class reference is accessible from the Redot editor.
+
+## Redot Experimental
+
+Looking to try out new features that aren't backwards compatible with Godot, or would you like to create new features for Redot Engine that can't be added here due to compatibility issues?
+
+Meet us over at [ReX](https://github.com/Redot-Experimental/ReX?tab=readme-ov-file) Where we test new ideas and improve the engine in ways not currently possible here in the core repo.

@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef GDSCRIPT_PARSER_H
-#define GDSCRIPT_PARSER_H
+#pragma once
 
 #include "gdscript_cache.h"
 #include "gdscript_tokenizer.h"
@@ -95,9 +94,11 @@ public:
 	struct SubscriptNode;
 	struct SuiteNode;
 	struct TernaryOpNode;
+	struct TraitNode;
 	struct TypeNode;
 	struct TypeTestNode;
 	struct UnaryOpNode;
+	struct UsesNode;
 	struct VariableNode;
 	struct WhileNode;
 
@@ -110,6 +111,7 @@ public:
 			NATIVE,
 			SCRIPT,
 			CLASS, // GDScript.
+			TRAIT, // GDTrait.
 			ENUM, // Enumeration.
 			VARIANT, // Can be any type.
 			RESOLVING, // Currently resolving.
@@ -220,6 +222,7 @@ public:
 				case SCRIPT:
 					return script_type == p_other.script_type;
 				case CLASS:
+				case TRAIT:
 					return class_type == p_other.class_type || class_type->fqcn == p_other.class_type->fqcn;
 				case RESOLVING:
 				case UNRESOLVED:
@@ -332,9 +335,11 @@ public:
 			SUBSCRIPT,
 			SUITE,
 			TERNARY_OPERATOR,
+			TRAIT,
 			TYPE,
 			TYPE_TEST,
 			UNARY_OPERATOR,
+			USES,
 			VARIABLE,
 			WHILE,
 		};
@@ -347,6 +352,9 @@ public:
 		List<AnnotationNode *> annotations;
 
 		DataType datatype;
+
+		Vector<String> trait_origin; // Indicates origin of Node if copied over from trait.
+		StringName trait_origin_path; // Indicates single path origin of Node it copied over from trait.
 
 		virtual DataType get_datatype() const { return datatype; }
 		virtual void set_datatype(const DataType &p_datatype) { datatype = p_datatype; }
@@ -374,6 +382,7 @@ public:
 		Vector<ExpressionNode *> arguments;
 		Vector<Variant> resolved_arguments;
 
+		/** Information of the annotation. Might be null for unknown annotations. */
 		AnnotationInfo *info = nullptr;
 		PropertyInfo export_info;
 		bool is_resolved = false;
@@ -562,6 +571,7 @@ public:
 			enum Type {
 				UNDEFINED,
 				CLASS,
+				TRAIT,
 				CONSTANT,
 				FUNCTION,
 				SIGNAL,
@@ -589,7 +599,8 @@ public:
 					case UNDEFINED:
 						return "<undefined member>";
 					case CLASS:
-						// All class-type members have an id.
+					case TRAIT:
+						// All class/trait-type members have an id.
 						return m_class->identifier->name;
 					case CONSTANT:
 						return constant->identifier->name;
@@ -616,6 +627,8 @@ public:
 						return "???";
 					case CLASS:
 						return "class";
+					case TRAIT:
+						return "trait";
 					case CONSTANT:
 						return "constant";
 					case FUNCTION:
@@ -637,6 +650,7 @@ public:
 			int get_line() const {
 				switch (type) {
 					case CLASS:
+					case TRAIT:
 						return m_class->start_line;
 					case CONSTANT:
 						return constant->start_line;
@@ -661,6 +675,7 @@ public:
 			DataType get_datatype() const {
 				switch (type) {
 					case CLASS:
+					case TRAIT:
 						return m_class->get_datatype();
 					case CONSTANT:
 						return constant->get_datatype();
@@ -685,6 +700,7 @@ public:
 			Node *get_source_node() const {
 				switch (type) {
 					case CLASS:
+					case TRAIT:
 						return m_class;
 					case CONSTANT:
 						return constant;
@@ -709,7 +725,11 @@ public:
 			Member() {}
 
 			Member(ClassNode *p_class) {
-				type = CLASS;
+				if (p_class->type == Node::TRAIT) {
+					type = TRAIT;
+				} else {
+					type = CLASS;
+				}
 				m_class = p_class;
 			}
 			Member(ConstantNode *p_constant) {
@@ -741,7 +761,6 @@ public:
 				annotation = p_annotation;
 			}
 		};
-
 		IdentifierNode *identifier = nullptr;
 		String icon_path;
 		String simplified_icon_path;
@@ -756,6 +775,9 @@ public:
 		Vector<IdentifierNode *> extends; // List for indexing: extends A.B.C
 		DataType base_type;
 		String fqcn; // Fully-qualified class name. Identifies uniquely any class in the project.
+		// Used Traits.
+		Vector<UsesNode *> traits;
+		Vector<String> traits_fqtn; // Fully-qualified trait names. Identifies uniquely any trait used by this class.
 #ifdef TOOLS_ENABLED
 		ClassDocData doc_data;
 
@@ -766,6 +788,8 @@ public:
 		}
 #endif // TOOLS_ENABLED
 
+		bool resolving_uses = false;
+		bool resolved_uses = false;
 		bool resolved_interface = false;
 		bool resolved_body = false;
 
@@ -855,6 +879,7 @@ public:
 		HashMap<StringName, int> parameters_indices;
 		TypeNode *return_type = nullptr;
 		SuiteNode *body = nullptr;
+		bool is_bodyless = false; // Used for Traits with no body.
 		bool is_static = false; // For lambdas it's determined in the analyzer.
 		bool is_coroutine = false;
 		Variant rpc_config;
@@ -899,6 +924,7 @@ public:
 			MEMBER_FUNCTION,
 			MEMBER_SIGNAL,
 			MEMBER_CLASS,
+			MEMBER_TRAIT,
 			INHERITED_VARIABLE,
 			STATIC_VARIABLE,
 		};
@@ -1205,6 +1231,14 @@ public:
 		}
 	};
 
+	struct TraitNode : public ClassNode {
+		bool is_tool = false;
+		// Extends ClassNode to maintain Class features (so parsed by same methods) without duplication.
+		TraitNode() {
+			type = TRAIT;
+		}
+	};
+
 	struct TypeNode : public Node {
 		Vector<IdentifierNode *> type_chain;
 		Vector<TypeNode *> container_types;
@@ -1242,6 +1276,17 @@ public:
 
 		UnaryOpNode() {
 			type = UNARY_OPERATOR;
+		}
+	};
+
+	struct UsesNode : public Node {
+		String path;
+		Vector<IdentifierNode *> name; // List for indexing Trait: uses A.B.C
+		String fqtn; // Fully-qualified trait names.
+		Vector<String> traits_fqtn; // From traits used by this trait.
+
+		UsesNode() {
+			type = USES;
 		}
 	};
 
@@ -1299,6 +1344,7 @@ public:
 		COMPLETION_GET_NODE, // Get node with $ notation.
 		COMPLETION_IDENTIFIER, // List available identifiers in scope.
 		COMPLETION_INHERIT_TYPE, // Type after extends. Exclude non-viable types (built-ins, enums, void). Includes subtypes using the argument index.
+		COMPLETION_USES_TYPE, // Type after uses.Includes traits and sub-traits using the argument index.
 		COMPLETION_METHOD, // List available methods in scope.
 		COMPLETION_OVERRIDE_METHOD, // Override implementation, also for native virtuals.
 		COMPLETION_PROPERTY_DECLARATION, // Property declaration (get, set).
@@ -1312,6 +1358,11 @@ public:
 		COMPLETION_TYPE_NAME_OR_VOID, // Same as TYPE_NAME, but allows void (in function return type).
 	};
 
+	struct CompletionCall {
+		Node *call = nullptr;
+		int argument = -1;
+	};
+
 	struct CompletionContext {
 		CompletionType type = COMPLETION_NONE;
 		ClassNode *current_class = nullptr;
@@ -1323,16 +1374,16 @@ public:
 		Node *node = nullptr;
 		Object *base = nullptr;
 		GDScriptParser *parser = nullptr;
-	};
-
-	struct CompletionCall {
-		Node *call = nullptr;
-		int argument = -1;
+		CompletionCall call;
 	};
 
 private:
 	friend class GDScriptAnalyzer;
 	friend class GDScriptParserRef;
+
+	bool _file_is_trait = false; // True when script_path extension is "gdt".
+	bool _is_trait = false; // True when trait is being parsed.
+	bool _inside_trait = false; // True when parsing trait members even classes.
 
 	bool _is_tool = false;
 	String script_path;
@@ -1374,9 +1425,7 @@ private:
 	SuiteNode *current_suite = nullptr;
 
 	CompletionContext completion_context;
-	CompletionCall completion_call;
 	List<CompletionCall> completion_call_stack;
-	bool passed_cursor = false;
 	bool in_lambda = false;
 	bool lambda_ended = false; // Marker for when a lambda ends, to apply an end of statement if needed.
 
@@ -1386,13 +1435,14 @@ private:
 			NONE = 0,
 			SCRIPT = 1 << 0,
 			CLASS = 1 << 1,
-			VARIABLE = 1 << 2,
-			CONSTANT = 1 << 3,
-			SIGNAL = 1 << 4,
-			FUNCTION = 1 << 5,
-			STATEMENT = 1 << 6,
-			STANDALONE = 1 << 7,
-			CLASS_LEVEL = CLASS | VARIABLE | CONSTANT | SIGNAL | FUNCTION,
+			TRAIT = 1 << 2,
+			VARIABLE = 1 << 3,
+			CONSTANT = 1 << 4,
+			SIGNAL = 1 << 5,
+			FUNCTION = 1 << 6,
+			STATEMENT = 1 << 7,
+			STANDALONE = 1 << 8,
+			CLASS_LEVEL = CLASS | TRAIT | VARIABLE | CONSTANT | SIGNAL | FUNCTION,
 		};
 		uint32_t target_kind = 0; // Flags.
 		AnnotationAction apply = nullptr;
@@ -1449,11 +1499,30 @@ private:
 		node->next = list;
 		list = node;
 
+		if (_file_is_trait || _is_trait) {
+			node->trait_origin_path = script_path;
+			if (current_class) {
+				node->trait_origin.append(current_class->fqcn);
+			}
+		}
+
 		reset_extents(node, previous);
 		nodes_in_progress.push_back(node);
 
 		return node;
 	}
+
+	// Allocates a node for patching up the parse tree when an error occurred.
+	// Such nodes don't track their extents as they don't relate to actual tokens.
+	template <typename T>
+	T *alloc_recovery_node() {
+		T *node = memnew(T);
+		node->next = list;
+		list = node;
+
+		return node;
+	}
+
 	void clear();
 	void push_error(const String &p_message, const Node *p_origin = nullptr);
 #ifdef DEBUG_ENABLED
@@ -1493,6 +1562,7 @@ private:
 	ClassNode *parse_class(bool p_is_static);
 	void parse_class_name();
 	void parse_extends();
+	void parse_uses();
 	void parse_class_body(bool p_is_multiline);
 	template <typename T>
 	void parse_class_member(T *(GDScriptParser::*p_parse_function)(bool), AnnotationInfo::TargetKind p_target, const String &p_member_kind, bool p_is_static = false);
@@ -1588,7 +1658,6 @@ public:
 	static Variant::Type get_builtin_type(const StringName &p_type); // Excluding `Variant::NIL` and `Variant::OBJECT`.
 
 	CompletionContext get_completion_context() const { return completion_context; }
-	CompletionCall get_completion_call() const { return completion_call; }
 	void get_annotation_list(List<MethodInfo> *r_annotations) const;
 	bool annotation_exists(const String &p_annotation_name) const;
 
@@ -1668,5 +1737,3 @@ public:
 #endif // DEBUG_ENABLED
 	static void cleanup();
 };
-
-#endif // GDSCRIPT_PARSER_H

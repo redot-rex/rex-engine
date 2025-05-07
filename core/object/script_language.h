@@ -30,11 +30,11 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SCRIPT_LANGUAGE_H
-#define SCRIPT_LANGUAGE_H
+#pragma once
 
 #include "core/doc_data.h"
 #include "core/io/resource.h"
+#include "core/object/script_backtrace.h"
 #include "core/object/script_instance.h"
 #include "core/templates/pair.h"
 #include "core/templates/safe_refcount.h"
@@ -64,6 +64,8 @@ class ScriptServer {
 		StringName language;
 		String path;
 		StringName base;
+		bool is_abstract = false;
+		bool is_tool = false;
 	};
 
 	static HashMap<StringName, GlobalScriptClass> global_classes;
@@ -88,7 +90,7 @@ public:
 	static void thread_exit();
 
 	static void global_classes_clear();
-	static void add_global_class(const StringName &p_class, const StringName &p_base, const StringName &p_language, const String &p_path);
+	static void add_global_class(const StringName &p_class, const StringName &p_base, const StringName &p_language, const String &p_path, bool p_is_abstract, bool p_is_tool);
 	static void remove_global_class(const StringName &p_class);
 	static void remove_global_class_by_path(const String &p_path);
 	static bool is_global_class(const StringName &p_class);
@@ -96,9 +98,13 @@ public:
 	static String get_global_class_path(const String &p_class);
 	static StringName get_global_class_base(const String &p_class);
 	static StringName get_global_class_native_base(const String &p_class);
+	static bool is_global_class_abstract(const String &p_class);
+	static bool is_global_class_tool(const String &p_class);
 	static void get_global_class_list(List<StringName> *r_global_classes);
 	static void get_inheriters_list(const StringName &p_base_type, List<StringName> *r_classes);
 	static void save_global_classes();
+
+	static Vector<Ref<ScriptBacktrace>> capture_script_backtraces(bool p_include_variables = false);
 
 	static void init_languages();
 	static void finish_languages();
@@ -139,6 +145,7 @@ public:
 	virtual Ref<Script> get_base_script() const = 0; //for script inheritance
 	virtual StringName get_global_name() const = 0;
 	virtual bool inherits_script(const Ref<Script> &p_script) const = 0;
+	virtual bool has_script_type(const String &p_type) const { return false; } // For script with possible multiple script types, for instance interfaces or traits(in GDScript).
 
 	virtual StringName get_instance_base_type() const = 0; // this may not work in all scripts, will return empty if so
 	virtual ScriptInstance *instance_create(Object *p_this) = 0;
@@ -168,6 +175,7 @@ public:
 	virtual bool is_tool() const = 0;
 	virtual bool is_valid() const = 0;
 	virtual bool is_abstract() const = 0;
+	virtual bool is_attachable() const { return true; }
 
 	virtual ScriptLanguage *get_language() const = 0;
 
@@ -192,17 +200,6 @@ public:
 	Script() {}
 };
 
-class ScriptCodeCompletionCache {
-	static ScriptCodeCompletionCache *singleton;
-
-public:
-	static ScriptCodeCompletionCache *get_singleton() { return singleton; }
-
-	ScriptCodeCompletionCache();
-
-	virtual ~ScriptCodeCompletionCache() {}
-};
-
 class ScriptLanguage : public Object {
 	GDCLASS(ScriptLanguage, Object)
 
@@ -217,6 +214,13 @@ public:
 	virtual String get_type() const = 0;
 	virtual String get_extension() const = 0;
 	virtual void finish() = 0;
+
+	/* MULTI SCRIPT SUPPORT */
+	// TODO: In the next compat breakage the following methods should be merged by removing there similar method.
+	virtual String get_type_from_extension(const String &p_extension) const { return get_type(); }
+	virtual Vector<String> get_extensions() const { return Vector<String>({ get_extension() }); }
+	virtual Script *create_script_from_extension(const String &p_extension) const { return create_script(); }
+	virtual Ref<Script> make_template_using_extension(const String &p_template, const String &p_class_name, const String &p_base_class_name, const String &p_extension) const { return make_template(p_template, p_class_name, p_base_class_name); }
 
 	/* EDITOR FUNCTIONS */
 	struct Warning {
@@ -245,6 +249,7 @@ public:
 		SCRIPT_NAME_CASING_PASCAL_CASE,
 		SCRIPT_NAME_CASING_SNAKE_CASE,
 		SCRIPT_NAME_CASING_KEBAB_CASE,
+		SCRIPT_NAME_CASING_CAMEL_CASE,
 	};
 
 	struct ScriptTemplate {
@@ -271,6 +276,7 @@ public:
 	virtual bool is_using_templates() { return false; }
 	virtual bool validate(const String &p_script, const String &p_path = "", List<String> *r_functions = nullptr, List<ScriptError> *r_errors = nullptr, List<Warning> *r_warnings = nullptr, HashSet<int> *r_safe_lines = nullptr) const = 0;
 	virtual String validate_path(const String &p_path) const { return ""; }
+	virtual bool is_script_attachable(const String &p_extension) const { return true; }
 	virtual Script *create_script() const = 0;
 #ifndef DISABLE_DEPRECATED
 	virtual bool has_named_classes() const = 0;
@@ -445,7 +451,7 @@ public:
 	virtual void frame();
 
 	virtual bool handles_global_class_type(const String &p_type) const { return false; }
-	virtual String get_global_class_name(const String &p_path, String *r_base_type = nullptr, String *r_icon_path = nullptr) const { return String(); }
+	virtual String get_global_class_name(const String &p_path, String *r_base_type = nullptr, String *r_icon_path = nullptr, bool *r_is_abstract = nullptr, bool *r_is_tool = nullptr) const { return String(); }
 
 	virtual ~ScriptLanguage() {}
 };
@@ -503,5 +509,3 @@ public:
 	PlaceHolderScriptInstance(ScriptLanguage *p_language, Ref<Script> p_script, Object *p_owner);
 	~PlaceHolderScriptInstance();
 };
-
-#endif // SCRIPT_LANGUAGE_H

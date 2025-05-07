@@ -607,7 +607,7 @@ void AnimationLibraryEditor::_button_pressed(TreeItem *p_item, int p_column, int
 				file_popup->add_separator();
 				file_popup->add_item(TTR("Open in Inspector"), FILE_MENU_EDIT_LIBRARY);
 				Rect2 pos = tree->get_item_rect(p_item, 1, 0);
-				Vector2 popup_pos = tree->get_screen_transform().xform(pos.position + Vector2(0, pos.size.height)) - tree->get_scroll();
+				Vector2 popup_pos = tree->get_screen_transform().xform(pos.position + Vector2(0, pos.size.height));
 				file_popup->popup(Rect2(popup_pos, Size2()));
 
 				file_dialog_animation = StringName();
@@ -647,7 +647,7 @@ void AnimationLibraryEditor::_button_pressed(TreeItem *p_item, int p_column, int
 				file_popup->add_separator();
 				file_popup->add_item(TTR("Open in Inspector"), FILE_MENU_EDIT_ANIMATION);
 				Rect2 pos = tree->get_item_rect(p_item, 1, 0);
-				Vector2 popup_pos = tree->get_screen_transform().xform(pos.position + Vector2(0, pos.size.height)) - tree->get_scroll();
+				Vector2 popup_pos = tree->get_screen_transform().xform(pos.position + Vector2(0, pos.size.height));
 				file_popup->popup(Rect2(popup_pos, Size2()));
 
 				file_dialog_animation = anim_name;
@@ -891,8 +891,7 @@ Vector<uint64_t> AnimationLibraryEditor::_load_mixer_libs_folding() {
 		//The scene/mixer combination is no longer valid and we'll try to recover
 		uint64_t current_mixer_id = uint64_t(mixer->get_instance_id());
 		String current_mixer_signature = _get_mixer_signature();
-		List<String> sections;
-		config->get_sections(&sections);
+		Vector<String> sections = config->get_sections();
 
 		for (const String &section : sections) {
 			Variant mixer_id = config->get_value(section, "mixer");

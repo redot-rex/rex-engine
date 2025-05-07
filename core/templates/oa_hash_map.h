@@ -30,10 +30,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef OA_HASH_MAP_H
-#define OA_HASH_MAP_H
+#pragma once
 
-#include "core/math/math_funcs.h"
 #include "core/os/memory.h"
 #include "core/templates/hashfuncs.h"
 #include "core/templates/pair.h"
@@ -305,7 +303,10 @@ public:
 	 *  capacity.
 	 **/
 	void reserve(uint32_t p_new_capacity) {
-		ERR_FAIL_COND(p_new_capacity < capacity);
+		ERR_FAIL_COND_MSG(p_new_capacity < get_num_elements(), "reserve() called with a capacity smaller than the current size. This is likely a mistake.");
+		if (p_new_capacity <= capacity) {
+			return;
+		}
 		_resize_and_rehash(p_new_capacity);
 	}
 
@@ -407,5 +408,3 @@ public:
 		Memory::free_static(hashes);
 	}
 };
-
-#endif // OA_HASH_MAP_H

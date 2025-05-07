@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef RENDERING_SERVER_DEFAULT_H
-#define RENDERING_SERVER_DEFAULT_H
+#pragma once
 
 #include "core/object/worker_thread_pool.h"
 #include "core/os/thread.h"
@@ -380,6 +379,8 @@ public:
 	FUNC2(mesh_surface_remove, RID, int)
 	FUNC1(mesh_clear, RID)
 
+	FUNC1(mesh_debug_usage, List<MeshInfo> *)
+
 	/* MULTIMESH API */
 
 	FUNCRIDSPLIT(multimesh)
@@ -620,6 +621,7 @@ public:
 	FUNC2(particles_collision_set_attractor_attenuation, RID, real_t)
 	FUNC2(particles_collision_set_field_texture, RID, RID)
 	FUNC1(particles_collision_height_field_update, RID)
+	FUNC2(particles_collision_set_height_field_mask, RID, uint32_t)
 	FUNC2(particles_collision_set_height_field_resolution, RID, ParticlesCollisionHeightfieldResolution)
 
 	/* FOG VOLUME */
@@ -882,12 +884,12 @@ public:
 	FUNC2(instance_set_layer_mask, RID, uint32_t)
 	FUNC3(instance_set_pivot_data, RID, float, bool)
 	FUNC2(instance_set_transform, RID, const Transform3D &)
-	FUNC2(instance_set_interpolated, RID, bool)
-	FUNC1(instance_reset_physics_interpolation, RID)
 	FUNC2(instance_attach_object_instance_id, RID, ObjectID)
 	FUNC3(instance_set_blend_shape_weight, RID, int, float)
 	FUNC3(instance_set_surface_override_material, RID, int, RID)
 	FUNC2(instance_set_visible, RID, bool)
+
+	FUNC1(instance_teleport, RID)
 
 	FUNC2(instance_set_custom_aabb, RID, AABB)
 
@@ -1188,5 +1190,3 @@ public:
 	RenderingServerDefault(bool p_create_thread = false);
 	~RenderingServerDefault();
 };
-
-#endif // RENDERING_SERVER_DEFAULT_H

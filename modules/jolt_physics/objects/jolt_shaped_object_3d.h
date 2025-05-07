@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef JOLT_SHAPED_OBJECT_3D_H
-#define JOLT_SHAPED_OBJECT_3D_H
+#pragma once
 
 #include "jolt_object_3d.h"
 
@@ -46,6 +45,7 @@ class JoltShapedObject3D : public JoltObject3D {
 	friend class JoltShape3D;
 
 protected:
+	SelfList<JoltShapedObject3D> shapes_changed_element;
 	SelfList<JoltShapedObject3D> needs_optimization_element;
 
 	Vector3 scale = Vector3(1, 1, 1);
@@ -62,6 +62,9 @@ protected:
 	JPH::ShapeRefC _try_build_shape(bool p_optimize_compound);
 	JPH::ShapeRefC _try_build_single_shape();
 	JPH::ShapeRefC _try_build_compound_shape(bool p_optimize);
+
+	void _enqueue_shapes_changed();
+	void _dequeue_shapes_changed();
 
 	void _enqueue_needs_optimization();
 	void _dequeue_needs_optimization();
@@ -108,6 +111,7 @@ public:
 	void set_shape(int p_index, JoltShape3D *p_shape);
 
 	void clear_shapes();
+	void clear_previous_shape();
 
 	int get_shape_count() const { return shapes.size(); }
 
@@ -125,8 +129,4 @@ public:
 
 	bool is_shape_disabled(int p_index) const;
 	void set_shape_disabled(int p_index, bool p_disabled);
-
-	virtual void post_step(float p_step, JPH::Body &p_jolt_body) override;
 };
-
-#endif // JOLT_SHAPED_OBJECT_3D_H

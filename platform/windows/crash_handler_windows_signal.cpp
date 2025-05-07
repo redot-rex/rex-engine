@@ -33,6 +33,7 @@
 #include "crash_handler_windows.h"
 
 #include "core/config/project_settings.h"
+#include "core/object/script_language.h"
 #include "core/os/os.h"
 #include "core/string/print_string.h"
 #include "core/version.h"
@@ -43,6 +44,7 @@
 #include <cxxabi.h>
 #include <signal.h>
 #include <algorithm>
+#include <cstdlib>
 #include <iterator>
 #include <string>
 #include <vector>
@@ -135,6 +137,10 @@ extern void CrashHandlerException(int signal) {
 		return;
 	}
 
+	if (OS::get_singleton()->is_crash_handler_silent()) {
+		std::_Exit(0);
+	}
+
 	String msg;
 	const ProjectSettings *proj_settings = ProjectSettings::get_singleton();
 	if (proj_settings) {
@@ -150,10 +156,10 @@ extern void CrashHandlerException(int signal) {
 	print_error(vformat("%s: Program crashed with signal %d", __FUNCTION__, signal));
 
 	// Print the engine version just before, so that people are reminded to include the version in backtrace reports.
-	if (String(VERSION_HASH).is_empty()) {
-		print_error(vformat("Engine version: %s", VERSION_FULL_NAME));
+	if (String(REDOT_VERSION_HASH).is_empty()) {
+		print_error(vformat("Engine version: %s", REDOT_VERSION_FULL_NAME));
 	} else {
-		print_error(vformat("Engine version: %s (%s)", VERSION_FULL_NAME, VERSION_HASH));
+		print_error(vformat("Engine version: %s (%s)", REDOT_VERSION_FULL_NAME, REDOT_VERSION_HASH));
 	}
 	print_error(vformat("Dumping the backtrace. %s", msg));
 
@@ -169,7 +175,7 @@ extern void CrashHandlerException(int signal) {
 	if (FileAccess::exists(_execpath + ".debugsymbols")) {
 		_execpath = _execpath + ".debugsymbols";
 	}
-	_execpath = _execpath.replace("/", "\\");
+	_execpath = _execpath.replace_char('/', '\\');
 
 	CharString cs = _execpath.utf8(); // Note: should remain in scope during backtrace_simple call.
 	data.state = backtrace_create_state(cs.get_data(), 0, &error_callback, reinterpret_cast<void *>(&data));
@@ -180,6 +186,18 @@ extern void CrashHandlerException(int signal) {
 
 	print_error("-- END OF BACKTRACE --");
 	print_error("================================================================");
+
+	Vector<Ref<ScriptBacktrace>> script_backtraces;
+	if (ScriptServer::are_languages_initialized()) {
+		script_backtraces = ScriptServer::capture_script_backtraces(false);
+	}
+	if (!script_backtraces.is_empty()) {
+		for (const Ref<ScriptBacktrace> &backtrace : script_backtraces) {
+			print_error(backtrace->format());
+		}
+		print_error("-- END OF SCRIPT BACKTRACE --");
+		print_error("================================================================");
+	}
 }
 #endif
 

@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef TEST_COMPLETION_H
-#define TEST_COMPLETION_H
+#pragma once
 
 #ifdef TOOLS_ENABLED
 
@@ -103,7 +102,7 @@ static void test_directory(const String &p_dir) {
 				continue;
 			}
 			test_directory(path.path_join(next));
-		} else if (next.ends_with(".gd") && !next.ends_with(".notest.gd")) {
+		} else if ((next.ends_with(".gd") || next.ends_with(".gdt")) && !next.ends_with(".notest.gd") && !next.ends_with(".notest.gdt")) {
 			Ref<FileAccess> acc = FileAccess::open(path.path_join(next), FileAccess::READ, &err);
 
 			if (err != OK) {
@@ -163,6 +162,8 @@ static void test_directory(const String &p_dir) {
 				owner = scene->get_node(conf.get_value("input", "node_path", "."));
 			}
 
+			// The only requirement is for the script to be parsable, warnings and errors from the analyzer might happen and completion should still work.
+			ERR_PRINT_OFF;
 			if (owner != nullptr) {
 				// Remove the line which contains the sentinel char, to get a valid script.
 				Ref<GDScript> scr;
@@ -186,6 +187,8 @@ static void test_directory(const String &p_dir) {
 			}
 
 			GDScriptLanguage::get_singleton()->complete_code(code, res_path, owner, &options, forced, call_hint);
+			ERR_PRINT_ON;
+
 			String contains_excluded;
 			for (ScriptLanguage::CodeCompletionOption &option : options) {
 				for (const Dictionary &E : exclude) {
@@ -234,5 +237,3 @@ TEST_SUITE("[Modules][GDScript][Completion]") {
 } // namespace GDScriptTests
 
 #endif
-
-#endif // TEST_COMPLETION_H

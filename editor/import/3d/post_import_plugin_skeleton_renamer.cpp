@@ -247,6 +247,3 @@ void PostImportPluginSkeletonRenamer::internal_process(InternalImportCategory p_
 		}
 	}
 }
-
-PostImportPluginSkeletonRenamer::PostImportPluginSkeletonRenamer() {
-}

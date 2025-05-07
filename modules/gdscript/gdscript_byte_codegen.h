@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef GDSCRIPT_BYTE_CODEGEN_H
-#define GDSCRIPT_BYTE_CODEGEN_H
+#pragma once
 
 #include "gdscript_codegen.h"
 #include "gdscript_function.h"
@@ -548,11 +547,9 @@ public:
 	virtual void write_break() override;
 	virtual void write_continue() override;
 	virtual void write_breakpoint() override;
-	virtual void write_newline(int p_line) override;
+	virtual void write_newline(int p_line, const StringName &p_external_source = "", int p_uses_line = 0) override;
 	virtual void write_return(const Address &p_return_value) override;
 	virtual void write_assert(const Address &p_test, const Address &p_message) override;
 
 	virtual ~GDScriptByteCodeGenerator();
 };
-
-#endif // GDSCRIPT_BYTE_CODEGEN_H

@@ -30,8 +30,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef SCRIPT_LANGUAGE_EXTENSION_H
-#define SCRIPT_LANGUAGE_EXTENSION_H
+#pragma once
 
 #include "core/extension/ext_wrappers.gen.inc"
 #include "core/object/gdvirtual.gen.inc"
@@ -57,6 +56,7 @@ public:
 	EXBIND0RC(Ref<Script>, get_base_script)
 	EXBIND0RC(StringName, get_global_name)
 	EXBIND1RC(bool, inherits_script, const Ref<Script> &)
+	EXBIND1RC(bool, has_script_type, const String &)
 	EXBIND0RC(StringName, get_instance_base_type)
 
 	GDVIRTUAL1RC_REQUIRED(GDExtensionPtr<void>, _instance_create, Object *)
@@ -138,7 +138,7 @@ public:
 		return GDVIRTUAL_CALL(_is_abstract, abst) && abst;
 	}
 	GDVIRTUAL0RC(bool, _is_abstract)
-
+	EXBIND0RC(bool, is_attachable)
 	EXBIND0RC(ScriptLanguage *, get_language)
 	EXBIND1RC(bool, has_script_signal, const StringName &)
 
@@ -195,10 +195,8 @@ public:
 	virtual void get_constants(HashMap<StringName, Variant> *p_constants) override {
 		Dictionary constants;
 		GDVIRTUAL_CALL(_get_constants, constants);
-		List<Variant> keys;
-		constants.get_key_list(&keys);
-		for (const Variant &K : keys) {
-			p_constants->insert(K, constants[K]);
+		for (const KeyValue<Variant, Variant> &kv : constants) {
+			p_constants->insert(kv.key, kv.value);
 		}
 	}
 	GDVIRTUAL0RC_REQUIRED(TypedArray<StringName>, _get_members)
@@ -237,7 +235,9 @@ public:
 
 	EXBIND0(init)
 	EXBIND0RC(String, get_type)
+	EXBIND1RC(String, get_type_from_extension, const String &)
 	EXBIND0RC(String, get_extension)
+	EXBIND0RC(Vector<String>, get_extensions)
 	EXBIND0(finish)
 
 	/* EDITOR FUNCTIONS */
@@ -284,6 +284,7 @@ public:
 	}
 
 	EXBIND3RC(Ref<Script>, make_template, const String &, const String &, const String &)
+	EXBIND4RC(Ref<Script>, make_template_using_extension, const String &, const String &, const String &, const String &)
 
 	GDVIRTUAL1RC_REQUIRED(TypedArray<Dictionary>, _get_built_in_templates, StringName)
 
@@ -380,12 +381,15 @@ public:
 	}
 
 	EXBIND1RC(String, validate_path, const String &)
+	EXBIND1RC(bool, is_script_attachable, const String &)
 	GDVIRTUAL0RC_REQUIRED(Object *, _create_script)
 	Script *create_script() const override {
 		Object *ret = nullptr;
 		GDVIRTUAL_CALL(_create_script, ret);
 		return Object::cast_to<Script>(ret);
 	}
+	GDVIRTUAL1RC_REQUIRED(Object *, _create_script_from_extension, const String &)
+	Script *create_script_from_extension(const String &p_extension) const override { return create_script(); }
 #ifndef DISABLE_DEPRECATED
 	EXBIND0RC(bool, has_named_classes)
 #endif
@@ -439,8 +443,9 @@ public:
 				option.location = op["location"];
 				if (op.has("matches")) {
 					PackedInt32Array matches = op["matches"];
-					ERR_CONTINUE(matches.size() & 1);
-					for (int j = 0; j < matches.size(); j += 2) {
+					size_t matches_size = matches.size();
+					ERR_CONTINUE(matches_size & 1);
+					for (size_t j = 0; j < matches_size; j += 2) {
 						option.matches.push_back(Pair<int, int>(matches[j], matches[j + 1]));
 					}
 				}
@@ -518,7 +523,7 @@ public:
 	virtual void debug_get_stack_level_locals(int p_level, List<String> *p_locals, List<Variant> *p_values, int p_max_subitems = -1, int p_max_depth = -1) override {
 		Dictionary ret;
 		GDVIRTUAL_CALL(_debug_get_stack_level_locals, p_level, p_max_subitems, p_max_depth, ret);
-		if (ret.size() == 0) {
+		if (ret.is_empty()) {
 			return;
 		}
 		if (p_locals != nullptr && ret.has("locals")) {
@@ -538,7 +543,7 @@ public:
 	virtual void debug_get_stack_level_members(int p_level, List<String> *p_members, List<Variant> *p_values, int p_max_subitems = -1, int p_max_depth = -1) override {
 		Dictionary ret;
 		GDVIRTUAL_CALL(_debug_get_stack_level_members, p_level, p_max_subitems, p_max_depth, ret);
-		if (ret.size() == 0) {
+		if (ret.is_empty()) {
 			return;
 		}
 		if (p_members != nullptr && ret.has("members")) {
@@ -565,7 +570,7 @@ public:
 	virtual void debug_get_globals(List<String> *p_globals, List<Variant> *p_values, int p_max_subitems = -1, int p_max_depth = -1) override {
 		Dictionary ret;
 		GDVIRTUAL_CALL(_debug_get_globals, p_max_subitems, p_max_depth, ret);
-		if (ret.size() == 0) {
+		if (ret.is_empty()) {
 			return;
 		}
 		if (p_globals != nullptr && ret.has("globals")) {
@@ -674,7 +679,7 @@ public:
 
 	GDVIRTUAL1RC_REQUIRED(Dictionary, _get_global_class_name, const String &)
 
-	virtual String get_global_class_name(const String &p_path, String *r_base_type = nullptr, String *r_icon_path = nullptr) const override {
+	virtual String get_global_class_name(const String &p_path, String *r_base_type = nullptr, String *r_icon_path = nullptr, bool *r_is_abstract = nullptr, bool *r_is_tool = nullptr) const override {
 		Dictionary ret;
 		GDVIRTUAL_CALL(_get_global_class_name, p_path, ret);
 		if (!ret.has("name")) {
@@ -685,6 +690,12 @@ public:
 		}
 		if (r_icon_path != nullptr && ret.has("icon_path")) {
 			*r_icon_path = ret["icon_path"];
+		}
+		if (r_is_abstract != nullptr && ret.has("is_abstract")) {
+			*r_is_abstract = ret["is_abstract"];
+		}
+		if (r_is_tool != nullptr && ret.has("is_tool")) {
+			*r_is_tool = ret["is_tool"];
 		}
 		return ret["name"];
 	}
@@ -710,11 +721,7 @@ public:
 
 	GDExtensionScriptInstanceDataPtr instance = nullptr;
 
-// There should not be warnings on explicit casts.
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wignored-qualifiers"
-#endif
+	GODOT_GCC_WARNING_PUSH_AND_IGNORE("-Wignored-qualifiers") // There should not be warnings on explicit casts.
 
 	virtual bool set(const StringName &p_name, const Variant &p_value) override {
 		if (native_info->set_func) {
@@ -821,7 +828,9 @@ public:
 	virtual void get_property_state(List<Pair<StringName, Variant>> &state) override {
 		if (native_info->get_property_state_func) {
 			native_info->get_property_state_func(instance, _add_property_with_state, &state);
+			return;
 		}
+		ScriptInstance::get_property_state(state);
 	}
 
 	virtual void get_method_list(List<MethodInfo> *p_list) const override {
@@ -962,9 +971,5 @@ public:
 #endif // DISABLE_DEPRECATED
 	}
 
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic pop
-#endif
+	GODOT_GCC_WARNING_POP
 };
-
-#endif // SCRIPT_LANGUAGE_EXTENSION_H

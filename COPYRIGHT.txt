@@ -66,6 +66,15 @@ Copyright: 2011, Ole Kniemeyer, MAXON, www.maxon.net
  2007-2014, Juan Linietsky, Ariel Manzur
 License: Expat and Zlib
 
+Files: modules/betsy/alpha_stitch.glsl
+ modules/betsy/bc1.glsl
+ modules/betsy/bc4.glsl
+ modules/betsy/bc6h.glsl
+ modules/betsy/CrossPlatformSettings_piece_all.glsl
+Comment: Betsy
+Copyright: 2020-2022, Matias N. Goldberg
+License: Expat
+
 Files: modules/godot_physics_2d/godot_joints_2d.cpp
 Comment: Chipmunk2D Joint Constraints
 Copyright: 2007, Scott Lembcke
@@ -145,15 +154,21 @@ Copyright: 2001, Robert Penner
  2007-2014, Juan Linietsky, Ariel Manzur
 License: Expat
 
-Files: servers/rendering/renderer_rd/shaders/ss_effects_downsample.glsl
- servers/rendering/renderer_rd/shaders/ssao_blur.glsl
- servers/rendering/renderer_rd/shaders/ssao_importance_map.glsl
- servers/rendering/renderer_rd/shaders/ssao_interleave.glsl
- servers/rendering/renderer_rd/shaders/ssao.glsl
- servers/rendering/renderer_rd/shaders/ssil_blur.glsl
- servers/rendering/renderer_rd/shaders/ssil_importance_map.glsl
- servers/rendering/renderer_rd/shaders/ssil_interleave.glsl
- servers/rendering/renderer_rd/shaders/ssil.glsl
+Files: ./servers/rendering/renderer_rd/shaders/effects/tonemap.glsl
+Comment: NVidia's FXAA 3.11, simplified by Simon Rodriguez
+Copyright: 2014-2015, NVIDIA CORPORATION
+ 2017 Simon Rodriguez
+License: BSD-3-clause and Expat
+
+Files: ./servers/rendering/renderer_rd/shaders/ss_effects_downsample.glsl
+ ./servers/rendering/renderer_rd/shaders/ssao_blur.glsl
+ ./servers/rendering/renderer_rd/shaders/ssao_importance_map.glsl
+ ./servers/rendering/renderer_rd/shaders/ssao_interleave.glsl
+ ./servers/rendering/renderer_rd/shaders/ssao.glsl
+ ./servers/rendering/renderer_rd/shaders/ssil_blur.glsl
+ ./servers/rendering/renderer_rd/shaders/ssil_importance_map.glsl
+ ./servers/rendering/renderer_rd/shaders/ssil_interleave.glsl
+ ./servers/rendering/renderer_rd/shaders/ssil.glsl
 Comment: Intel ASSAO and related files
 Copyright: 2016, Intel Corporation
 License: Expat
@@ -161,6 +176,11 @@ License: Expat
 Files: servers/rendering/renderer_rd/shaders/effects/taa_resolve.glsl
 Comment: Temporal Anti-Aliasing resolve implementation
 Copyright: 2016, Panos Karabelas
+License: Expat
+
+Files: thirdparty/accesskit/*
+Comment: AccessKit
+Copyright: 2023, The AccessKit Authors.
 License: Expat
 
 Files: thirdparty/amd-fsr/*
@@ -188,11 +208,6 @@ Comment: Basis Universal
 Copyright: 2019-2024, Binomial LLC.
 License: Apache-2.0
 
-Files: thirdparty/betsy/*
-Comment: Betsy
-Copyright: 2020-2022, Matias N. Goldberg
-License: Expat
-
 Files: thirdparty/brotli/*
 Comment: Brotli
 Copyright: 2009, 2010, 2013-2016 by the Brotli Authors.
@@ -205,7 +220,7 @@ License: MPL-2.0
 
 Files: thirdparty/clipper2/*
 Comment: Clipper2
-Copyright: 2010-2024, Angus Johnson
+Copyright: 2010-2025, Angus Johnson
 License: BSL-1.0
 
 Files: thirdparty/cvtt/*
@@ -416,6 +431,11 @@ Comment: FastLZ
 Copyright: 2005-2020, Ariya Hidayat
 License: Expat
 
+Files: thirdparty/misc/FastNoiseLite.h
+Comment: FastNoise Lite
+Copyright: 2023, Jordan Peck and contributors
+License: Expat
+
 Files: thirdparty/misc/ifaddrs-android.cc
  thirdparty/misc/ifaddrs-android.h
 Comment: libjingle
@@ -428,15 +448,15 @@ Comment: Tangent Space Normal Maps implementation
 Copyright: 2011, Morten S. Mikkelsen
 License: Zlib
 
+Files: thirdparty/misc/nvapi_minimal.h
+Comment: NVIDIA NVAPI (minimal excerpt)
+Copyright: 2019-2022, NVIDIA Corporation
+License: Expat
+
 Files: thirdparty/misc/ok_color.h
  thirdparty/misc/ok_color_shader.h
 Comment: OK Lab color space
 Copyright: 2021, Björn Ottosson
-License: Expat
-
-Files: thirdparty/noise/FastNoiseLite.h
-Comment: FastNoise Lite
-Copyright: 2023, Jordan Peck and contributors
 License: Expat
 
 Files: thirdparty/misc/pcg.cpp
@@ -487,11 +507,6 @@ License: BSD-2-clause
 Files: thirdparty/msdfgen/*
 Comment: Multi-channel signed distance field generator
 Copyright: 2014-2024, Viktor Chlumsky
-License: Expat
-
-Files: thirdparty/nvapi/nvapi_minimal.h
-Comment: Stripped down version of "nvapi.h" from the NVIDIA NVAPI SDK
-Copyright: 2019-2022, NVIDIA Corporation
 License: Expat
 
 Files: thirdparty/openxr/*
