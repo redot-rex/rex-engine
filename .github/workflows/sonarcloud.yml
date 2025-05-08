@@ -21,6 +21,9 @@ jobs:
           cache-name: sonarcloud-godot-build
         continue-on-error: true
 
+      - name: Setup Python and SCons
+        uses: ./.github/actions/godot-deps
+
       - name: Build ReX C++ (Generate compile_commands.json)
         uses: ./.github/actions/godot-build
         with:
