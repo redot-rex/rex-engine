@@ -108,10 +108,18 @@ endif()
 set_target_properties(rex_engine PROPERTIES OUTPUT_NAME "${OUTPUT_NAME}")
 
 # Compiler flags
-if(REX_BUILD_TYPE MATCHES "debug")
-    target_compile_options(rex_engine PRIVATE -g -O0)
+if(MSVC)
+    if(REX_BUILD_TYPE MATCHES "debug")
+        target_compile_options(rex_engine PRIVATE /Od /Zi)
+    else()
+        target_compile_options(rex_engine PRIVATE /O2 /DNDEBUG)
+    endif()
 else()
-    target_compile_options(rex_engine PRIVATE -O3 -DNDEBUG)
+    if(REX_BUILD_TYPE MATCHES "debug")
+        target_compile_options(rex_engine PRIVATE -g -O0)
+    else()
+        target_compile_options(rex_engine PRIVATE -O3 -DNDEBUG)
+    endif()
 endif()
 
 # Include directories
