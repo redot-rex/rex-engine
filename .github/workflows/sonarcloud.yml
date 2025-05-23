@@ -15,29 +15,83 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Restore ReX build cache
-        uses: ./.github/actions/godot-cache-restore
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
         with:
-          cache-name: sonarcloud-godot-build
-        continue-on-error: true
+          distribution: temurin
+          java-version: 17
 
-      - name: Setup Python and SCons
-        uses: ./.github/actions/godot-deps
-
-      - name: Build ReX C++ (Generate compile_commands.json)
-        uses: ./.github/actions/godot-build
+      - name: Cache SonarCloud tools
+        id: cache-sonar-tools
+        uses: actions/cache@v4
         with:
-          sconsflags: compile_commands.json=yes
-          platform: linuxbsd
-          target: editor
+          path: |
+            ./sonar-scanner-cli
+            ./build-wrapper
+          key: ${{ runner.os }}-sonar-tools
 
-      - name: Save ReX build cache
-        uses: ./.github/actions/godot-cache-save
-        with:
-          cache-name: sonarcloud-godot-build
-        continue-on-error: true
+      - name: Download and set up SonarScanner CLI and Build Wrapper
+        if: steps.cache-sonar-tools.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          # Create directories for tools
+          mkdir -p ./sonar-scanner-cli
+          mkdir -p ./build-wrapper
+
+          # Download SonarScanner CLI
+          echo "Downloading SonarScanner CLI..."
+          wget -q -O sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-latest-linux.zip
+          unzip -q sonar-scanner.zip -d ./sonar-scanner-cli
+          # Find the actual scanner directory name (it includes version)
+          SONAR_SCANNER_DIR=$(find ./sonar-scanner-cli -maxdepth 1 -type d -name "sonar-scanner-*" -print -quit)
+          if [ -z "$SONAR_SCANNER_DIR" ]; then
+            echo "Error: Could not find SonarScanner directory after unzipping."
+            exit 1
+          fi
+          echo "$SONAR_SCANNER_DIR/bin" >> $GITHUB_PATH
+          echo "SonarScanner CLI downloaded and added to PATH."
+
+          # Download Build Wrapper
+          echo "Downloading Build Wrapper..."
+          wget -q -O build-wrapper.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
+          unzip -q build-wrapper.zip -d ./build-wrapper
+          # Find the actual build wrapper directory
+          BUILD_WRAPPER_DIR=$(find ./build-wrapper -maxdepth 1 -type d -name "build-wrapper-linux-x86" -print -quit)
+          if [ -z "$BUILD_WRAPPER_DIR" ]; then
+            echo "Error: Could not find Build Wrapper directory after unzipping."
+            exit 1
+          fi
+          echo "$BUILD_WRAPPER_DIR" >> $GITHUB_PATH
+          echo "Build Wrapper downloaded and added to PATH."
+
+          # Clean up zip files
+          rm sonar-scanner.zip
+          rm build-wrapper.zip
+
+      - name: Add SonarCloud tools to PATH (if cached)
+        if: steps.cache-sonar-tools.outputs.cache-hit == 'true'
+        shell: bash
+        run: |
+          echo "Using cached SonarCloud tools."
+          SONAR_SCANNER_DIR=$(find ./sonar-scanner-cli -maxdepth 1 -type d -name "sonar-scanner-*" -print -quit)
+          if [ -n "$SONAR_SCANNER_DIR" ]; then
+            echo "$SONAR_SCANNER_DIR/bin" >> $GITHUB_PATH
+          else
+            echo "Warning: Cached SonarScanner directory not found."
+          fi
+
+          BUILD_WRAPPER_DIR=$(find ./build-wrapper -maxdepth 1 -type d -name "build-wrapper-linux-x86" -print -quit)
+          if [ -n "$BUILD_WRAPPER_DIR" ]; then
+            echo "$BUILD_WRAPPER_DIR" >> $GITHUB_PATH
+          else
+            echo "Warning: Cached Build Wrapper directory not found."
+          fi
+
+      - name: Install SCons
+        run: sudo apt-get update && sudo apt-get install -y scons
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
