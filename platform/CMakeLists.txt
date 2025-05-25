@@ -1,0 +1,12 @@
+if(REX_PLATFORM STREQUAL "linux")
+	file(GLOB_RECURSE PLATFORM_SOURCES linuxbsd/*.cpp)
+	target_include_directories(rex_engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/linuxbsd/)
+elseif(REX_PLATFORM STREQUAL "windows")
+	file(GLOB_RECURSE PLATFORM_SOURCES windows/*.cpp)
+	target_include_directories(rex_engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/windows/)
+elseif(REX_PLATFORM STREQUAL "macos")
+	file(GLOB_RECURSE PLATFORM_SOURCES macos/*.cpp)
+	target_include_directories(rex_engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/macos/)
+endif()
+
+target_sources(rex_engine PUBLIC ${PLATFORM_SOURCES})

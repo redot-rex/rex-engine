@@ -1,0 +1,41 @@
+add_subdirectory(unix)
+add_subdirectory(windows)
+add_subdirectory(alsa)
+add_subdirectory(pulseaudio)
+add_subdirectory(alsamidi)
+add_subdirectory(winmidi)
+add_subdirectory(png)
+
+if (VULKAN)
+	add_subdirectory(vulkan)
+endif()
+
+if (OPENGL3)
+	add_subdirectory(gles3)
+	add_subdirectory(egl)
+endif()
+
+if (REX_PLATFORM STREQUAL "ios"
+	OR REX_PLATFORM STREQUAL "macos")
+	add_subdirectory(coreaudio)
+	add_subdirectory(apple)
+	add_subdirectory(coremidi)
+
+	if (METAL)
+		add_subdirectory(METAL)
+	endif()
+endif()
+
+
+if (REX_PLATFORM STREQUAL "windows")
+	add_subdirectory(wasapi)
+	if (XAUDIO2)
+		add_subdirectory(xaudio2)
+	endif()
+	if (D3D12)
+		add_subdirectory(d3d12)
+	endif()
+endif()
+
+
+

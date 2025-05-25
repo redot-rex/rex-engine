@@ -6,11 +6,64 @@ project(rex_engine
         LANGUAGES C CXX
 )
 
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+set(PYTHON_EXECUTABLE "python3" CACHE STRING "python3")
 # Build options
-option(REX_TOOLS "Build editor tools" ON)
+option(REX_TOOLS "Build editor tools" OFF)
 option(REX_DEV_MODE "Enable developer mode" OFF)
 set(REX_PLATFORM "linux" CACHE STRING "Target platform: linux, windows, macos")
 set(REX_BUILD_TYPE "release" CACHE STRING "Build type: debug, release_debug, release")
+
+option(PRODUCTION "Set defaults to build Redot for use in production" OFF)
+option(THREADS "Enable Threading Support" ON)
+
+# Components
+
+option(DEPRICATED "Enable compatibility code of deprecated and removed features" ON)
+set(PRECISION "single" CACHE STRING "Set the floating-point precision level: single, double")
+option(MINIZIP "Enable ZIP archive support using minizip" ON)
+option(BROTLI "Enable Brotli for decompression and WOFF2 fonts support" ON)
+option(XAUDIO2 "Enable XAudio2 audio driver on supported platforms" OFF)
+option(VULKAN "Enable the vulkan rendering driver" ON)
+option(OPENGL3 "Enable the OpenGL/GLES3 rendering driver" ON)
+option(D3D12 "Enable the Direct3D 12 rendering driver on supported platforms" OFF)
+option(METAL "Enable the Metal rendering driver on supported platforms (Apple arm64 only)" OFF)
+option(USE_VOLK "Use the volk library to load the Vulkan loader dynamically" ON)
+option(DISABLE_EXCEPTIONS "Force disabling exception handling code" ON)
+
+# Advanced options
+option(REX_TESTS "Build the unit tests" OFF)
+
+# Third Party options
+
+option(BUILTIN_BROTLI "Use the built-in Brotli library" ON)
+option(BUILTIN_CERTS "Use the built-in SSL certificates bundles" ON)
+option(BUILTIN_CLIPPER2 "Use the built-in Clipper2 library" ON)
+option(BUILTIN_EMBREE "Use the built-in Embree library" ON)
+option(BUILTIN_ENET "Use the built-in ENet library" ON)
+option(BUILTIN_FREETYPE "Use the built-in FreeType library" ON)
+option(BUILTIN_MSDFGEN "Use the built-in MSDFgen library" ON)
+option(BUILTIN_GLSLANG "Use the built-in glslang library" ON)
+option(BUILTIN_GRAPHITE "Use the built-in Graphite library" ON)
+option(BUILTIN_HARFBUZZ "Use the built-in HarfBuzz library" ON)
+option(BUILTIN_ICU4C "Use the built-in ICU library" ON)
+option(BUILTIN_LIBOGG "Use the built-in libogg library" ON)
+option(BUILTIN_LIBPNG "Use the built-in libpng library" ON)
+option(BUILTIN_LIBTHEORA "Use the built-in libtheora library" ON)
+option(BUILTIN_LIBVORBIS "Use the built-in libvorbis library" ON)
+option(BUILTIN_LIBWEBP "Use the built-in libwebp library" ON)
+option(BUILTIN_WSLAY "Use the built-in wslay library" ON)
+option(BUILTIN_MBEDTLS "Use the built-in mbedTLS library" ON)
+option(BUILTIN_MINIUPNPC "Use the built-in miniupnpc library" ON)
+option(BUILTIN_OPENXR "Use the built-in OpenXR library" ON)
+option(BUILTIN_PCRE2 "Use the built-in PCRE2 library" ON)
+option(BUILTIN_PCRE2_WITH_JIT "Use JIT compiler for the built-in PCRE2 library" ON)
+option(BUILTIN_RECASTNAVIGATION "Use the built-in Recast navigation library" ON)
+option(BUILTIN_RVO2_2D "Use the built-in RVO2 2D library" ON)
+option(BUILTIN_RVO2_3D "Use the built-in RVO2 3D library" ON)
+option(BUILTIN_XATLAS "Use the built-in xatlas library" ON)
+option(BUILTIN_ZLIB "Use the built-in zlib library" ON)
+option(BUILTIN_ZSTD "Use the built-in Zstd library" ON)
 
 # Validate platform
 set(VALID_PLATFORMS "linux" "windows" "macos")
@@ -24,76 +77,53 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Directory setup
-set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(CORE_DIR ${SOURCE_DIR}/core)
-set(SERVERS_DIR ${SOURCE_DIR}/servers)
-set(EDITOR_DIR ${SOURCE_DIR}/editor)
-set(MODULES_DIR ${SOURCE_DIR}/modules)
-set(PLATFORM_DIR ${SOURCE_DIR}/platform)
-set(SCENE_DIR ${SOURCE_DIR}/scene)
-set(THIRDPARTY_DIR ${SOURCE_DIR}/thirdparty)
-
-# Core sources
-file(GLOB_RECURSE CORE_SOURCES CONFIGURE_DEPENDS
-        ${CORE_DIR}/*.cpp
-        ${SERVERS_DIR}/*.cpp
-        ${SCENE_DIR}/*.cpp
-        ${THIRDPARTY_DIR}/*.c
-        ${THIRDPARTY_DIR}/*.cpp
-)
-file(GLOB_RECURSE CORE_HEADERS CONFIGURE_DEPENDS
-        ${CORE_DIR}/*.hpp
-        ${SERVERS_DIR}/*.hpp
-        ${SCENE_DIR}/*.hpp
-)
-
-# Editor sources
-if(REX_TOOLS)
-    file(GLOB_RECURSE EDITOR_SOURCES CONFIGURE_DEPENDS ${EDITOR_DIR}/*.cpp)
-    file(GLOB_RECURSE EDITOR_HEADERS CONFIGURE_DEPENDS ${EDITOR_DIR}/*.hpp)
-    list(APPEND CORE_SOURCES ${EDITOR_SOURCES})
-    list(APPEND CORE_HEADERS ${EDITOR_HEADERS})
-endif()
-
-# Platform-specific sources and defines
-if(REX_PLATFORM STREQUAL "linux")
-    file(GLOB_RECURSE PLATFORM_SOURCES CONFIGURE_DEPENDS ${PLATFORM_DIR}/linuxbsd/*.cpp)
-    set(PLATFORM_INCLUDE ${PLATFORM_DIR}/linuxbsd)
-    set(PLATFORM_DEFINES UNIX_ENABLED X11_ENABLED OPENGL_ENABLED)
-elseif(REX_PLATFORM STREQUAL "windows")
-    file(GLOB_RECURSE PLATFORM_SOURCES CONFIGURE_DEPENDS ${PLATFORM_DIR}/windows/*.cpp)
-    set(PLATFORM_INCLUDE ${PLATFORM_DIR}/windows)
-    set(PLATFORM_DEFINES WIN32_ENABLED NOMINMAX WIN32_LEAN_AND_MEAN OPENGL_ENABLED)
-elseif(REX_PLATFORM STREQUAL "macos")
-    file(GLOB_RECURSE PLATFORM_SOURCES CONFIGURE_DEPENDS ${PLATFORM_DIR}/macos/*.cpp)
-    set(PLATFORM_INCLUDE ${PLATFORM_DIR}/macos)
-    set(PLATFORM_DEFINES MACOS_ENABLED OPENGL_ENABLED)
-endif()
-
-list(APPEND CORE_SOURCES ${PLATFORM_SOURCES})
-
-# Modules
-file(GLOB_RECURSE MODULE_SOURCES CONFIGURE_DEPENDS
-        ${MODULES_DIR}/gdscript/*.cpp
-        ${MODULES_DIR}/gridmap/*.cpp
-        ${MODULES_DIR}/navigation/*.cpp
-        ${MODULES_DIR}/visual_script/*.cpp
-)
-list(APPEND CORE_SOURCES ${MODULE_SOURCES})
-
-# Third-party C sources
-file(GLOB_RECURSE THIRDPARTY_SOURCES CONFIGURE_DEPENDS
-        ${THIRDPARTY_DIR}/zlib/*.c
-        ${THIRDPARTY_DIR}/libpng/*.c
-        ${THIRDPARTY_DIR}/freetype/*.c
-        ${THIRDPARTY_DIR}/libogg/*.c
-        ${THIRDPARTY_DIR}/libvorbis/*.c
-)
-list(APPEND CORE_SOURCES ${THIRDPARTY_SOURCES})
-
 # Define executable
-add_executable(rex_engine ${CORE_SOURCES} ${CORE_HEADERS})
+add_executable(rex_engine main/main.cpp)
+target_include_directories(rex_engine PUBLIC
+	${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+if (REX_TOOLS)
+	target_compile_definitions(rex_engine PUBLIC
+		TOOLS_ENABLED
+		ENGINE_UPDATE_CHECK_ENABLED
+	)
+endif()
+
+if (REX_DEV_MODE)
+	target_compile_definitions(rex_engine PUBLIC
+		DEV_ENABLED
+		DEBUG_ENABLED
+	)
+else()
+	target_compile_definitions(rex_engine PUBLIC
+		NODEBUG
+	)
+endif()
+
+if (NOT DEPRICATED)
+	target_compile_definitions(rex_engine PUBLIC
+		DISABLE_DEPRECATED
+	)
+endif()
+
+if (PRECISION STREQUAL "double")
+	target_compile_definitions(rex_engine PUBLIC
+		REAL_T_IS_DOUBLE
+	)
+endif()
+
+add_subdirectory(thirdparty)
+add_subdirectory(core)
+add_subdirectory(servers)
+add_subdirectory(scene)
+if (REX_TOOLS)
+	add_subdirectory(editor)
+endif()
+add_subdirectory(drivers)
+add_subdirectory(platform)
+add_subdirectory(modules)
+add_subdirectory(main)
 
 # Output name
 set(OUTPUT_NAME "rex.${REX_PLATFORM}")
@@ -122,92 +152,8 @@ else()
     endif()
 endif()
 
-# Include directories
-target_include_directories(rex_engine PRIVATE
-        ${SOURCE_DIR}
-        ${CORE_DIR}
-        ${CORE_DIR}/binder
-        ${CORE_DIR}/io
-        ${CORE_DIR}/math
-        ${CORE_DIR}/os
-        ${CORE_DIR}/config
-        ${SERVERS_DIR}
-        ${SERVERS_DIR}/rendering
-        ${SERVERS_DIR}/audio
-        ${SERVERS_DIR}/physics
-        ${EDITOR_DIR}
-        ${MODULES_DIR}
-        ${MODULES_DIR}/gdscript
-        ${MODULES_DIR}/gridmap
-        ${MODULES_DIR}/navigation
-        ${MODULES_DIR}/visual_script
-        ${PLATFORM_DIR}
-        ${PLATFORM_INCLUDE}
-        ${SCENE_DIR}
-        ${SCENE_DIR}/2d
-        ${SCENE_DIR}/3d
-        ${SCENE_DIR}/animation
-        ${THIRDPARTY_DIR}
-        ${THIRDPARTY_DIR}/zlib
-        ${THIRDPARTY_DIR}/libpng
-        ${THIRDPARTY_DIR}/freetype
-        ${THIRDPARTY_DIR}/libogg
-        ${THIRDPARTY_DIR}/libvorbis
-)
-
-# Platform-specific dependencies
-if(REX_PLATFORM STREQUAL "linux")
-    find_package(X11 REQUIRED)
-    find_package(ALSA REQUIRED)
-    find_package(Freetype REQUIRED)
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules(FONTCONFIG REQUIRED fontconfig)
-    pkg_check_modules(LIBPULSE REQUIRED libpulse)
-
-    target_link_libraries(rex_engine PRIVATE
-            ${X11_LIBRARIES}
-            ${ALSA_LIBRARIES}
-            ${FREETYPE_LIBRARIES}
-            ${FONTCONFIG_LIBRARIES}
-            ${LIBPULSE_LIBRARIES}
-            pthread
-            dl
-            z
-    )
-elseif(REX_PLATFORM STREQUAL "windows")
-    target_link_libraries(rex_engine PRIVATE
-            ws2_32
-            winmm
-            dsound
-            opengl32
-            d3d9
-            shlwapi
-            dwmapi
-            gdi32
-    )
-elseif(REX_PLATFORM STREQUAL "macos")
-    find_library(COCOA_LIBRARY Cocoa)
-    find_library(IOKIT_LIBRARY IOKit)
-    find_library(OPENGL_LIBRARY OpenGL)
-    find_library(COREFOUNDATION_LIBRARY CoreFoundation)
-    find_library(AUDIOUNIT_LIBRARY AudioUnit)
-    target_link_libraries(rex_engine PRIVATE
-            ${COCOA_LIBRARY}
-            ${IOKIT_LIBRARY}
-            ${OPENGL_LIBRARY}
-            ${COREFOUNDATION_LIBRARY}
-            ${AUDIOUNIT_LIBRARY}
-            z
-    )
-endif()
-
 # Preprocessor definitions
 target_compile_definitions(rex_engine PRIVATE ${PLATFORM_DEFINES})
-
-# Dev mode defines
-if(REX_DEV_MODE)
-    target_compile_definitions(rex_engine PRIVATE DEV_ENABLED TOOLS_ENABLED)
-endif()
 
 # Output binary directory
 set_target_properties(rex_engine PROPERTIES
