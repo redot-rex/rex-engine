@@ -93,12 +93,13 @@ if (VULKAN)
 	if (REX_PLATFORM STREQUAL "android")
 		target_compile_definitions(rex_engine PUBLIC
 			VK_USE_PLATFORM_ANDROID_KHR
+			VMA_VULKAN_VERSION=1000000
 		)
 	elseif (REX_PLATFORM STREQUAL "IOS")
 		target_compile_definitions(rex_engine PUBLIC
 			VK_USE_PLATFORM_IOS_MVK
 			VK_USE_PLATFORM_METAL_EXT
-			VMA_VOLKAN_VERSION=1001000
+			VMA_VULKAN_VERSION=1001000
 		)
 	elseif (REX_PLATFORM STREQUAL "linux")
 		if (X11)
@@ -115,7 +116,7 @@ if (VULKAN)
 		target_compile_definitions(rex_engine PUBLIC
 			VK_USE_PLATFORM_MACOS_KHR
 			VK_USE_PLATFORM_METAL_EXT
-			VMA_VOLKAN_VERSION=1001000
+			VMA_VULKAN_VERSION=1001000
 		)
 	elseif (REX_PLATFORM STREQUAL "windows")
 		target_compile_definitions(rex_engine PUBLIC
