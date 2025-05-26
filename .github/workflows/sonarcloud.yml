@@ -10,9 +10,23 @@ env:
   SONAR_SERVER_URL: "https://sonarcloud.io"
   BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory
   SCONS_CACHE: ${{ github.workspace }}/.scons_cache/
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
 jobs:
+  checksecret:
+    name: check if SONAR_TOKEN is set in github secrets
+    runs-on: ubuntu-latest
+    outputs:
+      is_SONAR_TOKEN_set: ${{ steps.checksecret_job.outputs.is_SONAR_TOKEN_set }}
+    steps:
+      - name: Check whether unity activation requests should be done
+        id: checksecret_job
+        run: |
+          echo "is_SONAR_TOKEN_set=${{ env.SONAR_TOKEN != '' }}" >> $GITHUB_OUTPUT
+
   cpp-analysis:
+    needs: [ checksecret ]
+    if: needs.checksecret.outputs.is_SONAR_TOKEN_set == 'true'
     name: C++ Analysis
     runs-on: ubuntu-22.04
     steps:
