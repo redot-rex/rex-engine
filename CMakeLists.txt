@@ -1,18 +1,47 @@
 cmake_minimum_required(VERSION 3.26 FATAL_ERROR)
 
-project(rex_engine
-        VERSION 4.3
-        DESCRIPTION "Rex Game Engine"
-        LANGUAGES C CXX
-)
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 set(PYTHON_EXECUTABLE "python3" CACHE STRING "python3")
+
+# C++ Standard
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# TODO: Only checking for desktop platforms for now.
+# NOTE: Using strings that make the Scons build system.
+if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Linux"
+		OR ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "DragonFly"
+		OR ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "FreeBSD"
+		OR ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "NetBSD"
+		OR ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "OpenBSD")
+	set(REX_PLATFORM "linuxbsd")
+elseif (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+	set(REX_PLATFORM "windows")
+elseif (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin")
+	set(REX_PLATFORM "macos")
+else()
+	message(FATAL_ERROR "${CMAKE_HOST_SYSTEM_NAME} not supported.")
+endif()
+
+message(STATUS "Detected build platform: ${REX_PLATFORM}")
+message(STATUS "Architecture: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
+
 # Build options
+
+set(OPTIMIZE "auto" CACHE STRING "Optimization level (by default inferred from 'target' and 'dev_build'): auto, none,
+custom, debug, speed, speed_trace, size, size_extra")
+set(BUILD_TARGET "editor" CACHE STRING "Compilation target: editor, template_release, template_debug")
+
 option(REX_TOOLS "Build editor tools" OFF)
-option(REX_DEV_MODE "Enable developer mode" OFF)
-set(REX_PLATFORM "linux" CACHE STRING "Target platform: linux, windows, macos")
-set(REX_BUILD_TYPE "release" CACHE STRING "Build type: debug, release_debug, release")
+option(REX_DEV_BUILD "Enable developer build" OFF)
+
+option(DEBUG_SYMBOLS "Build with debugging symbols" OFF)
+option(SEPARATE_DEBUG_SYMBOLS "Extract debugging symbols to a separate file" OFF)
+option(DEBUG_RELATIVE_PATHS "Make file paths in debug symbols relative (if supported)" OFF)
+
+set(LTO "none" CACHE STRING "Link-time optimization (production builds): none, auto, thin, full")
 
 option(PRODUCTION "Set defaults to build Redot for use in production" OFF)
 option(THREADS "Enable Threading Support" ON)
@@ -65,17 +94,32 @@ option(BUILTIN_XATLAS "Use the built-in xatlas library" ON)
 option(BUILTIN_ZLIB "Use the built-in zlib library" ON)
 option(BUILTIN_ZSTD "Use the built-in Zstd library" ON)
 
-# Validate platform
-set(VALID_PLATFORMS "linux" "windows" "macos")
-list(FIND VALID_PLATFORMS "${REX_PLATFORM}" PLATFORM_INDEX)
-if(PLATFORM_INDEX EQUAL -1)
-    message(FATAL_ERROR "Invalid platform: ${REX_PLATFORM}. Choose from: ${VALID_PLATFORMS}")
+option(DISABLE_3D "Disable 3D nodes for a smaller executable" OFF)
+option(DISABLE_ADVANCED_GUI "Disable advanced GUI nodes and behaviors" OFF)
+option(DISABLE_PHYSICS_2D "Disable 2D physics nodes and server" OFF)
+option(DISABLE_PHYSICS_3D "Disable 3D physics nodes and server" OFF)
+option(DISABLE_NAVIGATION_2D "Disable 2D navigation features" OFF)
+option(DISABLE_NAVIGATION_3D "Disable 3D navigation features" OFF)
+option(DISABLE_XR "Disable XR nodes and server" OFF)
+option(MODULES_ENABLED_BY_DEFAULT "If no disable all modules except ones explicitly enabled" ON)
+option(NO_EDITOR_SPLASH "Don't use the custom splash screen for the editor" ON)
+option(USE_PRECISE_MATH_CHECKS "Math checks use very precise epsilon (debug option)" OFF)
+option(STRICT_CHECKS "Enforce stricter checks (debug option)" OFF)
+option(SCU_BUILD "Use single compilation unit build" OFF)
+option(ENGINE_UPDATE_CHECK "Enable engine update checks in the Project Manager" ON)
+option(STEAMAPI "Enable minimal SteamAPI integration for usage time tracking (editor only)" OFF)
+
+if (DEBUG_SYMBOLS)
+	set(CMAKE_BUILD_TYPE Debug)
+else()
+	set(CMAKE_BUILD_TYPE Release)
 endif()
 
-# C++ Standard
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+project(rex_engine
+        VERSION 4.3
+        DESCRIPTION "Rex Game Engine"
+        LANGUAGES C CXX
+)
 
 # Define executable
 add_executable(rex_engine main/main.cpp)
@@ -83,21 +127,52 @@ target_include_directories(rex_engine PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-if (REX_TOOLS)
+if (BUILD_TARGET STREQUAL "editor")
+	set(EDITOR_BUILD ON)
+endif()
+
+if (BUILD_TARGET STREQUAL "editor" OR BUILD_TARGET STREQUAL "template_debug")
+	set(DEBUG_FEATURES ON)
+endif()
+
+if (EDITOR_BUILD)
 	target_compile_definitions(rex_engine PUBLIC
 		TOOLS_ENABLED
-		ENGINE_UPDATE_CHECK_ENABLED
+	)
+	if (ENGINE_UPDATE_CHECK)
+		target_compile_definitions(rex_engine PUBLIC
+			ENGINE_UPDATE_CHECK_ENABLED
+		)
+	endif()
+	if (NOT EXISTS ${CMAKE_SOURCE_DIR}/main/splash_editor.png)
+		set(NO_EDITOR_SPLASH ON)
+	endif()
+	if (NO_EDITOR_SPLASH)
+		target_compile_definitions(rex_engine PUBLIC
+			NO_EDITOR_SPLASH
+		)
+	endif()
+endif()
+
+if (DEBUG_FEATURES)
+	target_compile_definitions(rex_engine PUBLIC
+		DEBUG_ENABLED
 	)
 endif()
 
-if (REX_DEV_MODE)
+if (REX_DEV_BUILD)
 	target_compile_definitions(rex_engine PUBLIC
 		DEV_ENABLED
-		DEBUG_ENABLED
 	)
 else()
 	target_compile_definitions(rex_engine PUBLIC
 		NODEBUG
+	)
+endif()
+
+if (USE_PRECISE_MATH_CHECKS)
+	target_compile_definitions(rex_engine PUBLIC
+		PRECISE_MATH_CHECKS
 	)
 endif()
 
@@ -110,6 +185,103 @@ endif()
 if (PRECISION STREQUAL "double")
 	target_compile_definitions(rex_engine PUBLIC
 		REAL_T_IS_DOUBLE
+	)
+endif()
+
+if (STRICT_CHECKS)
+	target_compile_definitions(rex_engine PUBLIC
+		STRICT_CHECKS
+	)
+endif()
+
+if (EDITOR_BUILD)
+	if (DISABLE_3D
+	 OR DISABLE_ADVANCED_GUI
+	 OR DISABLE_PHYSICS_2D
+	 OR DISABLE_PHYSICS_3D
+	 OR DISABLE_NAVIGATION_2D
+	 OR DISABLE_NAVIGATION_3D)
+		message(FATAL_ERROR "The following build options cannot be used for editor builds, DISABLE_3D, DISABLE_ADVANCED_GUI,
+ DISABLE_PHYSICS_2D, DISABLE_PHYSICS_3D, DISABLE_NAVIGATION_2D, DISABLE_NAVIGATION_3D")
+	endif()
+endif()
+
+if (DISABLE_3D)
+	target_compile_definitions(rex_engine PUBLIC
+		_3D_DISABLED
+	)
+	set(DISABLE_NAVIGATION_3D ON)
+	set(DISABLE_PHYSICS_3D ON)
+	set(DISABLE_XR ON)
+endif()
+
+if (DISABLE_ADVANCED_GUI)
+	target_compile_definitions(rex_engine PUBLIC
+		ADVANCED_GUI_DISABLED
+	)
+endif()
+
+if (DISABLE_PHYSICS_2D)
+	target_compile_definitions(rex_engine PUBLIC
+		PHYSICS_2D_DISABLED
+	)
+endif()
+
+if (DISABLE_PHYSICS_3D)
+	target_compile_definitions(rex_engine PUBLIC
+		PHYSICS_3D_DISABLED
+	)
+endif()
+
+if (DISABLE_NAVIGATION_2D)
+	target_compile_definitions(rex_engine PUBLIC
+		NAVIGATION_2D_DISABLED
+	)
+endif()
+
+if (DISABLE_NAVIGATION_3D)
+	target_compile_definitions(rex_engine PUBLIC
+		NAVIGATION_3D_DISABLED
+	)
+endif()
+
+if (DISABLE_XR)
+	target_compile_definitions(rex_engine PUBLIC
+		XR_DISABLED
+	)
+endif()
+
+if (MINIZIP)
+	target_compile_definitions(rex_engine PUBLIC
+		MINIZIP_ENABLED
+	)
+endif()
+
+if (BROTLI)
+	target_compile_definitions(rex_engine PUBLIC
+		BROTLI_ENABLED
+	)
+endif()
+
+if (THREADS)
+	target_compile_definitions(rex_engine PUBLIC
+		THREADS_ENABLED
+	)
+endif()
+
+if (DISABLE_EXCEPTIONS)
+	if (MSVC)
+		target_compile_definitions(rex_engine PUBLIC
+			_HAS_EXCEPTIONS=0
+		)
+	else()
+		target_compile_options(rex_engine PUBLIC
+			-fno-exceptions
+		)
+	endif()
+elseif(MSVC)
+	target_compile_options(rex_engine PUBLIC
+		/EHsc
 	)
 endif()
 
@@ -137,19 +309,45 @@ if(REX_BUILD_TYPE MATCHES "debug")
 endif()
 set_target_properties(rex_engine PROPERTIES OUTPUT_NAME "${OUTPUT_NAME}")
 
+if (OPTIMIZE STREQUAL "size_extra")
+	target_compile_definitions(rex_engine PUBLIC
+		SIZE_EXTRA
+	)
+endif()
+
 # Compiler flags
-if(MSVC)
-    if(REX_BUILD_TYPE MATCHES "debug")
-        target_compile_options(rex_engine PRIVATE /Od /Zi)
-    else()
-        target_compile_options(rex_engine PRIVATE /O2 /DNDEBUG)
-    endif()
+if (MSVC)
+	if (DEBUG_SYMBOLS)
+		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Zi /FS")
+	endif()
+	if (OPTIMIZE MATCHES "speed")
+		target_compile_options(rex_engine PRIVATE -O2)
+	elseif (OPTIMIZE MATCHES "size")
+		target_compile_options(rex_engine PRIVATE -O1)
+	else()
+		target_compile_options(rex_engine PRIVATE -Od)
+	endif()
 else()
-    if(REX_BUILD_TYPE MATCHES "debug")
-        target_compile_options(rex_engine PRIVATE -g -O0)
-    else()
-        target_compile_options(rex_engine PRIVATE -O3 -DNDEBUG)
+	if (DEBUG_SYMBOLS)
+		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -gdwarf-4")
+		if (REX_DEV_BUILD)
+			target_compile_options(rex_engine PRIVATE -g3)
+		else()
+			target_compile_options(rex_engine PRIVATE -g2)
+		endif()
     endif()
+
+	if (OPTIMIZE STREQUAL "speed")
+		target_compile_options(rex_engine PRIVATE -O3)
+	elseif (OPTIMIZE STREQUAL "speed_trace")
+		target_compile_options(rex_engine PRIVATE -O2)
+	elseif (OPTIMIZE MATCHES "size")
+		target_compile_options(rex_engine PRIVATE -Os)
+	elseif (OPTIMIZE STREQUAL "debug")
+		target_compile_options(rex_engine PRIVATE -Og)
+	elseif (OPTIMIZE STREQUAL "none")
+		target_compile_options(rex_engine PRIVATE -O0)
+	endif()
 endif()
 
 # Preprocessor definitions

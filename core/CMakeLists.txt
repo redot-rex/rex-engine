@@ -1,4 +1,179 @@
-file(GLOB_RECURSE CORE_SOURCES
-	*.cpp
+file(GLOB CORE_SOURCES *.cpp)
+
+add_library(rex_core STATIC ${CORE_SOURCES})
+
+target_include_directories(rex_core PRIVATE "$<TARGET_PROPERTY:rex_engine,INTERFACE_INCLUDE_DIRECTORIES>")
+
+set(THIRDPARTY_DIR ${CMAKE_SOURCE_DIR}/thirdparty/)
+
+target_sources(rex_core PRIVATE
+	${THIRDPARTY_DIR}misc/fastlz.c
+	${THIRDPARTY_DIR}misc/r128.c
+	${THIRDPARTY_DIR}misc/smaz.c
+	${THIRDPARTY_DIR}misc/pcg.cpp
+	${THIRDPARTY_DIR}misc/polypartition.cpp
+	${THIRDPARTY_DIR}misc/smolv.cpp
 )
-target_sources(rex_engine PRIVATE ${CORE_SOURCES})
+
+if (BUILTIN_BROTLI)
+	set(THIRDPARTY_BROTLI_DIR ${THIRDPARTY_DIR}brotli/)
+	target_sources(rex_core PRIVATE
+        ${THIRDPARTY_BROTLI_DIR}common/constants.c
+		${THIRDPARTY_BROTLI_DIR}common/context.c
+		${THIRDPARTY_BROTLI_DIR}common/dictionary.c
+        ${THIRDPARTY_BROTLI_DIR}common/platform.c
+        ${THIRDPARTY_BROTLI_DIR}common/shared_dictionary.c
+        ${THIRDPARTY_BROTLI_DIR}common/transform.c
+        ${THIRDPARTY_BROTLI_DIR}dec/bit_reader.c
+        ${THIRDPARTY_BROTLI_DIR}dec/decode.c
+        ${THIRDPARTY_BROTLI_DIR}dec/huffman.c
+        ${THIRDPARTY_BROTLI_DIR}dec/state.c
+	)
+
+	target_include_directories(rex_engine PRIVATE
+		${THIRDPARTY_BROTLI_DIR}include
+	)
+
+	target_include_directories(rex_core PRIVATE
+		${THIRDPARTY_BROTLI_DIR}include
+	)
+
+	if (USE_UBSAN OR USE_ASAN OR USE_TSAN OR USE_LSAN OR USE_MSAN)
+		target_compile_definitions(rex_core PUBLIC
+			BROTLI_BUILD_PORTABLE
+		)
+	endif()
+endif()
+
+if (BUILTIN_CLIPPER2)
+	set(THIRDPARTY_CLIPPER2_DIR ${THIRDPARTY_DIR}clipper2/)
+	target_sources(rex_core PRIVATE
+        ${THIRDPARTY_CLIPPER2_DIR}src/clipper.engine.cpp
+        ${THIRDPARTY_CLIPPER2_DIR}src/clipper.offset.cpp
+        ${THIRDPARTY_CLIPPER2_DIR}src/clipper.rectclip.cpp
+	)
+
+	target_include_directories(rex_engine PRIVATE
+		${THIRDPARTY_CLIPPER2_DIR}include
+	)
+
+	target_include_directories(rex_core PRIVATE
+		${THIRDPARTY_CLIPPER2_DIR}include
+	)
+
+	target_compile_definitions(rex_engine PUBLIC
+		CLIPPER2_ENABLED
+	)
+
+	target_compile_definitions(rex_core PUBLIC
+		CLIPPER2_ENABLED
+	)
+endif()
+
+if (BUILTIN_ZLIB)
+	set(THIRDPARTY_ZLIB_DIR ${THIRDPARTY_DIR}zlib/)
+	target_sources(rex_core PRIVATE
+        ${THIRDPARTY_ZLIB_DIR}adler32.c
+        ${THIRDPARTY_ZLIB_DIR}compress.c
+        ${THIRDPARTY_ZLIB_DIR}crc32.c
+        ${THIRDPARTY_ZLIB_DIR}deflate.c
+        ${THIRDPARTY_ZLIB_DIR}inffast.c
+        ${THIRDPARTY_ZLIB_DIR}inflate.c
+        ${THIRDPARTY_ZLIB_DIR}inftrees.c
+        ${THIRDPARTY_ZLIB_DIR}trees.c
+        ${THIRDPARTY_ZLIB_DIR}uncompr.c
+        ${THIRDPARTY_ZLIB_DIR}zutil.c
+	)
+
+	target_include_directories(rex_engine PRIVATE
+		${THIRDPARTY_ZLIB_DIR}
+	)
+
+	target_include_directories(rex_core PRIVATE
+		${THIRDPARTY_ZLIB_DIR}
+	)
+
+	if (DEV_BUILD)
+		target_compile_definitions(rex_engine PUBLIC ZLIB_DEBUG)
+		target_compile_definitions(rex_core PUBLIC ZLIB_DEBUG)
+	endif()
+endif()
+
+# Minizip library, could be unbundled in theory
+# However, our version has some custom modifications, so it won't compile with the system one
+set(THIRDPARTY_MINIZIP_DIR ${THIRDPARTY_DIR}minizip/)
+target_sources(rex_core PRIVATE
+	${THIRDPARTY_MINIZIP_DIR}ioapi.c
+	${THIRDPARTY_MINIZIP_DIR}unzip.c
+	${THIRDPARTY_MINIZIP_DIR}zip.c
+)
+
+if (BUILTIN_ZSTD)
+	set(THIRDPARTY_ZSTD_DIR ${THIRDPARTY_DIR}zstd/)
+	target_sources(rex_engine PRIVATE
+        ${THIRDPARTY_ZSTD_DIR}common/debug.c
+        ${THIRDPARTY_ZSTD_DIR}common/entropy_common.c
+        ${THIRDPARTY_ZSTD_DIR}common/error_private.c
+        ${THIRDPARTY_ZSTD_DIR}common/fse_decompress.c
+        ${THIRDPARTY_ZSTD_DIR}common/pool.c
+        ${THIRDPARTY_ZSTD_DIR}common/threading.c
+        ${THIRDPARTY_ZSTD_DIR}common/xxhash.c
+        ${THIRDPARTY_ZSTD_DIR}common/zstd_common.c
+        ${THIRDPARTY_ZSTD_DIR}compress/fse_compress.c
+        ${THIRDPARTY_ZSTD_DIR}compress/hist.c
+        ${THIRDPARTY_ZSTD_DIR}compress/huf_compress.c
+        ${THIRDPARTY_ZSTD_DIR}compress/zstd_compress.c
+        ${THIRDPARTY_ZSTD_DIR}compress/zstd_double_fast.c
+        ${THIRDPARTY_ZSTD_DIR}compress/zstd_fast.c
+        ${THIRDPARTY_ZSTD_DIR}compress/zstd_lazy.c
+        ${THIRDPARTY_ZSTD_DIR}compress/zstd_ldm.c
+        ${THIRDPARTY_ZSTD_DIR}compress/zstd_opt.c
+        ${THIRDPARTY_ZSTD_DIR}compress/zstdmt_compress.c
+        ${THIRDPARTY_ZSTD_DIR}compress/zstd_compress_literals.c
+        ${THIRDPARTY_ZSTD_DIR}compress/zstd_compress_sequences.c
+        ${THIRDPARTY_ZSTD_DIR}compress/zstd_compress_superblock.c
+        ${THIRDPARTY_ZSTD_DIR}decompress/huf_decompress.c
+        ${THIRDPARTY_ZSTD_DIR}decompress/zstd_ddict.c
+        ${THIRDPARTY_ZSTD_DIR}decompress/zstd_decompress_block.c
+        ${THIRDPARTY_ZSTD_DIR}decompress/zstd_decompress.c
+	)
+	if (REX_PLATFORM STREQUAL "android"
+		OR REX_PLATFORM STREQUAL "ios"
+		OR REX_PLATFORM STREQUAL "linux"
+		OR REX_PLATFORM STREQUAL "macos")
+		target_sources(rex_core PRIVATE
+			${THIRDPARTY_ZSTD_DIR}decompress/huf_decompress_amd64.S
+		)
+	endif()
+
+	target_include_directories(rex_engine PRIVATE
+		${THIRDPARTY_ZSTD_DIR}
+		${THIRDPARTY_ZSTD_DIR}common/
+	)
+
+	target_include_directories(rex_core PRIVATE
+		${THIRDPARTY_ZSTD_DIR}
+		${THIRDPARTY_ZSTD_DIR}common/
+	)
+
+	target_compile_definitions(rex_engine PUBLIC ZSTD_STATIC_LINKING_ONLY)
+	target_compile_definitions(rex_core PUBLIC ZSTD_STATIC_LINKING_ONLY)
+
+endif()
+
+add_subdirectory(os)
+add_subdirectory(math)
+add_subdirectory(crypto)
+add_subdirectory(io)
+add_subdirectory(debugger)
+add_subdirectory(input)
+add_subdirectory(variant)
+add_subdirectory(extension)
+add_subdirectory(object)
+add_subdirectory(templates)
+add_subdirectory(string)
+add_subdirectory(config)
+add_subdirectory(error)
+
+
+target_link_libraries(rex_engine rex_core)

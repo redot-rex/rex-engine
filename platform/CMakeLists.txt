@@ -1,4 +1,4 @@
-if(REX_PLATFORM STREQUAL "linux")
+if(REX_PLATFORM STREQUAL "linuxbsd")
 	file(GLOB_RECURSE PLATFORM_SOURCES linuxbsd/*.cpp)
 	target_include_directories(rex_engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/linuxbsd/)
 elseif(REX_PLATFORM STREQUAL "windows")
