@@ -1,0 +1,2 @@
+file(GLOB_RECURSE CORE_TEMPLATES_SOURCES *.cpp)
+target_sources(rex_core PUBLIC ${CORE_TEMPLATES_SOURCES})
