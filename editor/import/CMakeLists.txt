@@ -1,0 +1,2 @@
+file(GLOB_RECURSE EDITOR_IMPORT_SOURCES *.cpp)
+target_sources(rex_editor PUBLIC ${EDITOR_IMPORT_SOURCES})

@@ -5,7 +5,7 @@ find_package(Python3 REQUIRED COMPONENTS Interpreter)
 set(PYTHON_EXECUTABLE "python3" CACHE STRING "python3")
 
 # C++ Standard
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -289,7 +289,7 @@ add_subdirectory(thirdparty)
 add_subdirectory(core)
 add_subdirectory(servers)
 add_subdirectory(scene)
-if (REX_TOOLS)
+if (BUILD_TARGET STREQUAL "editor")
 	add_subdirectory(editor)
 endif()
 add_subdirectory(drivers)
