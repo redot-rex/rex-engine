@@ -13,6 +13,10 @@ add_library(rex_servers STATIC
 
 target_include_directories(rex_servers PRIVATE "$<TARGET_PROPERTY:rex_engine,INTERFACE_INCLUDE_DIRECTORIES>")
 
+get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
+
+target_compile_definitions(rex_servers PUBLIC ${ENGINE_DEFINITIONS})
+
 add_subdirectory(audio)
 add_subdirectory(camera)
 add_subdirectory(debugger)

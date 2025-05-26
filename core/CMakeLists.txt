@@ -4,6 +4,10 @@ add_library(rex_core STATIC ${CORE_SOURCES})
 
 target_include_directories(rex_core PRIVATE "$<TARGET_PROPERTY:rex_engine,INTERFACE_INCLUDE_DIRECTORIES>")
 
+get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
+
+target_compile_definitions(rex_core PUBLIC ${ENGINE_DEFINITIONS})
+
 set(THIRDPARTY_DIR ${CMAKE_SOURCE_DIR}/thirdparty/)
 
 target_sources(rex_core PRIVATE
