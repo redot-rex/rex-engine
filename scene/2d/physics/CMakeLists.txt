@@ -1,0 +1,2 @@
+file(GLOB_RECURSE SCENE_2D_PHYSICS_SOURCES *.cpp)
+target_sources(rex_scene PUBLIC ${SCENE_2D_PHYSICS_SOURCES})

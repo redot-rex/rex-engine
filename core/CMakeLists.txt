@@ -53,11 +53,11 @@ if (BUILTIN_CLIPPER2)
         ${THIRDPARTY_CLIPPER2_DIR}src/clipper.rectclip.cpp
 	)
 
-	target_include_directories(rex_engine PRIVATE
+	target_include_directories(rex_engine PUBLIC
 		${THIRDPARTY_CLIPPER2_DIR}include
 	)
 
-	target_include_directories(rex_core PRIVATE
+	target_include_directories(rex_core PUBLIC
 		${THIRDPARTY_CLIPPER2_DIR}include
 	)
 
