@@ -1,20 +1,82 @@
-name: SonarQube
-
+name: 🔍 SonarCloud
 on:
   push:
     branches:
       - master
   pull_request:
     types: [opened, synchronize, reopened]
+
+env:
+  SONAR_SERVER_URL: "https://sonarcloud.io"
+  BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory
+  SCONS_CACHE: ${{ github.workspace }}/.scons_cache/
+
 jobs:
-  sonarqube:
-    name: SonarQube
-    runs-on: ubuntu-latest
+  cpp-analysis:
+    name: C++ Analysis
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: SonarQube Scan
+          submodules: recursive
+
+      - name: Free disk space on runner
+        run: |
+          echo "Disk usage before:" && df -h
+          sudo rm -rf /usr/local/lib/android
+          echo "Disk usage after:" && df -h
+
+      - name: Restore SCons cache
+        uses: ./.github/actions/godot-cache-restore
+        with:
+          cache-name: sonarcloud-cache-cpp
+          scons-cache: ${{ env.SCONS_CACHE }}
+        continue-on-error: true
+
+      - name: Setup Python and SCons
+        uses: ./.github/actions/godot-deps
+
+      - name: Install Build Wrapper
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v5
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwayland-bin
+
+      - name: Run build-wrapper
+        run: |
+          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} \
+            scons verbose=yes platform=linuxbsd compiledb=yes target=editor warnings=extra werror=yes threads=yes module_text_server_fb_enabled=yes strict_checks=yes "cache_path=${{ env.SCONS_CACHE }}"
+
+      - name: Save SCons cache
+        uses: ./.github/actions/godot-cache-save
+        with:
+          cache-name: sonarcloud-cache-cpp
+          scons-cache: ${{ env.SCONS_CACHE }}
+        continue-on-error: true
+
+      - name: SonarQube C++ Scan
         uses: SonarSource/sonarqube-scan-action@v5
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.cfamily.compile-commands=${{ env.BUILD_WRAPPER_OUT_DIR }}/compile_commands.json
+            -Dsonar.cfamily.threads=2
+            -Dsonar.exclusions=thirdparty/**,platform/android/java/**,misc/**,tests/**
+
+  # TODO: Java/Kotlin and C# analysis jobs will be added in the future.
+  # java-analysis:
+  #   name: Java/Kotlin Analysis
+  #   runs-on: ubuntu-24.04
+  #   steps:
+  #     - name: TODO: Implement Java/Kotlin analysis
+
+  # csharp-analysis:
+  #   name: C# Analysis
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - name: TODO: Implement C# analysis
