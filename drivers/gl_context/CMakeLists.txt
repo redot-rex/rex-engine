@@ -5,7 +5,7 @@ if (OPENGL3)
 		# TODO: include egl.c for angle libs
 	)
 
-	target_include_directories(rex_drivers PRIVATE
+	target_include_directories(rex_engine PUBLIC
 		${THIRDPARTY_GLAD_DIR}
 	)
 

@@ -1,12 +1,13 @@
 if(REX_PLATFORM STREQUAL "linuxbsd")
-	file(GLOB_RECURSE PLATFORM_SOURCES linuxbsd/*.cpp)
+	file(GLOB_RECURSE PLATFORM_SOURCES linuxbsd/api/*.cpp)
 elseif(REX_PLATFORM STREQUAL "windows")
-	file(GLOB_RECURSE PLATFORM_SOURCES windows/*.cpp)
+	file(GLOB_RECURSE PLATFORM_SOURCES windows/api/*.cpp)
 elseif(REX_PLATFORM STREQUAL "macos")
-	file(GLOB_RECURSE PLATFORM_SOURCES macos/*.cpp)
+	file(GLOB_RECURSE PLATFORM_SOURCES macos/api/*.cpp)
 endif()
 
 add_library(rex_platform STATIC
+	${CMAKE_CURRENT_SOURCE_DIR}/register_platform_apis.gen.cpp
 	${PLATFORM_SOURCES}
 )
 
