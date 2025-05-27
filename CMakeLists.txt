@@ -23,7 +23,11 @@ else()
 endif()
 
 message(STATUS "Detected build platform: ${REX_PLATFORM}")
-message(STATUS "Architecture: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
+message(STATUS "Architecture: ${CMAKE_GENERATOR_PLATFORM}")
+
+# TODO: Need a way to detect the architecture.
+
+set(ARCH "x86_64")
 
 # Build options
 
@@ -291,42 +295,6 @@ elseif(MSVC)
 	)
 endif()
 
-if (REX_PLATFORM STREQUAL "linuxbsd")
-	target_compile_definitions(rex_engine PUBLIC
-		LINUXBSD_ENABLED
-		UNIX_ENABLED
-		_FILE_OFFSET_BITS=64
-	)
-	target_include_directories(rex_engine PUBLIC
-		${CMAKE_SOURCE_DIR}/platform/linuxbsd/
-	)
-	if (USE_SOWRAP)
-		target_include_directories(rex_engine PUBLIC
-			${CMAKE_SOURCE_DIR}/thirdparty/linuxbsd_headers/
-		)
-	endif()
-	if (X11)
-		target_compile_definitions(rex_engine PUBLIC
-			X11_ENABLED
-		)
-	endif()
-	if (WAYLAND)
-		target_compile_definitions(rex_engine PUBLIC
-			WAYLAND_ENABLED
-		)
-	endif()
-	if (VULKAN)
-		target_compile_definitions(rex_engine PUBLIC
-			VULKAN_ENABLED
-			RD_ENABLED
-		)
-	endif()
-	if (OPENGL3)
-		target_compile_definitions(rex_engine PUBLIC
-			GLES3_ENABLED
-		)
-	endif()
-endif()
 if (REX_PLATFORM STREQUAL "macos")
 	target_include_directories(rex_engine PUBLIC
 		${CMAKE_SOURCE_DIR}/platform/linuxbsd/
