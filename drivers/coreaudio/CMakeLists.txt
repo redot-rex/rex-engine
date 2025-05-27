@@ -1,3 +1,3 @@
-target_sources(rex_engine PRIVATE
+target_sources(rex_drivers PRIVATE
 	audio_driver_coreaudio.mm
 )
