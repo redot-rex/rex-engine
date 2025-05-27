@@ -1,4 +1,4 @@
-# Contributing to Redot Engine Experimental
+# Contributing to the ReX Engine
 
 First off, thanks for taking the time to contribute! ❤️
 
@@ -15,7 +15,7 @@ This document summarizes the most important points for people interested in
 contributing to Redot, especially via bug reports or pull requests.
 
 The [Redot Documentation](https://docs.redotengine.org/en/stable/contributing/development/) has a dedicated Contributing section
-which details these points and more, and is a recommended read. Additionally, there is more information about the Experimental engine in the [Experimental Documentation](https://docs-experimental.redotengine.org/).
+which details these points and more, and is a recommended read. Additionally, there is more information about the ReX Engine in the [ReX Documentation](https://docs-experimental.redotengine.org/).
 
 ## Table of contents
 
@@ -27,24 +27,16 @@ which details these points and more, and is a recommended read. Additionally, th
 
 ## Reporting bugs
 
-If you are reporting a bug with an unstable development build, it helps us greatly
-if you open your project in Godot's current dev builds to ensure that it is not
-a bug we've inherited from their upstream work process, as we must let them
-work on those bugs to minimize merge conflicts on our end.
-
 Report bugs [here](https://github.com/Redot-Experimental/ReX/issues/new?assignees=&labels=&template=bug_report.yml).
 Please follow the instructions in the template when you do.
 
-Notably, please include a Minimal Reproduction Project (MRP), which is a small
-Redot project which reproduces the issue, with no unnecessary files included.
-Be sure to not include the `.godot` folder in the archive to save space.
+Notably, please include a Minimal Reproduction Project (MRP), which is a small ReX project which reproduces the issue, with no unnecessary files included. Be sure to not include the `.godot` folder in the archive to save space.
 
-Make sure that the bug you are experiencing is reproducible in the latest Redot
+Make sure that the bug you are experiencing is reproducible in the latest ReX
 releases. It's worth testing against both the latest stable release and the
-latest dev snapshot for the next Redot release, as well as the latest Godot
-dev snapshot.
+latest dev snapshot for the next ReX release.
 
-If you run into a bug which wasn't present in an earlier Redot version (what we
+If you run into a bug which wasn't present in an earlier ReX version (what we
 call a _regression_), please mention it and clarify which versions you tested
 (both the one(s) working and the one(s) exhibiting the bug).
 
@@ -52,7 +44,7 @@ call a _regression_), please mention it and clarify which versions you tested
 
 **The main issue tracker is for bug reports and does not accept feature proposals.**
 
-Visit the [Redot Proposals Repo](https://github.com/Redot-Engine/redot-proposals)
+Visit the [ReX Proposals Repo](https://github.com/Redot-Experimental/rex-proposals)
 to suggest features or improvements to the engine.
 
 ## Contributing pull requests
@@ -63,9 +55,7 @@ Please refer to these links for detailed guides on workflow:
 -	[PR Workflow](https://docs.redotengine.org/en/latest/contributing/workflow/pr_workflow.html)
 -	[PR Review](https://docs.redotengine.org/en/latest/contributing/workflow/pr_review_guidelines.html)
 
-Additionally, we expect all PR contributors to be using [Pre-Commit](https://pre-commit.com/) to
-speed up PR workflow. See the Code Style doc above for more information.
-
+Additionally, we expect all PR contributors to be using [Pre-Commit](https://pre-commit.com/) to speed up PR workflow. See the Code Style doc above for more information.
 
 If you want to add new engine features, please make sure that:
 
@@ -209,7 +199,7 @@ or a bug you want to fix), the following channels can be used:
   existing issue about a topic you want to discuss, you can participate directly.
   If not, you can open a new issue. Please mind the guidelines outlined above
   for bug reporting.
-- [Redot Proposals Repo](https://github.com/Redot-Engine/redot-proposals): Feature
+- [ReX Proposals Repo](https://github.com/Redot-Experimental/rex-proposals): Feature
 or improvement proposals.
 - [Redot](https://x.com/redotengine) on Twitter
 

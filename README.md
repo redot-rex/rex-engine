@@ -1,4 +1,4 @@
-# ![Redot Experimental Engine Cover](/.github/assets/cover.png)
+# ![ReX Engine Cover](/.github/assets/cover.png)
 
 ![Issues](https://img.shields.io/github/issues-raw/Redot-Experimental/ReX?color=FFA726&label=issues&style=for-the-badge)
 ![Pull Requests](https://img.shields.io/github/issues-pr-raw/Redot-Experimental/ReX?color=FFA726&label=PRs&style=for-the-badge)
@@ -9,9 +9,9 @@
 
 <div align="center">
 
-<h1 align="center">Redot Experimental Engine</h1>
+<h1 align="center">ReX Engine</h1>
 
-**[Redot Engine](https://redotengine.org) is a cross-platform game engine for creating 2D and 3D games.** It offers a set of tools to simplify game development. Games can be exported to desktop (Linux, macOS, Windows), mobile (Android, iOS), web, and consoles.
+**[ReX Engine](https://www.redotengine.org) is a cross-platform game engine for creating 2D and 3D games.** It offers a set of tools to simplify game development. Games can be exported to desktop (Linux, macOS, Windows), mobile (Android, iOS), web, and consoles.
 
 </div>
 
@@ -19,8 +19,8 @@
 
 ### Binary downloads
 
-Official binaries for the Redot editor and the export templates will be found
-[on the Redot website](https://redotengine.org/download) once it's set up and on the [GitHub page](https://github.com/Redot-Experimental/ReX) until then.
+Official binaries for the ReX editor and the export templates will be found
+[on the Redot website](https://www.redotengine.org/download) once it's set up and on the [GitHub page](https://github.com/Redot-Experimental/ReX) until then.
 
 ### Compiling from source
 
@@ -38,10 +38,8 @@ Follow [Redot on X/Twitter](https://x.com/Redot_Engine)!
 
 ## Documentation and demos
 
-The class reference is accessible from the Redot editor.
+The class reference is accessible from the ReX editor.
 
-## Redot Experimental
+## Redot Engine
 
-Looking to try out new features that aren't backwards compatible with Godot, or would you like to create new features for Redot Engine that can't be added here due to compatibility issues?
-
-Meet us over at [ReX](https://github.com/Redot-Experimental/ReX?tab=readme-ov-file) Where we test new ideas and improve the engine in ways not currently possible here in the core repo.
+Looking for a stable engine you can bring your current Godot projects over to? Checkout the [Redot Engine Repo](https://github.com/Redot-Engine/redot-engine) where we strive to maintain compatibility with current Godot versions while fixing bugs and making improvements that won't break your current projects.
