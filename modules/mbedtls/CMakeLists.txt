@@ -1,7 +1,7 @@
 
 if (BUILTIN_MBEDTLS)
 	set(THIRDPARTY_MBEDTLS_DIR ${CMAKE_SOURCE_DIR}/thirdparty/mbedtls/)
-	target_sources(rex_engine PRIVATE
+	target_sources(rex_modules PRIVATE
         ${THIRDPARTY_MBEDTLS_DIR}library/aes.c
         ${THIRDPARTY_MBEDTLS_DIR}library/aesce.c
         ${THIRDPARTY_MBEDTLS_DIR}library/aesni.c
@@ -107,7 +107,7 @@ if (BUILTIN_MBEDTLS)
         ${THIRDPARTY_MBEDTLS_DIR}library/x509write_csr.c
 	)
 
-	target_include_directories(rex_engine PRIVATE
+	target_include_directories(rex_modules PRIVATE
 		${THIRDPARTY_MBEDTLS_DIR}include
 	)
 endif()
