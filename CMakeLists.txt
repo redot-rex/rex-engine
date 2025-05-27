@@ -109,6 +109,27 @@ option(SCU_BUILD "Use single compilation unit build" OFF)
 option(ENGINE_UPDATE_CHECK "Enable engine update checks in the Project Manager" ON)
 option(STEAMAPI "Enable minimal SteamAPI integration for usage time tracking (editor only)" OFF)
 
+# Linux Options
+option(USE_STATIC_CPP "Link libgcc and libstdc++ statically for better portability" ON)
+option(USE_COVERAGE "Test Redot coverage" OFF)
+option(USE_UBSAN "Use LLVM/GCC compiler undefined behavior sanitizer (UBSAN)" OFF)
+option(USE_ASAN "Use LLVM/GCC compiler address sanitizer (ASAN)" OFF)
+option(USE_LSAN "Use LLVM/GCC compiler leak sanitizer (LSAN)" OFF)
+option(USE_TSAN "Use LLVM/GCC compiler thread sanitizer (TSAN)" OFF)
+option(USE_MSAN "Use LLVM compiler memory sanitizer (MSAN)" OFF)
+option(USE_SOWRAP "Dynamically load system libraries" ON)
+option(ALSA "Use ALSA" ON)
+option(PULSEAUDIO "Use PulseAudio" ON)
+option(DBUS "Use D-Bus to handle screensaver and portal desktop settings" ON)
+option(SPEECHD "Use Speech Dispatcher for Text-to-Speech support" ON)
+option(FONTCONFIG "Use fontconfig for system fonts support" ON)
+option(UDEV "Use udev for gamepad connection callbacks" ON)
+option(X11 "Enable X11 display" ON)
+option(WAYLAND "Enable Wayland display" ON)
+option(LIBDECOR "Enable libdecor support" ON)
+option(TOUCHEVENTS "Enable touch events" ON)
+option(EXECINFO "Use libexecinfo on systems where glibc is not available" OFF)
+
 if (DEBUG_SYMBOLS)
 	set(CMAKE_BUILD_TYPE Debug)
 else()
@@ -283,6 +304,133 @@ elseif(MSVC)
 	target_compile_options(rex_engine PUBLIC
 		/EHsc
 	)
+endif()
+
+if (REX_PLATFORM STREQUAL "linuxbsd")
+	target_compile_definitions(rex_engine PUBLIC
+		LINUXBSD_ENABLED
+		UNIX_ENABLED
+		_FILE_OFFSET_BITS=64
+	)
+	target_include_directories(rex_engine PUBLIC
+		${CMAKE_SOURCE_DIR}/platform/linuxbsd/
+	)
+	if (USE_SOWRAP)
+		target_include_directories(rex_engine PUBLIC
+			${CMAKE_SOURCE_DIR}/thirdparty/linuxbsd_headers/
+		)
+	endif()
+	if (X11)
+		target_compile_definitions(rex_engine PUBLIC
+			X11_ENABLED
+		)
+	endif()
+	if (WAYLAND)
+		target_compile_definitions(rex_engine PUBLIC
+			WAYLAND_ENABLED
+		)
+	endif()
+	if (VULKAN)
+		target_compile_definitions(rex_engine PUBLIC
+			VULKAN_ENABLED
+			RD_ENABLED
+		)
+	endif()
+	if (OPENGL3)
+		target_compile_definitions(rex_engine PUBLIC
+			GLES3_ENABLED
+		)
+	endif()
+endif()
+if (REX_PLATFORM STREQUAL "macos")
+	target_include_directories(rex_engine PUBLIC
+		${CMAKE_SOURCE_DIR}/platform/linuxbsd/
+	)
+	target_compile_definitions(rex_engine PUBLIC
+		MACOS_ENABLED
+		UNIX_ENABLED
+		COREAUDIO_ENABLED
+		COREMIDI_ENABLED
+	)
+	if (METAL)
+		target_compile_definitions(rex_engine PUBLIC
+			METAL_ENABLED
+			RD_ENABLED
+		)
+		target_include_directories(rex_engine PUBLIC
+			${CMAKE_SOURCE_DIR}/thirdparty/spirv-cross/
+		)
+	endif()
+	if (VULKAN)
+		target_compile_definitions(rex_engine PUBLIC
+			VULKAN_ENABLED
+			RD_ENABLED
+		)
+	endif()
+	if (OPENGL3)
+		target_compile_definitions(rex_engine PUBLIC
+			GLES3_ENABLED
+		)
+	endif()
+endif()
+if (REX_PLATFORM STREQUAL "ios")
+	target_include_directories(rex_engine PUBLIC
+		${CMAKE_SOURCE_DIR}/platform/ios/
+	)
+	target_compile_definitions(rex_engine PUBLIC
+		IOS_ENABLED
+		UNIX_ENABLED
+		COREAUDIO_ENABLED
+	)
+	if (METAL)
+		target_compile_definitions(rex_engine PUBLIC
+			METAL_ENABLED
+			RD_ENABLED
+		)
+		target_include_directories(rex_engine PUBLIC
+			${CMAKE_SOURCE_DIR}/thirdparty/spirv-cross/
+		)
+	endif()
+	if (VULKAN)
+		target_compile_definitions(rex_engine PUBLIC
+			VULKAN_ENABLED
+			RD_ENABLED
+		)
+	endif()
+	if (OPENGL3)
+		target_compile_definitions(rex_engine PUBLIC
+			GLES3_ENABLED
+			GLES_SILENCE_DEPRECATION
+		)
+
+	endif()
+endif()
+if (REX_PLATFORM STREQUAL "windows")
+	target_include_directories(rex_engine PUBLIC
+		${CMAKE_SOURCE_DIR}/platform/windows/
+	)
+	target_compile_definitions(rex_engine PUBLIC
+		IOS_ENABLED
+		UNIX_ENABLED
+		COREAUDIO_ENABLED
+	)
+	if (VULKAN)
+		target_compile_definitions(rex_engine PUBLIC
+			VULKAN_ENABLED
+			RD_ENABLED
+		)
+	endif()
+	if (OPENGL3)
+		target_compile_definitions(rex_engine PUBLIC
+			GLES3_ENABLED
+		)
+	endif()
+	if (D3D12)
+		target_compile_definitions(rex_engine PUBLIC
+			D3D12_ENABLED
+			RD_ENABLED
+		)
+	endif()
 endif()
 
 add_subdirectory(thirdparty)

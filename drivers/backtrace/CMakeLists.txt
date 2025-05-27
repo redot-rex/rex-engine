@@ -1,0 +1,21 @@
+if(REX_PLATFORM STREQUAL "windows")
+	set(THIRDPARTY_BACKTRACE_DIR ${CMAKE_SOURCE_DIR}/thirdparty/libbacktrace/)
+	target_sources(rex_drivers PRIVATE
+		${THIRDPARTY_BACKTRACE_DIR}atomic.c
+		${THIRDPARTY_BACKTRACE_DIR}dwarf.c
+		${THIRDPARTY_BACKTRACE_DIR}fileline.c
+		${THIRDPARTY_BACKTRACE_DIR}posix.c
+		${THIRDPARTY_BACKTRACE_DIR}print.c
+		${THIRDPARTY_BACKTRACE_DIR}sort.c
+		${THIRDPARTY_BACKTRACE_DIR}state.c
+		${THIRDPARTY_BACKTRACE_DIR}backtrace.c
+		${THIRDPARTY_BACKTRACE_DIR}simple.c
+		${THIRDPARTY_BACKTRACE_DIR}pecoff.c
+		${THIRDPARTY_BACKTRACE_DIR}read.c
+		${THIRDPARTY_BACKTRACE_DIR}alloc.c
+	)
+
+	target_include_directories(rex_drivers PRIVATE
+		${THIRDPARTY_BACKTRACE_DIR}
+	)
+endif()
