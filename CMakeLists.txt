@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.26 FATAL_ERROR)
 
 
-find_package(Python3 REQUIRED COMPONENTS Interpreter)
-set(PYTHON_EXECUTABLE "python3" CACHE STRING "python3")
-
 # C++ Standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -109,27 +106,6 @@ option(SCU_BUILD "Use single compilation unit build" OFF)
 option(ENGINE_UPDATE_CHECK "Enable engine update checks in the Project Manager" ON)
 option(STEAMAPI "Enable minimal SteamAPI integration for usage time tracking (editor only)" OFF)
 
-# Linux Options
-option(USE_STATIC_CPP "Link libgcc and libstdc++ statically for better portability" ON)
-option(USE_COVERAGE "Test Redot coverage" OFF)
-option(USE_UBSAN "Use LLVM/GCC compiler undefined behavior sanitizer (UBSAN)" OFF)
-option(USE_ASAN "Use LLVM/GCC compiler address sanitizer (ASAN)" OFF)
-option(USE_LSAN "Use LLVM/GCC compiler leak sanitizer (LSAN)" OFF)
-option(USE_TSAN "Use LLVM/GCC compiler thread sanitizer (TSAN)" OFF)
-option(USE_MSAN "Use LLVM compiler memory sanitizer (MSAN)" OFF)
-option(USE_SOWRAP "Dynamically load system libraries" ON)
-option(ALSA "Use ALSA" ON)
-option(PULSEAUDIO "Use PulseAudio" ON)
-option(DBUS "Use D-Bus to handle screensaver and portal desktop settings" ON)
-option(SPEECHD "Use Speech Dispatcher for Text-to-Speech support" ON)
-option(FONTCONFIG "Use fontconfig for system fonts support" ON)
-option(UDEV "Use udev for gamepad connection callbacks" ON)
-option(X11 "Enable X11 display" ON)
-option(WAYLAND "Enable Wayland display" ON)
-option(LIBDECOR "Enable libdecor support" ON)
-option(TOUCHEVENTS "Enable touch events" ON)
-option(EXECINFO "Use libexecinfo on systems where glibc is not available" OFF)
-
 if (DEBUG_SYMBOLS)
 	set(CMAKE_BUILD_TYPE Debug)
 else()
@@ -142,8 +118,17 @@ project(rex_engine
         LANGUAGES C CXX
 )
 
-# Define executable
-add_executable(rex_engine main/main.cpp)
+# Executable is defined per platform
+
+if (REX_PLATFORM STREQUAL "linuxbsd")
+	add_subdirectory(platform/linuxbsd)
+	#elseif(REX_PLATFORM STREQUAL "macos")
+	#add_subdirectory(platform/macos)
+	#elseif(REX_PLATFORM STREQUAL "windows")
+	#add_subdirectory(platform/windows)
+endif()
+
+#add_executable(rex_engine main/main.cpp)
 target_include_directories(rex_engine PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
