@@ -9,7 +9,7 @@ if (OPENGL3)
 		${THIRDPARTY_GLAD_DIR}
 	)
 
-	target_compile_definitions(rex_drivers PUBLIC
+	target_compile_definitions(rex_engine PUBLIC
 		GLAD_ENABLED
 		EGL_ENABLED
 	)
