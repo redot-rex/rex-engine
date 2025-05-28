@@ -1,5 +1,5 @@
 set(THIRDPARTY_ASTCENC_DIR ${CMAKE_SOURCE_DIR}/thirdparty/astcenc/)
-target_sources(rex_modules PRIVATE
+target_sources(rex_module_${MODULE_NAME} PRIVATE
     ${THIRDPARTY_ASTCENC_DIR}astcenc_averages_and_directions.cpp
     ${THIRDPARTY_ASTCENC_DIR}astcenc_block_sizes.cpp
     ${THIRDPARTY_ASTCENC_DIR}astcenc_color_quantize.cpp
@@ -24,12 +24,12 @@ target_sources(rex_modules PRIVATE
     ${THIRDPARTY_ASTCENC_DIR}astcenc_weight_quant_xfer_tables.cpp
 )
 
-target_include_directories(rex_modules PRIVATE
+target_include_directories(rex_module_${MODULE_NAME} PRIVATE
 	${THIRDPARTY_ASTCENC_DIR}
 )
 
 if (EDITOR_BUILD)
-	target_compile_definitions(rex_modules PRIVATE
+	target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
 		ASTCENC_DECOMPRESS_ONLY
 	)
 endif()
