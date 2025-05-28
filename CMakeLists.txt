@@ -6,13 +6,12 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+include(methods.cmake)
+generate_copyright_header("test.cpp")
+
 # TODO: Only checking for desktop platforms for now.
 # NOTE: Using strings that make the Scons build system.
-if (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Linux"
-		OR ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "DragonFly"
-		OR ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "FreeBSD"
-		OR ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "NetBSD"
-		OR ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "OpenBSD")
+if (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Linux|DragonFly|FreeBSD|NetBSD|OpenBSD")
 	set(REX_PLATFORM "linuxbsd")
 elseif (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
 	set(REX_PLATFORM "windows")
