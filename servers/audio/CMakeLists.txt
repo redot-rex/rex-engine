@@ -1,2 +1,2 @@
 file(GLOB_RECURSE SERVERS_AUDIO_SOURCES *.cpp)
-target_sources(rex_servers PUBLIC ${SERVERS_AUDIO_SOURCES})
+target_sources(rex_servers PRIVATE ${SERVERS_AUDIO_SOURCES})

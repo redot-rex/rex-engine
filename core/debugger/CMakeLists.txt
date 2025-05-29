@@ -1,3 +1,3 @@
 file(GLOB_RECURSE CORE_DEBUGGER_SOURCES *.cpp)
-target_sources(rex_core PUBLIC ${CORE_DEBUGGER_SOURCES})
+target_sources(rex_core PRIVATE ${CORE_DEBUGGER_SOURCES})
 

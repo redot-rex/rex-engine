@@ -6,7 +6,7 @@ target_include_directories(rex_drivers PRIVATE "$<TARGET_PROPERTY:rex_engine,INT
 
 get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
 
-target_compile_definitions(rex_drivers PUBLIC ${ENGINE_DEFINITIONS})
+target_compile_definitions(rex_drivers PRIVATE ${ENGINE_DEFINITIONS})
 
 add_subdirectory(unix)
 add_subdirectory(windows)
@@ -51,4 +51,4 @@ if (REX_PLATFORM STREQUAL "windows")
 	endif()
 endif()
 
-target_link_libraries(rex_engine rex_drivers)
+#target_link_libraries(rex_engine PUBLIC rex_drivers)

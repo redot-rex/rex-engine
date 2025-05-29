@@ -29,24 +29,24 @@ add_subdirectory(text)
 
 
 if (NOT DISABLE_PHYSICS_2D)
-	target_sources(rex_servers PUBLIC
+	target_sources(rex_servers PRIVATE
 		${SERVERS_DIR}physics_server_2d.cpp
 		${SERVERS_DIR}physics_server_2d_wrap_mt.cpp
 	)
 endif()
 
 if (NOT DISABLE_PHYSICS_3D)
-	target_sources(rex_servers PUBLIC
+	target_sources(rex_servers PRIVATE
 		${SERVERS_DIR}physics_server_3d.cpp
 		${SERVERS_DIR}physics_server_3d_wrap_mt.cpp
 	)
 endif()
 
 if (NOT DISABLE_XR)
-	target_sources(rex_servers PUBLIC
+	target_sources(rex_servers PRIVATE
 		${SERVERS_DIR}xr_server.cpp
 	)
 	add_subdirectory(xr)
 endif()
 
-target_link_libraries(rex_engine rex_servers)
+#target_link_libraries(rex_engine PUBLIC rex_servers)

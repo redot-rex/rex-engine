@@ -1,2 +1,2 @@
 file(GLOB_RECURSE CORE_CONFIG_SOURCES *.cpp)
-target_sources(rex_core PUBLIC ${CORE_CONFIG_SOURCES})
+target_sources(rex_core PRIVATE ${CORE_CONFIG_SOURCES})

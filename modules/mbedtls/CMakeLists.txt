@@ -1,5 +1,7 @@
 
 if (BUILTIN_MBEDTLS)
+	add_library(rex_module_${MODULE_NAME} STATIC)
+	set(MODULE_IS_ENABLED ON PARENT_SCOPE)
 	set(THIRDPARTY_MBEDTLS_DIR ${CMAKE_SOURCE_DIR}/thirdparty/mbedtls/)
 	target_sources(rex_module_${MODULE_NAME} PRIVATE
         ${THIRDPARTY_MBEDTLS_DIR}library/aes.c

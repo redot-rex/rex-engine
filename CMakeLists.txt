@@ -385,7 +385,6 @@ if (REX_PLATFORM STREQUAL "windows")
 	endif()
 endif()
 
-add_subdirectory(thirdparty)
 add_subdirectory(core)
 add_subdirectory(servers)
 add_subdirectory(scene)
@@ -396,6 +395,23 @@ add_subdirectory(drivers)
 add_subdirectory(platform)
 add_subdirectory(modules)
 add_subdirectory(main)
+
+target_link_libraries(rex_engine PUBLIC
+	rex_main
+	rex_modules
+	rex_platform
+	rex_drivers
+)
+if (BUILD_TARGET STREQUAL "editor")
+	target_link_libraries(rex_engine PUBLIC rex_editor)
+endif()
+target_link_libraries(rex_engine PUBLIC
+	rex_scene
+	rex_servers
+	rex_core
+	${BUILTIN_LIBRARIES}
+	${SYSTEM_LIBRARIES}
+)
 
 # Output name
 set(OUTPUT_NAME "rex.${REX_PLATFORM}")
