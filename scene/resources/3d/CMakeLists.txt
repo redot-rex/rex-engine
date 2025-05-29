@@ -1,6 +1,6 @@
 set(SCENE_RESOURCES_3D_DIR ${CMAKE_CURRENT_SOURCE_DIR}/)
 
-target_sources(rex_scene PUBLIC
+target_sources(rex_scene PRIVATE
 	${SCENE_RESOURCES_3D_DIR}fog_material.cpp
 	${SCENE_RESOURCES_3D_DIR}importer_mesh.cpp
 	${SCENE_RESOURCES_3D_DIR}mesh_library.cpp
@@ -11,7 +11,7 @@ target_sources(rex_scene PUBLIC
 )
 
 if (NOT DISABLE_PHYSICS_3D)
-	target_sources(rex_scene PUBLIC
+	target_sources(rex_scene PRIVATE
 		${SCENE_RESOURCES_3D_DIR}box_shape_3d.cpp
 		${SCENE_RESOURCES_3D_DIR}capsule_shape_3d.cpp
 		${SCENE_RESOURCES_3D_DIR}concave_polygon_shape_3d.cpp
@@ -26,7 +26,7 @@ if (NOT DISABLE_PHYSICS_3D)
 endif()
 
 if (NOT DISABLE_NAVIGATION_3D)
-	target_sources(rex_scene PUBLIC
+	target_sources(rex_scene PRIVATE
 		${SCENE_RESOURCES_3D_DIR}navigation_mesh_source_geometry_data_3d.cpp
 	)
 endif()

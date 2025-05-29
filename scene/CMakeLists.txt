@@ -6,7 +6,7 @@ target_include_directories(rex_scene PRIVATE "$<TARGET_PROPERTY:rex_engine,INTER
 
 get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
 
-target_compile_definitions(rex_scene PUBLIC ${ENGINE_DEFINITIONS})
+target_compile_definitions(rex_scene PRIVATE ${ENGINE_DEFINITIONS})
 
 add_subdirectory(main)
 add_subdirectory(gui)
@@ -20,4 +20,4 @@ add_subdirectory(resources)
 add_subdirectory(debugger)
 add_subdirectory(theme)
 
-target_link_libraries(rex_engine rex_scene)
+#target_link_libraries(rex_engine PUBLIC rex_scene)

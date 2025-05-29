@@ -1,3 +1,6 @@
+add_library(rex_module_${MODULE_NAME} STATIC)
+set(MODULE_IS_ENABLED ON PARENT_SCOPE)
+disable_warnings_for_target(rex_module_${MODULE_NAME})
 if (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Linux|OpenBSD")
 	target_include_directories(rex_module_${MODULE_NAME} PRIVATE
 		/usr/include/openssl/

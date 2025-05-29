@@ -1,2 +1,2 @@
 file(GLOB_RECURSE EDITOR_PLUGINS_SOURCES *.cpp)
-target_sources(rex_editor PUBLIC ${EDITOR_PLUGINS_SOURCES})
+target_sources(rex_editor PRIVATE ${EDITOR_PLUGINS_SOURCES})

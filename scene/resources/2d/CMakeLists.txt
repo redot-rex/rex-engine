@@ -1,6 +1,6 @@
 set(SCENE_RESOURCES_2D_DIR ${CMAKE_CURRENT_SOURCE_DIR}/)
 
-target_sources(rex_scene PUBLIC
+target_sources(rex_scene PRIVATE
 	${SCENE_RESOURCES_2D_DIR}tile_set.cpp
 	${SCENE_RESOURCES_2D_DIR}skeleton/skeleton_modification_2d.cpp
 	${SCENE_RESOURCES_2D_DIR}skeleton/skeleton_modification_2d_ccdik.cpp
@@ -12,7 +12,7 @@ target_sources(rex_scene PUBLIC
 )
 
 if (NOT DISABLE_PHYSICS_2D)
-	target_sources(rex_scene PUBLIC
+	target_sources(rex_scene PRIVATE
 		${SCENE_RESOURCES_2D_DIR}capsule_shape_2d.cpp
 		${SCENE_RESOURCES_2D_DIR}circle_shape_2d.cpp
 		${SCENE_RESOURCES_2D_DIR}concave_polygon_shape_2d.cpp
@@ -27,7 +27,7 @@ if (NOT DISABLE_PHYSICS_2D)
 	)
 endif()
 if (NOT DISABLE_NAVIGATION_2D)
-	target_sources(rex_scene PUBLIC
+	target_sources(rex_scene PRIVATE
 		${SCENE_RESOURCES_2D_DIR}navigation_mesh_source_geometry_data_2d.cpp
 		${SCENE_RESOURCES_2D_DIR}navigation_polygon.cpp
 		${SCENE_RESOURCES_2D_DIR}polygon_path_finder.cpp

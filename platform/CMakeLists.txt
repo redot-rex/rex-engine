@@ -25,4 +25,4 @@ get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
 
 target_compile_definitions(rex_platform PUBLIC ${ENGINE_DEFINITIONS})
 
-target_link_libraries(rex_engine rex_platform)
+target_link_libraries(rex_engine PUBLIC rex_platform)

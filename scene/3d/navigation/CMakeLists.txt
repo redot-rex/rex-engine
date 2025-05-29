@@ -1,2 +1,2 @@
 file(GLOB_RECURSE SCENE_3D_NAVIGATION_SOURCES *.cpp)
-target_sources(rex_scene PUBLIC ${SCENE_3D_NAVIGATION_SOURCES})
+target_sources(rex_scene PRIVATE ${SCENE_3D_NAVIGATION_SOURCES})

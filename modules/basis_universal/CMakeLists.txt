@@ -1,3 +1,6 @@
+add_library(rex_module_${MODULE_NAME} STATIC)
+set(MODULE_IS_ENABLED ON PARENT_SCOPE)
+disable_warnings_for_target(rex_module_${MODULE_NAME})
 set(THIRDPARTY_BASIS_UNIVERSAL_DIR ${CMAKE_SOURCE_DIR}/thirdparty/basis_universal/)
 
 target_sources(rex_module_${MODULE_NAME} PRIVATE
@@ -9,6 +12,10 @@ target_include_directories(rex_module_${MODULE_NAME} PRIVATE
 )
 
 if (EDITOR_BUILD)
+	add_dependencies(rex_module_${MODULE_NAME}
+		rex_module_jpg
+		rex_module_tinyexr
+	)
 	set(ENCODER_SOURCES_DIR ${THIRDPARTY_BASIS_UNIVERSAL_DIR}encoder/)
 	target_sources(rex_module_${MODULE_NAME} PRIVATE
         ${ENCODER_SOURCES_DIR}3rdparty/android_astc_decomp.cpp
@@ -45,10 +52,10 @@ if (BUILTIN_ZSTD)
 endif()
 
 target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
-        BASISD_SUPPORT_KTX2_ZSTD=0
-        BASISD_SUPPORT_ATC=0  # Proprietary Adreno format not supported by Godot.
-        BASISD_SUPPORT_FXT1=0  # Legacy format not supported by Godot.
-        BASISD_SUPPORT_PVRTC1=0  # Legacy format not supported by Godot.
-        BASISD_SUPPORT_PVRTC2=0  # Legacy format not supported by Godot.
+	BASISD_SUPPORT_KTX2_ZSTD=0
+	BASISD_SUPPORT_ATC=0  # Proprietary Adreno format not supported by Godot.
+	BASISD_SUPPORT_FXT1=0  # Legacy format not supported by Godot.
+	BASISD_SUPPORT_PVRTC1=0  # Legacy format not supported by Godot.
+	BASISD_SUPPORT_PVRTC2=0  # Legacy format not supported by Godot.
 )
 

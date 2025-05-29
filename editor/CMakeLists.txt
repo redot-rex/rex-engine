@@ -22,7 +22,7 @@ target_include_directories(rex_editor PRIVATE "$<TARGET_PROPERTY:rex_engine,INTE
 
 get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
 
-target_compile_definitions(rex_editor PUBLIC ${ENGINE_DEFINITIONS})
+target_compile_definitions(rex_editor PRIVATE ${ENGINE_DEFINITIONS})
 
 add_subdirectory(debugger)
 add_subdirectory(export)
@@ -33,4 +33,4 @@ add_subdirectory(plugins)
 add_subdirectory(project_manager)
 add_subdirectory(themes)
 
-target_link_libraries(rex_engine rex_editor)
+#target_link_libraries(rex_engine PUBLIC rex_editor)

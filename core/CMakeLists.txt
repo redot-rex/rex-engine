@@ -6,7 +6,7 @@ target_include_directories(rex_core PRIVATE "$<TARGET_PROPERTY:rex_engine,INTERF
 
 get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
 
-target_compile_definitions(rex_core PUBLIC ${ENGINE_DEFINITIONS})
+target_compile_definitions(rex_core PRIVATE ${ENGINE_DEFINITIONS})
 
 set(THIRDPARTY_DIR ${CMAKE_SOURCE_DIR}/thirdparty/)
 
@@ -43,7 +43,7 @@ if (BUILTIN_BROTLI)
 	)
 
 	if (USE_UBSAN OR USE_ASAN OR USE_TSAN OR USE_LSAN OR USE_MSAN)
-		target_compile_definitions(rex_core PUBLIC
+		target_compile_definitions(rex_core PRIVATE
 			BROTLI_BUILD_PORTABLE
 		)
 	endif()
@@ -61,7 +61,7 @@ if (BUILTIN_CLIPPER2)
 		${THIRDPARTY_CLIPPER2_DIR}include
 	)
 
-	target_include_directories(rex_core PUBLIC
+	target_include_directories(rex_core PRIVATE
 		${THIRDPARTY_CLIPPER2_DIR}include
 	)
 
@@ -69,7 +69,7 @@ if (BUILTIN_CLIPPER2)
 		CLIPPER2_ENABLED
 	)
 
-	target_compile_definitions(rex_core PUBLIC
+	target_compile_definitions(rex_core PRIVATE
 		CLIPPER2_ENABLED
 	)
 endif()
@@ -99,7 +99,7 @@ if (BUILTIN_ZLIB)
 
 	if (DEV_BUILD)
 		target_compile_definitions(rex_engine PUBLIC ZLIB_DEBUG)
-		target_compile_definitions(rex_core PUBLIC ZLIB_DEBUG)
+		target_compile_definitions(rex_core PRIVATE ZLIB_DEBUG)
 	endif()
 endif()
 
@@ -114,7 +114,7 @@ target_sources(rex_core PRIVATE
 
 if (BUILTIN_ZSTD)
 	set(THIRDPARTY_ZSTD_DIR ${THIRDPARTY_DIR}zstd/)
-	target_sources(rex_engine PRIVATE
+	target_sources(rex_core PRIVATE
         ${THIRDPARTY_ZSTD_DIR}common/debug.c
         ${THIRDPARTY_ZSTD_DIR}common/entropy_common.c
         ${THIRDPARTY_ZSTD_DIR}common/error_private.c
@@ -161,7 +161,7 @@ if (BUILTIN_ZSTD)
 	)
 
 	target_compile_definitions(rex_engine PUBLIC ZSTD_STATIC_LINKING_ONLY)
-	target_compile_definitions(rex_core PUBLIC ZSTD_STATIC_LINKING_ONLY)
+	target_compile_definitions(rex_core PRIVATE ZSTD_STATIC_LINKING_ONLY)
 
 endif()
 
@@ -180,4 +180,4 @@ add_subdirectory(config)
 add_subdirectory(error)
 
 
-target_link_libraries(rex_engine rex_core)
+#target_link_libraries(rex_engine PUBLIC rex_core)
