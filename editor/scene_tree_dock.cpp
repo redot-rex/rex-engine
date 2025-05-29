@@ -2008,7 +2008,7 @@ _ALWAYS_INLINE_ static bool _recurse_into_property(const PropertyInfo &p_propert
 	}
 
 	// Avoid otherwise acceptable types if we marked them as irrelevant.
-	if (p_property.hint == PROPERTY_HINT_NO_NODEPATH) {
+	if (p_property.hint == PropertyHint::HINT_NO_NODEPATH) {
 		return false;
 	}
 
@@ -3559,7 +3559,7 @@ void SceneTreeDock::_files_dropped(const Vector<String> &p_files, NodePath p_to,
 		node->get_property_list(&pinfo);
 
 		for (const PropertyInfo &p : pinfo) {
-			if (!(p.usage & PROPERTY_USAGE_EDITOR) || !(p.usage & PROPERTY_USAGE_STORAGE) || p.hint != PROPERTY_HINT_RESOURCE_TYPE) {
+			if (!(p.usage & PROPERTY_USAGE_EDITOR) || !(p.usage & PROPERTY_USAGE_STORAGE) || p.hint != PropertyHint::HINT_RESOURCE_TYPE) {
 				continue;
 			}
 			Vector<String> valid_types = p.hint_string.split(",");
@@ -3713,7 +3713,7 @@ void SceneTreeDock::_add_children_to_popup(Object *p_obj, int p_depth) {
 		if (!(E.usage & PROPERTY_USAGE_EDITOR)) {
 			continue;
 		}
-		if (E.hint != PROPERTY_HINT_RESOURCE_TYPE) {
+		if (E.hint != PropertyHint::HINT_RESOURCE_TYPE) {
 			continue;
 		}
 
@@ -4584,7 +4584,7 @@ void SceneTreeDock::_gather_resources(Node *p_node, List<Pair<Ref<Resource>, Nod
 		if (!(E.usage & PROPERTY_USAGE_EDITOR)) {
 			continue;
 		}
-		if (E.hint != PROPERTY_HINT_RESOURCE_TYPE) {
+		if (E.hint != PropertyHint::HINT_RESOURCE_TYPE) {
 			continue;
 		}
 
@@ -4634,7 +4634,7 @@ void SceneTreeDock::_bind_methods() {
 
 	ADD_SIGNAL(MethodInfo("remote_tree_selected"));
 	ADD_SIGNAL(MethodInfo("add_node_used"));
-	ADD_SIGNAL(MethodInfo("node_created", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Node")));
+	ADD_SIGNAL(MethodInfo("node_created", PropertyInfo(Variant::OBJECT, "node", PropertyHint::HINT_RESOURCE_TYPE, "Node")));
 }
 
 SceneTreeDock *SceneTreeDock::singleton = nullptr;

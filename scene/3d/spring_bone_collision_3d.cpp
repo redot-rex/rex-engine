@@ -49,10 +49,10 @@ void SpringBoneCollision3D::_validate_property(PropertyInfo &p_property) const {
 	if (p_property.name == "bone_name") {
 		Skeleton3D *sk = get_skeleton();
 		if (sk) {
-			p_property.hint = PROPERTY_HINT_ENUM_SUGGESTION;
+			p_property.hint = PropertyHint::HINT_ENUM_SUGGESTION;
 			p_property.hint_string = sk->get_concatenated_bone_names();
 		} else {
-			p_property.hint = PROPERTY_HINT_NONE;
+			p_property.hint = PropertyHint::HINT_NONE;
 			p_property.hint_string = "";
 		}
 	} else if (bone < 0 && (p_property.name == "position_offset" || p_property.name == "rotation_offset")) {
@@ -168,7 +168,7 @@ void SpringBoneCollision3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_rotation_offset"), &SpringBoneCollision3D::get_rotation_offset);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "bone_name"), "set_bone_name", "get_bone_name");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "bone", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_bone", "get_bone");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "bone", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_bone", "get_bone");
 
 	ADD_GROUP("Offset", "");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "position_offset"), "set_position_offset", "get_position_offset");

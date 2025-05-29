@@ -46,14 +46,14 @@ void XRPositionalTracker::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("get_tracker_hand"), &XRPositionalTracker::get_tracker_hand);
 	ClassDB::bind_method(D_METHOD("set_tracker_hand", "hand"), &XRPositionalTracker::set_tracker_hand);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "hand", PROPERTY_HINT_ENUM, "Unknown,Left,Right"), "set_tracker_hand", "get_tracker_hand");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "hand", PropertyHint::HINT_ENUM, "Unknown,Left,Right"), "set_tracker_hand", "get_tracker_hand");
 
 	ClassDB::bind_method(D_METHOD("has_pose", "name"), &XRPositionalTracker::has_pose);
 	ClassDB::bind_method(D_METHOD("get_pose", "name"), &XRPositionalTracker::get_pose);
 	ClassDB::bind_method(D_METHOD("invalidate_pose", "name"), &XRPositionalTracker::invalidate_pose);
 	ClassDB::bind_method(D_METHOD("set_pose", "name", "transform", "linear_velocity", "angular_velocity", "tracking_confidence"), &XRPositionalTracker::set_pose);
-	ADD_SIGNAL(MethodInfo("pose_changed", PropertyInfo(Variant::OBJECT, "pose", PROPERTY_HINT_RESOURCE_TYPE, "XRPose")));
-	ADD_SIGNAL(MethodInfo("pose_lost_tracking", PropertyInfo(Variant::OBJECT, "pose", PROPERTY_HINT_RESOURCE_TYPE, "XRPose")));
+	ADD_SIGNAL(MethodInfo("pose_changed", PropertyInfo(Variant::OBJECT, "pose", PropertyHint::HINT_RESOURCE_TYPE, "XRPose")));
+	ADD_SIGNAL(MethodInfo("pose_lost_tracking", PropertyInfo(Variant::OBJECT, "pose", PropertyHint::HINT_RESOURCE_TYPE, "XRPose")));
 
 	ClassDB::bind_method(D_METHOD("get_input", "name"), &XRPositionalTracker::get_input);
 	ClassDB::bind_method(D_METHOD("set_input", "name", "value"), &XRPositionalTracker::set_input);

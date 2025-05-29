@@ -165,7 +165,7 @@ void InstanceUniforms::_init_param(Item &r_item, const RendererMaterialStorage::
 		r_item.value = r_item.default_value;
 	}
 
-	if (r_item.info.hint == PROPERTY_HINT_FLAGS) {
+	if (r_item.info.hint == PropertyHint::HINT_FLAGS) {
 		// HACK: Detect boolean flags count and prevent overhead.
 		switch (r_item.info.hint_string.length()) {
 			case 3: // "x,y"

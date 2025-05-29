@@ -1621,7 +1621,7 @@ void FileSystemDock::_update_project_settings_after_move(const HashMap<String, S
 	// Find all project settings of type FILE and replace them if needed.
 	const HashMap<StringName, PropertyInfo> prop_info = ProjectSettings::get_singleton()->get_custom_property_info();
 	for (const KeyValue<StringName, PropertyInfo> &E : prop_info) {
-		if (E.value.hint == PROPERTY_HINT_FILE) {
+		if (E.value.hint == PropertyHint::HINT_FILE) {
 			String old_path = GLOBAL_GET(E.key);
 			if (p_renames.has(old_path)) {
 				ProjectSettings::get_singleton()->set_setting(E.key, p_renames[old_path]);
@@ -3968,7 +3968,7 @@ void FileSystemDock::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("inherit", PropertyInfo(Variant::STRING, "file")));
 	ADD_SIGNAL(MethodInfo("instantiate", PropertyInfo(Variant::PACKED_STRING_ARRAY, "files")));
 
-	ADD_SIGNAL(MethodInfo("resource_removed", PropertyInfo(Variant::OBJECT, "resource", PROPERTY_HINT_RESOURCE_TYPE, "Resource")));
+	ADD_SIGNAL(MethodInfo("resource_removed", PropertyInfo(Variant::OBJECT, "resource", PropertyHint::HINT_RESOURCE_TYPE, "Resource")));
 	ADD_SIGNAL(MethodInfo("file_removed", PropertyInfo(Variant::STRING, "file")));
 	ADD_SIGNAL(MethodInfo("folder_removed", PropertyInfo(Variant::STRING, "folder")));
 	ADD_SIGNAL(MethodInfo("files_moved", PropertyInfo(Variant::STRING, "old_file"), PropertyInfo(Variant::STRING, "new_file")));

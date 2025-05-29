@@ -219,10 +219,10 @@ NavigationServer2D::NavigationServer2D() {
 	ERR_FAIL_COND(singleton != nullptr);
 	singleton = this;
 
-	GLOBAL_DEF_BASIC(PropertyInfo(Variant::FLOAT, "navigation/2d/default_cell_size", PROPERTY_HINT_RANGE, NavigationDefaults2D::navmesh_cell_size_hint), NavigationDefaults2D::navmesh_cell_size);
+	GLOBAL_DEF_BASIC(PropertyInfo(Variant::FLOAT, "navigation/2d/default_cell_size", PropertyHint::HINT_RANGE, NavigationDefaults2D::navmesh_cell_size_hint), NavigationDefaults2D::navmesh_cell_size);
 	GLOBAL_DEF("navigation/2d/use_edge_connections", true);
-	GLOBAL_DEF_BASIC(PropertyInfo(Variant::FLOAT, "navigation/2d/default_edge_connection_margin", PROPERTY_HINT_RANGE, "0.01,10,0.001,or_greater"), NavigationDefaults2D::edge_connection_margin);
-	GLOBAL_DEF_BASIC(PropertyInfo(Variant::FLOAT, "navigation/2d/default_link_connection_radius", PROPERTY_HINT_RANGE, "0.01,10,0.001,or_greater"), NavigationDefaults2D::link_connection_radius);
+	GLOBAL_DEF_BASIC(PropertyInfo(Variant::FLOAT, "navigation/2d/default_edge_connection_margin", PropertyHint::HINT_RANGE, "0.01,10,0.001,or_greater"), NavigationDefaults2D::edge_connection_margin);
+	GLOBAL_DEF_BASIC(PropertyInfo(Variant::FLOAT, "navigation/2d/default_link_connection_radius", PropertyHint::HINT_RANGE, "0.01,10,0.001,or_greater"), NavigationDefaults2D::link_connection_radius);
 
 #ifdef DEBUG_ENABLED
 	debug_navigation_edge_connection_color = GLOBAL_DEF("debug/shapes/navigation/2d/edge_connection_color", Color(1.0, 0.0, 1.0, 1.0));
@@ -240,7 +240,7 @@ NavigationServer2D::NavigationServer2D() {
 	debug_navigation_enable_link_connections = GLOBAL_DEF("debug/shapes/navigation/2d/enable_link_connections", true);
 
 	debug_navigation_enable_agent_paths = GLOBAL_DEF("debug/shapes/navigation/2d/enable_agent_paths", true);
-	debug_navigation_agent_path_point_size = GLOBAL_DEF(PropertyInfo(Variant::FLOAT, "debug/shapes/navigation/2d/agent_path_point_size", PROPERTY_HINT_RANGE, "0.01,10,0.001,or_greater"), 4.0);
+	debug_navigation_agent_path_point_size = GLOBAL_DEF(PropertyInfo(Variant::FLOAT, "debug/shapes/navigation/2d/agent_path_point_size", PropertyHint::HINT_RANGE, "0.01,10,0.001,or_greater"), 4.0);
 
 	debug_navigation_avoidance_agents_radius_color = GLOBAL_DEF("debug/shapes/avoidance/2d/agents_radius_color", Color(1.0, 1.0, 0.0, 0.25));
 	debug_navigation_avoidance_obstacles_radius_color = GLOBAL_DEF("debug/shapes/avoidance/2d/obstacles_radius_color", Color(1.0, 0.5, 0.0, 0.25));

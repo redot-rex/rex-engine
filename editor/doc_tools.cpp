@@ -583,11 +583,11 @@ void DocTools::generate(BitField<GenerateFlags> p_flags) {
 							prop.type = "int";
 						} else if (retinfo.class_name != StringName()) {
 							prop.type = retinfo.class_name;
-						} else if (retinfo.type == Variant::ARRAY && retinfo.hint == PROPERTY_HINT_ARRAY_TYPE) {
+						} else if (retinfo.type == Variant::ARRAY && retinfo.hint == PropertyHint::HINT_ARRAY_TYPE) {
 							prop.type = retinfo.hint_string + "[]";
-						} else if (retinfo.type == Variant::DICTIONARY && retinfo.hint == PROPERTY_HINT_DICTIONARY_TYPE) {
+						} else if (retinfo.type == Variant::DICTIONARY && retinfo.hint == PropertyHint::HINT_DICTIONARY_TYPE) {
 							prop.type = "Dictionary[" + retinfo.hint_string.replace(";", ", ") + "]";
-						} else if (retinfo.hint == PROPERTY_HINT_RESOURCE_TYPE) {
+						} else if (retinfo.hint == PropertyHint::HINT_RESOURCE_TYPE) {
 							prop.type = retinfo.hint_string;
 						} else if (retinfo.type == Variant::NIL && retinfo.usage & PROPERTY_USAGE_NIL_IS_VARIANT) {
 							prop.type = "Variant";
@@ -606,7 +606,7 @@ void DocTools::generate(BitField<GenerateFlags> p_flags) {
 				}
 
 				if (!found_type) {
-					if (E.type == Variant::OBJECT && E.hint == PROPERTY_HINT_RESOURCE_TYPE) {
+					if (E.type == Variant::OBJECT && E.hint == PropertyHint::HINT_RESOURCE_TYPE) {
 						prop.type = E.hint_string;
 					} else {
 						prop.type = Variant::get_type_name(E.type);

@@ -114,9 +114,9 @@ void EditorPropertyVariant::update_property() {
 		}
 
 		if (current_type == Variant::OBJECT) {
-			sub_property = EditorInspector::instantiate_property_editor(nullptr, current_type, "", PROPERTY_HINT_RESOURCE_TYPE, "Resource", PROPERTY_USAGE_NONE);
+			sub_property = EditorInspector::instantiate_property_editor(nullptr, current_type, "", PropertyHint::HINT_RESOURCE_TYPE, "Resource", PROPERTY_USAGE_NONE);
 		} else {
-			sub_property = EditorInspector::instantiate_property_editor(nullptr, current_type, "", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE);
+			sub_property = EditorInspector::instantiate_property_editor(nullptr, current_type, "", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NONE);
 		}
 		ERR_FAIL_NULL(sub_property);
 
@@ -3606,9 +3606,9 @@ static EditorPropertyRangeHint _parse_range_hint(PropertyHint p_hint, const Stri
 		hint.hide_slider = false; // Always show slider for ints, unless specified in hint range.
 	}
 	Vector<String> slices = p_hint_text.split(",");
-	if (p_hint == PROPERTY_HINT_RANGE) {
+	if (p_hint == PropertyHint::HINT_RANGE) {
 		ERR_FAIL_COND_V_MSG(slices.size() < 2, hint,
-				vformat("Invalid PROPERTY_HINT_RANGE with hint \"%s\": Missing required min and/or max values.", p_hint_text));
+				vformat("Invalid PropertyHint::HINT_RANGE with hint \"%s\": Missing required min and/or max values.", p_hint_text));
 
 		hint.or_greater = false; // If using ranged, assume false by default.
 		hint.or_less = false;
@@ -3655,7 +3655,7 @@ static EditorPropertyRangeHint _parse_range_hint(PropertyHint p_hint, const Stri
 	}
 
 	ERR_FAIL_COND_V_MSG(hint.step == 0, hint,
-			vformat("Invalid PROPERTY_HINT_RANGE with hint \"%s\": Step cannot be 0.", p_hint_text));
+			vformat("Invalid PropertyHint::HINT_RANGE with hint \"%s\": Step cannot be 0.", p_hint_text));
 
 	return hint;
 }
@@ -3677,46 +3677,46 @@ EditorProperty *EditorInspectorDefaultPlugin::get_editor_for_property(Object *p_
 			return editor;
 		} break;
 		case Variant::INT: {
-			if (p_hint == PROPERTY_HINT_ENUM) {
+			if (p_hint == PropertyHint::HINT_ENUM) {
 				EditorPropertyEnum *editor = memnew(EditorPropertyEnum);
 				Vector<String> options = p_hint_text.split(",");
 				editor->setup(options);
 				return editor;
 
-			} else if (p_hint == PROPERTY_HINT_FLAGS) {
+			} else if (p_hint == PropertyHint::HINT_FLAGS) {
 				EditorPropertyFlags *editor = memnew(EditorPropertyFlags);
 				Vector<String> options = p_hint_text.split(",");
 				editor->setup(options);
 				return editor;
 
-			} else if (p_hint == PROPERTY_HINT_LAYERS_2D_PHYSICS ||
-					p_hint == PROPERTY_HINT_LAYERS_2D_RENDER ||
-					p_hint == PROPERTY_HINT_LAYERS_2D_NAVIGATION ||
-					p_hint == PROPERTY_HINT_LAYERS_3D_PHYSICS ||
-					p_hint == PROPERTY_HINT_LAYERS_3D_RENDER ||
-					p_hint == PROPERTY_HINT_LAYERS_3D_NAVIGATION ||
-					p_hint == PROPERTY_HINT_LAYERS_AVOIDANCE) {
+			} else if (p_hint == PropertyHint::HINT_LAYERS_2D_PHYSICS ||
+					p_hint == PropertyHint::HINT_LAYERS_2D_RENDER ||
+					p_hint == PropertyHint::HINT_LAYERS_2D_NAVIGATION ||
+					p_hint == PropertyHint::HINT_LAYERS_3D_PHYSICS ||
+					p_hint == PropertyHint::HINT_LAYERS_3D_RENDER ||
+					p_hint == PropertyHint::HINT_LAYERS_3D_NAVIGATION ||
+					p_hint == PropertyHint::HINT_LAYERS_AVOIDANCE) {
 				EditorPropertyLayers::LayerType lt = EditorPropertyLayers::LAYER_RENDER_2D;
 				switch (p_hint) {
-					case PROPERTY_HINT_LAYERS_2D_RENDER:
+					case PropertyHint::HINT_LAYERS_2D_RENDER:
 						lt = EditorPropertyLayers::LAYER_RENDER_2D;
 						break;
-					case PROPERTY_HINT_LAYERS_2D_PHYSICS:
+					case PropertyHint::HINT_LAYERS_2D_PHYSICS:
 						lt = EditorPropertyLayers::LAYER_PHYSICS_2D;
 						break;
-					case PROPERTY_HINT_LAYERS_2D_NAVIGATION:
+					case PropertyHint::HINT_LAYERS_2D_NAVIGATION:
 						lt = EditorPropertyLayers::LAYER_NAVIGATION_2D;
 						break;
-					case PROPERTY_HINT_LAYERS_3D_RENDER:
+					case PropertyHint::HINT_LAYERS_3D_RENDER:
 						lt = EditorPropertyLayers::LAYER_RENDER_3D;
 						break;
-					case PROPERTY_HINT_LAYERS_3D_PHYSICS:
+					case PropertyHint::HINT_LAYERS_3D_PHYSICS:
 						lt = EditorPropertyLayers::LAYER_PHYSICS_3D;
 						break;
-					case PROPERTY_HINT_LAYERS_3D_NAVIGATION:
+					case PropertyHint::HINT_LAYERS_3D_NAVIGATION:
 						lt = EditorPropertyLayers::LAYER_NAVIGATION_3D;
 						break;
-					case PROPERTY_HINT_LAYERS_AVOIDANCE:
+					case PropertyHint::HINT_LAYERS_AVOIDANCE:
 						lt = EditorPropertyLayers::LAYER_AVOIDANCE;
 						break;
 					default: {
@@ -3725,7 +3725,7 @@ EditorProperty *EditorInspectorDefaultPlugin::get_editor_for_property(Object *p_
 				EditorPropertyLayers *editor = memnew(EditorPropertyLayers);
 				editor->setup(lt);
 				return editor;
-			} else if (p_hint == PROPERTY_HINT_OBJECT_ID) {
+			} else if (p_hint == PropertyHint::HINT_OBJECT_ID) {
 				EditorPropertyObjectID *editor = memnew(EditorPropertyObjectID);
 				editor->setup(p_hint_text);
 				return editor;
@@ -3740,7 +3740,7 @@ EditorProperty *EditorInspectorDefaultPlugin::get_editor_for_property(Object *p_
 			}
 		} break;
 		case Variant::FLOAT: {
-			if (p_hint == PROPERTY_HINT_EXP_EASING) {
+			if (p_hint == PropertyHint::HINT_EXP_EASING) {
 				EditorPropertyEasing *editor = memnew(EditorPropertyEasing);
 				bool positive_only = false;
 				bool flip = false;
@@ -3768,30 +3768,30 @@ EditorProperty *EditorInspectorDefaultPlugin::get_editor_for_property(Object *p_
 			}
 		} break;
 		case Variant::STRING: {
-			if (p_hint == PROPERTY_HINT_ENUM || p_hint == PROPERTY_HINT_ENUM_SUGGESTION) {
+			if (p_hint == PropertyHint::HINT_ENUM || p_hint == PropertyHint::HINT_ENUM_SUGGESTION) {
 				EditorPropertyTextEnum *editor = memnew(EditorPropertyTextEnum);
 				Vector<String> options = p_hint_text.split(",", false);
-				editor->setup(options, false, (p_hint == PROPERTY_HINT_ENUM_SUGGESTION));
+				editor->setup(options, false, (p_hint == PropertyHint::HINT_ENUM_SUGGESTION));
 				return editor;
-			} else if (p_hint == PROPERTY_HINT_MULTILINE_TEXT) {
+			} else if (p_hint == PropertyHint::HINT_MULTILINE_TEXT) {
 				EditorPropertyMultilineText *editor = memnew(EditorPropertyMultilineText);
 				return editor;
-			} else if (p_hint == PROPERTY_HINT_EXPRESSION) {
+			} else if (p_hint == PropertyHint::HINT_EXPRESSION) {
 				EditorPropertyMultilineText *editor = memnew(EditorPropertyMultilineText(true));
 				return editor;
-			} else if (p_hint == PROPERTY_HINT_TYPE_STRING) {
+			} else if (p_hint == PropertyHint::HINT_TYPE_STRING) {
 				EditorPropertyClassName *editor = memnew(EditorPropertyClassName);
 				editor->setup(p_hint_text, p_hint_text);
 				return editor;
-			} else if (p_hint == PROPERTY_HINT_LOCALE_ID) {
+			} else if (p_hint == PropertyHint::HINT_LOCALE_ID) {
 				EditorPropertyLocale *editor = memnew(EditorPropertyLocale);
 				editor->setup(p_hint_text);
 				return editor;
-			} else if (p_hint == PROPERTY_HINT_DIR || p_hint == PROPERTY_HINT_FILE || p_hint == PROPERTY_HINT_SAVE_FILE || p_hint == PROPERTY_HINT_GLOBAL_SAVE_FILE || p_hint == PROPERTY_HINT_GLOBAL_DIR || p_hint == PROPERTY_HINT_GLOBAL_FILE) {
+			} else if (p_hint == PropertyHint::HINT_DIR || p_hint == PropertyHint::HINT_FILE || p_hint == PropertyHint::HINT_SAVE_FILE || p_hint == PropertyHint::HINT_GLOBAL_SAVE_FILE || p_hint == PropertyHint::HINT_GLOBAL_DIR || p_hint == PropertyHint::HINT_GLOBAL_FILE) {
 				Vector<String> extensions = p_hint_text.split(",");
-				bool global = p_hint == PROPERTY_HINT_GLOBAL_DIR || p_hint == PROPERTY_HINT_GLOBAL_FILE || p_hint == PROPERTY_HINT_GLOBAL_SAVE_FILE;
-				bool folder = p_hint == PROPERTY_HINT_DIR || p_hint == PROPERTY_HINT_GLOBAL_DIR;
-				bool save = p_hint == PROPERTY_HINT_SAVE_FILE || p_hint == PROPERTY_HINT_GLOBAL_SAVE_FILE;
+				bool global = p_hint == PropertyHint::HINT_GLOBAL_DIR || p_hint == PropertyHint::HINT_GLOBAL_FILE || p_hint == PropertyHint::HINT_GLOBAL_SAVE_FILE;
+				bool folder = p_hint == PropertyHint::HINT_DIR || p_hint == PropertyHint::HINT_GLOBAL_DIR;
+				bool save = p_hint == PropertyHint::HINT_SAVE_FILE || p_hint == PropertyHint::HINT_GLOBAL_SAVE_FILE;
 				EditorPropertyPath *editor = memnew(EditorPropertyPath);
 				editor->setup(extensions, folder, global);
 				if (save) {
@@ -3800,9 +3800,9 @@ EditorProperty *EditorInspectorDefaultPlugin::get_editor_for_property(Object *p_
 				return editor;
 			} else {
 				EditorPropertyText *editor = memnew(EditorPropertyText);
-				if (p_hint == PROPERTY_HINT_PLACEHOLDER_TEXT) {
+				if (p_hint == PropertyHint::HINT_PLACEHOLDER_TEXT) {
 					editor->set_placeholder(p_hint_text);
-				} else if (p_hint == PROPERTY_HINT_PASSWORD) {
+				} else if (p_hint == PropertyHint::HINT_PASSWORD) {
 					editor->set_secret(true);
 					editor->set_placeholder(p_hint_text);
 				}
@@ -3816,14 +3816,14 @@ EditorProperty *EditorInspectorDefaultPlugin::get_editor_for_property(Object *p_
 			EditorPropertyVector2 *editor = memnew(EditorPropertyVector2(p_wide));
 
 			EditorPropertyRangeHint hint = _parse_range_hint(p_hint, p_hint_text, default_float_step);
-			editor->setup(hint.min, hint.max, hint.step, hint.hide_slider, p_hint == PROPERTY_HINT_LINK, hint.suffix);
+			editor->setup(hint.min, hint.max, hint.step, hint.hide_slider, p_hint == PropertyHint::HINT_LINK, hint.suffix);
 			return editor;
 
 		} break;
 		case Variant::VECTOR2I: {
 			EditorPropertyVector2i *editor = memnew(EditorPropertyVector2i(p_wide));
 			EditorPropertyRangeHint hint = _parse_range_hint(p_hint, p_hint_text, 1, true);
-			editor->setup(hint.min, hint.max, 1, false, p_hint == PROPERTY_HINT_LINK, hint.suffix, false, true);
+			editor->setup(hint.min, hint.max, 1, false, p_hint == PropertyHint::HINT_LINK, hint.suffix, false, true);
 			return editor;
 
 		} break;
@@ -3843,28 +3843,28 @@ EditorProperty *EditorInspectorDefaultPlugin::get_editor_for_property(Object *p_
 		case Variant::VECTOR3: {
 			EditorPropertyVector3 *editor = memnew(EditorPropertyVector3(p_wide));
 			EditorPropertyRangeHint hint = _parse_range_hint(p_hint, p_hint_text, default_float_step);
-			editor->setup(hint.min, hint.max, hint.step, hint.hide_slider, p_hint == PROPERTY_HINT_LINK, hint.suffix, hint.radians_as_degrees);
+			editor->setup(hint.min, hint.max, hint.step, hint.hide_slider, p_hint == PropertyHint::HINT_LINK, hint.suffix, hint.radians_as_degrees);
 			return editor;
 
 		} break;
 		case Variant::VECTOR3I: {
 			EditorPropertyVector3i *editor = memnew(EditorPropertyVector3i(p_wide));
 			EditorPropertyRangeHint hint = _parse_range_hint(p_hint, p_hint_text, 1, true);
-			editor->setup(hint.min, hint.max, 1, false, p_hint == PROPERTY_HINT_LINK, hint.suffix, false, true);
+			editor->setup(hint.min, hint.max, 1, false, p_hint == PropertyHint::HINT_LINK, hint.suffix, false, true);
 			return editor;
 
 		} break;
 		case Variant::VECTOR4: {
 			EditorPropertyVector4 *editor = memnew(EditorPropertyVector4);
 			EditorPropertyRangeHint hint = _parse_range_hint(p_hint, p_hint_text, default_float_step);
-			editor->setup(hint.min, hint.max, hint.step, hint.hide_slider, p_hint == PROPERTY_HINT_LINK, hint.suffix);
+			editor->setup(hint.min, hint.max, hint.step, hint.hide_slider, p_hint == PropertyHint::HINT_LINK, hint.suffix);
 			return editor;
 
 		} break;
 		case Variant::VECTOR4I: {
 			EditorPropertyVector4i *editor = memnew(EditorPropertyVector4i);
 			EditorPropertyRangeHint hint = _parse_range_hint(p_hint, p_hint_text, 1, true);
-			editor->setup(hint.min, hint.max, 1, false, p_hint == PROPERTY_HINT_LINK, hint.suffix, false, true);
+			editor->setup(hint.min, hint.max, 1, false, p_hint == PropertyHint::HINT_LINK, hint.suffix, false, true);
 			return editor;
 
 		} break;
@@ -3883,7 +3883,7 @@ EditorProperty *EditorInspectorDefaultPlugin::get_editor_for_property(Object *p_
 		case Variant::QUATERNION: {
 			EditorPropertyQuaternion *editor = memnew(EditorPropertyQuaternion);
 			EditorPropertyRangeHint hint = _parse_range_hint(p_hint, p_hint_text, default_float_step);
-			editor->setup(hint.min, hint.max, hint.step, hint.hide_slider, hint.suffix, p_hint == PROPERTY_HINT_HIDE_QUATERNION_EDIT);
+			editor->setup(hint.min, hint.max, hint.step, hint.hide_slider, hint.suffix, p_hint == PropertyHint::HINT_HIDE_QUATERNION_EDIT);
 			return editor;
 		} break;
 		case Variant::AABB: {
@@ -3916,20 +3916,20 @@ EditorProperty *EditorInspectorDefaultPlugin::get_editor_for_property(Object *p_
 		// misc types
 		case Variant::COLOR: {
 			EditorPropertyColor *editor = memnew(EditorPropertyColor);
-			editor->setup(p_hint != PROPERTY_HINT_COLOR_NO_ALPHA);
+			editor->setup(p_hint != PropertyHint::HINT_COLOR_NO_ALPHA);
 			return editor;
 		} break;
 		case Variant::STRING_NAME: {
-			if (p_hint == PROPERTY_HINT_ENUM || p_hint == PROPERTY_HINT_ENUM_SUGGESTION) {
+			if (p_hint == PropertyHint::HINT_ENUM || p_hint == PropertyHint::HINT_ENUM_SUGGESTION) {
 				EditorPropertyTextEnum *editor = memnew(EditorPropertyTextEnum);
 				Vector<String> options = p_hint_text.split(",", false);
-				editor->setup(options, true, (p_hint == PROPERTY_HINT_ENUM_SUGGESTION));
+				editor->setup(options, true, (p_hint == PropertyHint::HINT_ENUM_SUGGESTION));
 				return editor;
 			} else {
 				EditorPropertyText *editor = memnew(EditorPropertyText);
-				if (p_hint == PROPERTY_HINT_PLACEHOLDER_TEXT) {
+				if (p_hint == PropertyHint::HINT_PLACEHOLDER_TEXT) {
 					editor->set_placeholder(p_hint_text);
-				} else if (p_hint == PROPERTY_HINT_PASSWORD) {
+				} else if (p_hint == PropertyHint::HINT_PASSWORD) {
 					editor->set_secret(true);
 					editor->set_placeholder(p_hint_text);
 				}
@@ -3939,7 +3939,7 @@ EditorProperty *EditorInspectorDefaultPlugin::get_editor_for_property(Object *p_
 		} break;
 		case Variant::NODE_PATH: {
 			EditorPropertyNodePath *editor = memnew(EditorPropertyNodePath);
-			if (p_hint == PROPERTY_HINT_NODE_PATH_VALID_TYPES && !p_hint_text.is_empty()) {
+			if (p_hint == PropertyHint::HINT_NODE_PATH_VALID_TYPES && !p_hint_text.is_empty()) {
 				Vector<String> types = p_hint_text.split(",", false);
 				Vector<StringName> sn = Variant(types); //convert via variant
 				editor->setup(sn, (p_usage & PROPERTY_USAGE_NODE_PATH_FROM_SCENE_ROOT));
@@ -3952,7 +3952,7 @@ EditorProperty *EditorInspectorDefaultPlugin::get_editor_for_property(Object *p_
 			return editor;
 		} break;
 		case Variant::OBJECT: {
-			if (p_hint == PROPERTY_HINT_NODE_TYPE) {
+			if (p_hint == PropertyHint::HINT_NODE_TYPE) {
 				EditorPropertyNodePath *editor = memnew(EditorPropertyNodePath);
 				Vector<String> types = p_hint_text.split(",", false);
 				Vector<StringName> sn = Variant(types); //convert via variant
@@ -3960,9 +3960,9 @@ EditorProperty *EditorInspectorDefaultPlugin::get_editor_for_property(Object *p_
 				return editor;
 			} else {
 				EditorPropertyResource *editor = memnew(EditorPropertyResource);
-				editor->setup(p_object, p_path, p_hint == PROPERTY_HINT_RESOURCE_TYPE ? p_hint_text : "Resource");
+				editor->setup(p_object, p_path, p_hint == PropertyHint::HINT_RESOURCE_TYPE ? p_hint_text : "Resource");
 
-				if (p_hint == PROPERTY_HINT_RESOURCE_TYPE) {
+				if (p_hint == PropertyHint::HINT_RESOURCE_TYPE) {
 					const PackedStringArray open_in_new_inspector = EDITOR_GET("interface/inspector/resources_to_open_in_new_inspector");
 
 					for (const String &type : open_in_new_inspector) {
@@ -3988,7 +3988,7 @@ EditorProperty *EditorInspectorDefaultPlugin::get_editor_for_property(Object *p_
 			return editor;
 		} break;
 		case Variant::DICTIONARY: {
-			if (p_hint == PROPERTY_HINT_LOCALIZABLE_STRING) {
+			if (p_hint == PropertyHint::HINT_LOCALIZABLE_STRING) {
 				EditorPropertyLocalizableString *editor = memnew(EditorPropertyLocalizableString);
 				return editor;
 			} else {

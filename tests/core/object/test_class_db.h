@@ -647,11 +647,11 @@ void add_exposed_classes(Context &r_context) {
 			} else if (return_info.class_name != StringName()) {
 				method.return_type.name = return_info.class_name;
 
-				bool bad_reference_hint = !method.is_virtual && return_info.hint != PROPERTY_HINT_RESOURCE_TYPE &&
+				bool bad_reference_hint = !method.is_virtual && return_info.hint != PropertyHint::HINT_RESOURCE_TYPE &&
 						ClassDB::is_parent_class(return_info.class_name, r_context.names_cache.ref_counted_class);
-				TEST_COND(bad_reference_hint, "Return type is reference but hint is not '" _STR(PROPERTY_HINT_RESOURCE_TYPE) "'.", " Are you returning a reference type by pointer? Method: '",
+				TEST_COND(bad_reference_hint, "Return type is reference but hint is not '" _STR(PropertyHint::HINT_RESOURCE_TYPE) "'.", " Are you returning a reference type by pointer? Method: '",
 						exposed_class.name, ".", method.name, "'.");
-			} else if (return_info.hint == PROPERTY_HINT_RESOURCE_TYPE) {
+			} else if (return_info.hint == PropertyHint::HINT_RESOURCE_TYPE) {
 				method.return_type.name = return_info.hint_string;
 			} else if (return_info.type == Variant::NIL && return_info.usage & PROPERTY_USAGE_NIL_IS_VARIANT) {
 				method.return_type.name = r_context.names_cache.variant_type;
@@ -676,7 +676,7 @@ void add_exposed_classes(Context &r_context) {
 					arg.type.is_enum = true;
 				} else if (arg_info.class_name != StringName()) {
 					arg.type.name = arg_info.class_name;
-				} else if (arg_info.hint == PROPERTY_HINT_RESOURCE_TYPE) {
+				} else if (arg_info.hint == PropertyHint::HINT_RESOURCE_TYPE) {
 					arg.type.name = arg_info.hint_string;
 				} else if (arg_info.type == Variant::NIL) {
 					arg.type.name = r_context.names_cache.variant_type;
@@ -749,7 +749,7 @@ void add_exposed_classes(Context &r_context) {
 					arg.type.is_enum = true;
 				} else if (arg_info.class_name != StringName()) {
 					arg.type.name = arg_info.class_name;
-				} else if (arg_info.hint == PROPERTY_HINT_RESOURCE_TYPE) {
+				} else if (arg_info.hint == PropertyHint::HINT_RESOURCE_TYPE) {
 					arg.type.name = arg_info.hint_string;
 				} else if (arg_info.type == Variant::NIL) {
 					arg.type.name = r_context.names_cache.variant_type;

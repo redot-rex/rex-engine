@@ -169,7 +169,7 @@ void SkeletonProfile::_get_property_list(List<PropertyInfo> *p_list) const {
 	for (int i = 0; i < groups.size(); i++) {
 		String path = "groups/" + itos(i) + "/";
 		p_list->push_back(PropertyInfo(Variant::STRING_NAME, path + "group_name"));
-		p_list->push_back(PropertyInfo(Variant::OBJECT, path + "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"));
+		p_list->push_back(PropertyInfo(Variant::OBJECT, path + "texture", PropertyHint::HINT_RESOURCE_TYPE, "Texture2D"));
 		if (i > 0) {
 			group_names = group_names + ",";
 		}
@@ -179,11 +179,11 @@ void SkeletonProfile::_get_property_list(List<PropertyInfo> *p_list) const {
 		String path = "bones/" + itos(i) + "/";
 		p_list->push_back(PropertyInfo(Variant::STRING_NAME, path + "bone_name"));
 		p_list->push_back(PropertyInfo(Variant::STRING_NAME, path + "bone_parent"));
-		p_list->push_back(PropertyInfo(Variant::INT, path + "tail_direction", PROPERTY_HINT_ENUM, "AverageChildren,SpecificChild,End"));
+		p_list->push_back(PropertyInfo(Variant::INT, path + "tail_direction", PropertyHint::HINT_ENUM, "AverageChildren,SpecificChild,End"));
 		p_list->push_back(PropertyInfo(Variant::STRING_NAME, path + "bone_tail"));
 		p_list->push_back(PropertyInfo(Variant::TRANSFORM3D, path + "reference_pose"));
 		p_list->push_back(PropertyInfo(Variant::VECTOR2, path + "handle_offset"));
-		p_list->push_back(PropertyInfo(Variant::STRING_NAME, path + "group", PROPERTY_HINT_ENUM, group_names));
+		p_list->push_back(PropertyInfo(Variant::STRING_NAME, path + "group", PropertyHint::HINT_ENUM, group_names));
 		p_list->push_back(PropertyInfo(Variant::BOOL, path + "require"));
 	}
 
@@ -459,11 +459,11 @@ void SkeletonProfile::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_required", "bone_idx"), &SkeletonProfile::is_required);
 	ClassDB::bind_method(D_METHOD("set_required", "bone_idx", "required"), &SkeletonProfile::set_required);
 
-	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "root_bone", PROPERTY_HINT_ENUM_SUGGESTION, ""), "set_root_bone", "get_root_bone");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "scale_base_bone", PROPERTY_HINT_ENUM_SUGGESTION, ""), "set_scale_base_bone", "get_scale_base_bone");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "root_bone", PropertyHint::HINT_ENUM_SUGGESTION, ""), "set_root_bone", "get_root_bone");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "scale_base_bone", PropertyHint::HINT_ENUM_SUGGESTION, ""), "set_scale_base_bone", "get_scale_base_bone");
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "group_size", PROPERTY_HINT_RANGE, "0,100,1", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_ARRAY, "Groups,groups/"), "set_group_size", "get_group_size");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "bone_size", PROPERTY_HINT_RANGE, "0,100,1", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_ARRAY, "Bones,bones/"), "set_bone_size", "get_bone_size");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "group_size", PropertyHint::HINT_RANGE, "0,100,1", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_ARRAY, "Groups,groups/"), "set_group_size", "get_group_size");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "bone_size", PropertyHint::HINT_RANGE, "0,100,1", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_ARRAY, "Bones,bones/"), "set_bone_size", "get_bone_size");
 
 	ADD_SIGNAL(MethodInfo("profile_updated"));
 

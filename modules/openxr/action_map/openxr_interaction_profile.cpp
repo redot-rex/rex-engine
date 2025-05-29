@@ -35,7 +35,7 @@
 void OpenXRIPBinding::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_action", "action"), &OpenXRIPBinding::set_action);
 	ClassDB::bind_method(D_METHOD("get_action"), &OpenXRIPBinding::get_action);
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "action", PROPERTY_HINT_RESOURCE_TYPE, "OpenXRAction"), "set_action", "get_action");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "action", PropertyHint::HINT_RESOURCE_TYPE, "OpenXRAction"), "set_action", "get_action");
 
 	ClassDB::bind_method(D_METHOD("set_binding_path", "binding_path"), &OpenXRIPBinding::set_binding_path);
 	ClassDB::bind_method(D_METHOD("get_binding_path"), &OpenXRIPBinding::get_binding_path);
@@ -45,13 +45,13 @@ void OpenXRIPBinding::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_binding_modifier", "index"), &OpenXRIPBinding::get_binding_modifier);
 	ClassDB::bind_method(D_METHOD("set_binding_modifiers", "binding_modifiers"), &OpenXRIPBinding::set_binding_modifiers);
 	ClassDB::bind_method(D_METHOD("get_binding_modifiers"), &OpenXRIPBinding::get_binding_modifiers);
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "binding_modifiers", PROPERTY_HINT_RESOURCE_TYPE, "OpenXRActionBindingModifier", PROPERTY_USAGE_NO_EDITOR), "set_binding_modifiers", "get_binding_modifiers");
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "binding_modifiers", PropertyHint::HINT_RESOURCE_TYPE, "OpenXRActionBindingModifier", PROPERTY_USAGE_NO_EDITOR), "set_binding_modifiers", "get_binding_modifiers");
 
 	// Deprecated
 #ifndef DISABLE_DEPRECATED
 	ClassDB::bind_method(D_METHOD("set_paths", "paths"), &OpenXRIPBinding::set_paths);
 	ClassDB::bind_method(D_METHOD("get_paths"), &OpenXRIPBinding::get_paths);
-	ADD_PROPERTY(PropertyInfo(Variant::PACKED_STRING_ARRAY, "paths", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_paths", "get_paths");
+	ADD_PROPERTY(PropertyInfo(Variant::PACKED_STRING_ARRAY, "paths", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NONE), "set_paths", "get_paths");
 
 	ClassDB::bind_method(D_METHOD("get_path_count"), &OpenXRIPBinding::get_path_count);
 	ClassDB::bind_method(D_METHOD("has_path", "path"), &OpenXRIPBinding::has_path);
@@ -224,13 +224,13 @@ void OpenXRInteractionProfile::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_binding", "index"), &OpenXRInteractionProfile::get_binding);
 	ClassDB::bind_method(D_METHOD("set_bindings", "bindings"), &OpenXRInteractionProfile::set_bindings);
 	ClassDB::bind_method(D_METHOD("get_bindings"), &OpenXRInteractionProfile::get_bindings);
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "bindings", PROPERTY_HINT_RESOURCE_TYPE, "OpenXRIPBinding", PROPERTY_USAGE_NO_EDITOR), "set_bindings", "get_bindings");
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "bindings", PropertyHint::HINT_RESOURCE_TYPE, "OpenXRIPBinding", PROPERTY_USAGE_NO_EDITOR), "set_bindings", "get_bindings");
 
 	ClassDB::bind_method(D_METHOD("get_binding_modifier_count"), &OpenXRInteractionProfile::get_binding_modifier_count);
 	ClassDB::bind_method(D_METHOD("get_binding_modifier", "index"), &OpenXRInteractionProfile::get_binding_modifier);
 	ClassDB::bind_method(D_METHOD("set_binding_modifiers", "binding_modifiers"), &OpenXRInteractionProfile::set_binding_modifiers);
 	ClassDB::bind_method(D_METHOD("get_binding_modifiers"), &OpenXRInteractionProfile::get_binding_modifiers);
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "binding_modifiers", PROPERTY_HINT_RESOURCE_TYPE, "OpenXRIPBindingModifier", PROPERTY_USAGE_NO_EDITOR), "set_binding_modifiers", "get_binding_modifiers");
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "binding_modifiers", PropertyHint::HINT_RESOURCE_TYPE, "OpenXRIPBindingModifier", PROPERTY_USAGE_NO_EDITOR), "set_binding_modifiers", "get_binding_modifiers");
 }
 
 Ref<OpenXRInteractionProfile> OpenXRInteractionProfile::new_profile(const char *p_input_profile_path) {

@@ -118,7 +118,7 @@ Variant EditorDebuggerRemoteObjects::get_variant(const StringName &p_name) {
 void EditorDebuggerRemoteObjects::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_title"), &EditorDebuggerRemoteObjects::get_title);
 
-	ADD_SIGNAL(MethodInfo("values_edited", PropertyInfo(Variant::STRING, "property"), PropertyInfo(Variant::DICTIONARY, "values", PROPERTY_HINT_DICTIONARY_TYPE, "uint64_t:Variant"), PropertyInfo(Variant::STRING, "field")));
+	ADD_SIGNAL(MethodInfo("values_edited", PropertyInfo(Variant::STRING, "property"), PropertyInfo(Variant::DICTIONARY, "values", PropertyHint::HINT_DICTIONARY_TYPE, "uint64_t:Variant"), PropertyInfo(Variant::STRING, "field")));
 }
 
 /// EditorDebuggerInspector
@@ -375,12 +375,12 @@ void EditorDebuggerInspector::add_stack_variable(const Array &p_array, int p_off
 	String n = var.name;
 	Variant v = var.value;
 
-	PropertyHint h = PROPERTY_HINT_NONE;
+	PropertyHint h = PropertyHint::HINT_NONE;
 	String hs;
 
 	if (var.var_type == Variant::OBJECT && v) {
 		v = Object::cast_to<EncodedObjectAsID>(v)->get_object_id();
-		h = PROPERTY_HINT_OBJECT_ID;
+		h = PropertyHint::HINT_OBJECT_ID;
 		hs = "Object";
 	}
 	String type;

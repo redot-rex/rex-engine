@@ -551,10 +551,10 @@ static void _register_function(const StringName &p_name, const MethodInfo &p_met
 	PropertyInfo(Variant::m_type, "")
 
 #define RETVAR \
-	PropertyInfo(Variant::NIL, "", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT)
+	PropertyInfo(Variant::NIL, "", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT)
 
 #define RETCLS(m_class) \
-	PropertyInfo(Variant::OBJECT, "", PROPERTY_HINT_RESOURCE_TYPE, m_class)
+	PropertyInfo(Variant::OBJECT, "", PropertyHint::HINT_RESOURCE_TYPE, m_class)
 
 #define NOARGS \
 	MethodInfo()
@@ -566,10 +566,10 @@ static void _register_function(const StringName &p_name, const MethodInfo &p_met
 	PropertyInfo(Variant::m_type, m_name)
 
 #define ARGVAR(m_name) \
-	PropertyInfo(Variant::NIL, m_name, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT)
+	PropertyInfo(Variant::NIL, m_name, PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT)
 
 #define ARGTYPE(m_name) \
-	PropertyInfo(Variant::INT, m_name, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_CLASS_IS_ENUM, "Variant.Type")
+	PropertyInfo(Variant::INT, m_name, PropertyHint::HINT_NONE, "", PROPERTY_USAGE_CLASS_IS_ENUM, "Variant.Type")
 
 void GDScriptUtilityFunctions::register_functions() {
 	/* clang-format off */

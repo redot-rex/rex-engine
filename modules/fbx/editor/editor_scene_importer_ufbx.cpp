@@ -93,9 +93,9 @@ void EditorSceneFormatImporterUFBX::get_import_options(const String &p_path,
 		List<ResourceImporter::ImportOption> *r_options) {
 	// Returns all the options when path is empty because that means it's for the Project Settings.
 	if (p_path.is_empty() || p_path.get_extension().to_lower() == "fbx") {
-		r_options->push_back(ResourceImporterScene::ImportOption(PropertyInfo(Variant::INT, "fbx/importer", PROPERTY_HINT_ENUM, "ufbx,FBX2glTF"), FBX_IMPORTER_UFBX));
+		r_options->push_back(ResourceImporterScene::ImportOption(PropertyInfo(Variant::INT, "fbx/importer", PropertyHint::HINT_ENUM, "ufbx,FBX2glTF"), FBX_IMPORTER_UFBX));
 		r_options->push_back(ResourceImporterScene::ImportOption(PropertyInfo(Variant::BOOL, "fbx/allow_geometry_helper_nodes"), false));
-		r_options->push_back(ResourceImporterScene::ImportOption(PropertyInfo(Variant::INT, "fbx/embedded_image_handling", PROPERTY_HINT_ENUM, "Discard All Textures,Extract Textures,Embed as Basis Universal,Embed as Uncompressed", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED), FBXState::HANDLE_BINARY_EXTRACT_TEXTURES));
+		r_options->push_back(ResourceImporterScene::ImportOption(PropertyInfo(Variant::INT, "fbx/embedded_image_handling", PropertyHint::HINT_ENUM, "Discard All Textures,Extract Textures,Embed as Basis Universal,Embed as Uncompressed", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED), FBXState::HANDLE_BINARY_EXTRACT_TEXTURES));
 	}
 }
 

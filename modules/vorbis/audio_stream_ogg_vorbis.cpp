@@ -531,7 +531,7 @@ bool AudioStreamOggVorbis::is_monophonic() const {
 }
 
 void AudioStreamOggVorbis::get_parameter_list(List<Parameter> *r_parameters) {
-	r_parameters->push_back(Parameter(PropertyInfo(Variant::BOOL, "looping", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_CHECKABLE), Variant()));
+	r_parameters->push_back(Parameter(PropertyInfo(Variant::BOOL, "looping", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_CHECKABLE), Variant()));
 }
 
 Ref<AudioSample> AudioStreamOggVorbis::generate_sample() const {
@@ -694,10 +694,10 @@ void AudioStreamOggVorbis::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_bar_beats", "count"), &AudioStreamOggVorbis::set_bar_beats);
 	ClassDB::bind_method(D_METHOD("get_bar_beats"), &AudioStreamOggVorbis::get_bar_beats);
 
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "packet_sequence", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_packet_sequence", "get_packet_sequence");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "bpm", PROPERTY_HINT_RANGE, "0,400,0.01,or_greater"), "set_bpm", "get_bpm");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "beat_count", PROPERTY_HINT_RANGE, "0,512,1,or_greater"), "set_beat_count", "get_beat_count");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "bar_beats", PROPERTY_HINT_RANGE, "2,32,1,or_greater"), "set_bar_beats", "get_bar_beats");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "packet_sequence", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_packet_sequence", "get_packet_sequence");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "bpm", PropertyHint::HINT_RANGE, "0,400,0.01,or_greater"), "set_bpm", "get_bpm");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "beat_count", PropertyHint::HINT_RANGE, "0,512,1,or_greater"), "set_beat_count", "get_beat_count");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "bar_beats", PropertyHint::HINT_RANGE, "2,32,1,or_greater"), "set_bar_beats", "get_bar_beats");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "loop"), "set_loop", "has_loop");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "loop_offset"), "set_loop_offset", "get_loop_offset");
 }

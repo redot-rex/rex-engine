@@ -169,18 +169,18 @@ struct GetTypeInfo<TypedArray<T>> {
 	static const Variant::Type VARIANT_TYPE = Variant::ARRAY;
 	static const GodotTypeInfo::Metadata METADATA = GodotTypeInfo::METADATA_NONE;
 	static inline PropertyInfo get_class_info() {
-		return PropertyInfo(Variant::ARRAY, String(), PROPERTY_HINT_ARRAY_TYPE, T::get_class_static());
+		return PropertyInfo(Variant::ARRAY, String(), PropertyHint::HINT_ARRAY_TYPE, T::get_class_static());
 	}
 };
 
-#define MAKE_TYPED_ARRAY_INFO(m_type, m_variant_type)                                                                        \
-	template <>                                                                                                              \
-	struct GetTypeInfo<TypedArray<m_type>> {                                                                                 \
-		static const Variant::Type VARIANT_TYPE = Variant::ARRAY;                                                            \
-		static const GodotTypeInfo::Metadata METADATA = GodotTypeInfo::METADATA_NONE;                                        \
-		static inline PropertyInfo get_class_info() {                                                                        \
-			return PropertyInfo(Variant::ARRAY, String(), PROPERTY_HINT_ARRAY_TYPE, Variant::get_type_name(m_variant_type)); \
-		}                                                                                                                    \
+#define MAKE_TYPED_ARRAY_INFO(m_type, m_variant_type)                                                                             \
+	template <>                                                                                                                   \
+	struct GetTypeInfo<TypedArray<m_type>> {                                                                                      \
+		static const Variant::Type VARIANT_TYPE = Variant::ARRAY;                                                                 \
+		static const GodotTypeInfo::Metadata METADATA = GodotTypeInfo::METADATA_NONE;                                             \
+		static inline PropertyInfo get_class_info() {                                                                             \
+			return PropertyInfo(Variant::ARRAY, String(), PropertyHint::HINT_ARRAY_TYPE, Variant::get_type_name(m_variant_type)); \
+		}                                                                                                                         \
 	};
 
 MAKE_TYPED_ARRAY_INFO(bool, Variant::BOOL)

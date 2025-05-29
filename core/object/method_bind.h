@@ -154,7 +154,7 @@ public:
 		} else if (p_arg < method_info.arguments.size()) {
 			return method_info.arguments[p_arg];
 		} else {
-			return PropertyInfo(Variant::NIL, "arg_" + itos(p_arg), PROPERTY_HINT_NONE, String(), PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT);
+			return PropertyInfo(Variant::NIL, "arg_" + itos(p_arg), PropertyHint::HINT_NONE, String(), PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT);
 		}
 	}
 

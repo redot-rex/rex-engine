@@ -651,7 +651,7 @@ void InputEventKey::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "physical_keycode"), "set_physical_keycode", "get_physical_keycode");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "key_label"), "set_key_label", "get_key_label");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "unicode"), "set_unicode", "get_unicode");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "location", PROPERTY_HINT_ENUM, "Unspecified,Left,Right"), "set_location", "get_location");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "location", PropertyHint::HINT_ENUM, "Unspecified,Left,Right"), "set_location", "get_location");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "echo"), "set_echo", "is_echo");
 }
 
@@ -693,8 +693,8 @@ void InputEventMouse::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_global_position"), &InputEventMouse::get_global_position);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "button_mask"), "set_button_mask", "get_button_mask");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "position", PROPERTY_HINT_NONE, "suffix:px"), "set_position", "get_position");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "global_position", PROPERTY_HINT_NONE, "suffix:px"), "set_global_position", "get_global_position");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "position", PropertyHint::HINT_NONE, "suffix:px"), "set_position", "get_position");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "global_position", PropertyHint::HINT_NONE, "suffix:px"), "set_global_position", "get_global_position");
 }
 
 ///////////////////////////////////
@@ -1082,10 +1082,10 @@ void InputEventMouseMotion::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "tilt"), "set_tilt", "get_tilt");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "pressure"), "set_pressure", "get_pressure");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "pen_inverted"), "set_pen_inverted", "get_pen_inverted");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "relative", PROPERTY_HINT_NONE, "suffix:px"), "set_relative", "get_relative");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "screen_relative", PROPERTY_HINT_NONE, "suffix:px"), "set_screen_relative", "get_screen_relative");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "velocity", PROPERTY_HINT_NONE, "suffix:px/s"), "set_velocity", "get_velocity");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "screen_velocity", PROPERTY_HINT_NONE, "suffix:px/s"), "set_screen_velocity", "get_screen_velocity");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "relative", PropertyHint::HINT_NONE, "suffix:px"), "set_relative", "get_relative");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "screen_relative", PropertyHint::HINT_NONE, "suffix:px"), "set_screen_relative", "get_screen_relative");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "velocity", PropertyHint::HINT_NONE, "suffix:px/s"), "set_velocity", "get_velocity");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "screen_velocity", PropertyHint::HINT_NONE, "suffix:px/s"), "set_screen_velocity", "get_screen_velocity");
 }
 
 ///////////////////////////////////
@@ -1401,7 +1401,7 @@ void InputEventScreenTouch::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_double_tap"), &InputEventScreenTouch::is_double_tap);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "index"), "set_index", "get_index");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "position", PROPERTY_HINT_NONE, "suffix:px"), "set_position", "get_position");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "position", PropertyHint::HINT_NONE, "suffix:px"), "set_position", "get_position");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "canceled"), "set_canceled", "is_canceled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "pressed"), "set_pressed", "is_pressed");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "double_tap"), "set_double_tap", "is_double_tap");
@@ -1563,11 +1563,11 @@ void InputEventScreenDrag::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "tilt"), "set_tilt", "get_tilt");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "pressure"), "set_pressure", "get_pressure");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "pen_inverted"), "set_pen_inverted", "get_pen_inverted");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "position", PROPERTY_HINT_NONE, "suffix:px"), "set_position", "get_position");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "relative", PROPERTY_HINT_NONE, "suffix:px"), "set_relative", "get_relative");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "screen_relative", PROPERTY_HINT_NONE, "suffix:px"), "set_screen_relative", "get_screen_relative");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "velocity", PROPERTY_HINT_NONE, "suffix:px/s"), "set_velocity", "get_velocity");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "screen_velocity", PROPERTY_HINT_NONE, "suffix:px/s"), "set_screen_velocity", "get_screen_velocity");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "position", PropertyHint::HINT_NONE, "suffix:px"), "set_position", "get_position");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "relative", PropertyHint::HINT_NONE, "suffix:px"), "set_relative", "get_relative");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "screen_relative", PropertyHint::HINT_NONE, "suffix:px"), "set_screen_relative", "get_screen_relative");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "velocity", PropertyHint::HINT_NONE, "suffix:px/s"), "set_velocity", "get_velocity");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "screen_velocity", PropertyHint::HINT_NONE, "suffix:px/s"), "set_screen_velocity", "get_screen_velocity");
 }
 
 ///////////////////////////////////
@@ -1669,8 +1669,8 @@ void InputEventAction::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "action"), "set_action", "get_action");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "pressed"), "set_pressed", "is_pressed");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "strength", PROPERTY_HINT_RANGE, "0,1,0.01"), "set_strength", "get_strength");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "event_index", PROPERTY_HINT_RANGE, "-1,31,1"), "set_event_index", "get_event_index"); // The max value equals to Input::MAX_EVENT - 1.
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "strength", PropertyHint::HINT_RANGE, "0,1,0.01"), "set_strength", "get_strength");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "event_index", PropertyHint::HINT_RANGE, "-1,31,1"), "set_event_index", "get_event_index"); // The max value equals to Input::MAX_EVENT - 1.
 }
 
 ///////////////////////////////////
@@ -1683,7 +1683,7 @@ void InputEventGesture::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_position", "position"), &InputEventGesture::set_position);
 	ClassDB::bind_method(D_METHOD("get_position"), &InputEventGesture::get_position);
 
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "position", PROPERTY_HINT_NONE, "suffix:px"), "set_position", "get_position");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "position", PropertyHint::HINT_NONE, "suffix:px"), "set_position", "get_position");
 }
 
 Vector2 InputEventGesture::get_position() const {
@@ -1911,7 +1911,7 @@ void InputEventShortcut::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_shortcut", "shortcut"), &InputEventShortcut::set_shortcut);
 	ClassDB::bind_method(D_METHOD("get_shortcut"), &InputEventShortcut::get_shortcut);
 
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "shortcut", PROPERTY_HINT_RESOURCE_TYPE, "Shortcut"), "set_shortcut", "get_shortcut");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "shortcut", PropertyHint::HINT_RESOURCE_TYPE, "Shortcut"), "set_shortcut", "get_shortcut");
 }
 
 String InputEventShortcut::as_text() const {

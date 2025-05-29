@@ -532,7 +532,7 @@ void Object::get_property_list(List<PropertyInfo> *p_list, bool p_reversed) cons
 	if (_extension) {
 		const ObjectGDExtension *current_extension = _extension;
 		while (current_extension) {
-			p_list->push_back(PropertyInfo(Variant::NIL, current_extension->class_name, PROPERTY_HINT_NONE, current_extension->class_name, PROPERTY_USAGE_CATEGORY));
+			p_list->push_back(PropertyInfo(Variant::NIL, current_extension->class_name, PropertyHint::HINT_NONE, current_extension->class_name, PROPERTY_USAGE_CATEGORY));
 
 			ClassDB::get_property_list(current_extension->class_name, p_list, true, this);
 
@@ -567,7 +567,7 @@ void Object::get_property_list(List<PropertyInfo> *p_list, bool p_reversed) cons
 	_get_property_listv(p_list, p_reversed);
 
 	if (!is_class("Script")) { // can still be set, but this is for user-friendliness
-		p_list->push_back(PropertyInfo(Variant::OBJECT, "script", PROPERTY_HINT_RESOURCE_TYPE, "Script", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NEVER_DUPLICATE));
+		p_list->push_back(PropertyInfo(Variant::OBJECT, "script", PropertyHint::HINT_RESOURCE_TYPE, "Script", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NEVER_DUPLICATE));
 	}
 
 	if (script_instance && !p_reversed) {
@@ -577,7 +577,7 @@ void Object::get_property_list(List<PropertyInfo> *p_list, bool p_reversed) cons
 	for (const KeyValue<StringName, Variant> &K : metadata) {
 		PropertyInfo pi = PropertyInfo(K.value.get_type(), "metadata/" + K.key.operator String());
 		if (K.value.get_type() == Variant::OBJECT) {
-			pi.hint = PROPERTY_HINT_RESOURCE_TYPE;
+			pi.hint = PropertyHint::HINT_RESOURCE_TYPE;
 			Object *obj = K.value;
 			if (Object::cast_to<Script>(obj)) {
 				pi.hint_string = "Script";
@@ -1875,7 +1875,7 @@ void Object::_bind_methods() {
 	{
 		MethodInfo mi("_set");
 		mi.arguments.push_back(PropertyInfo(Variant::STRING_NAME, "property"));
-		mi.arguments.push_back(PropertyInfo(Variant::NIL, "value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT));
+		mi.arguments.push_back(PropertyInfo(Variant::NIL, "value", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT));
 		mi.return_val.type = Variant::BOOL;
 		BIND_OBJ_CORE_METHOD(mi);
 	}
@@ -1891,7 +1891,7 @@ void Object::_bind_methods() {
 	{
 		MethodInfo mi("_get_property_list");
 		mi.return_val.type = Variant::ARRAY;
-		mi.return_val.hint = PROPERTY_HINT_ARRAY_TYPE;
+		mi.return_val.hint = PropertyHint::HINT_ARRAY_TYPE;
 		mi.return_val.hint_string = "Dictionary";
 		BIND_OBJ_CORE_METHOD(mi);
 	}
@@ -1915,7 +1915,7 @@ void Object::_bind_methods() {
 
 	{
 		MethodInfo mi("_iter_get");
-		mi.arguments.push_back(PropertyInfo(Variant::NIL, "iter", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT));
+		mi.arguments.push_back(PropertyInfo(Variant::NIL, "iter", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT));
 		mi.return_val.usage |= PROPERTY_USAGE_NIL_IS_VARIANT;
 		BIND_OBJ_CORE_METHOD(mi);
 	}

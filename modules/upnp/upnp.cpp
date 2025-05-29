@@ -57,7 +57,7 @@ void UPNP::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_discover_local_port", "port"), &UPNP::set_discover_local_port);
 	ClassDB::bind_method(D_METHOD("get_discover_local_port"), &UPNP::get_discover_local_port);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "discover_local_port", PROPERTY_HINT_RANGE, "0,65535"), "set_discover_local_port", "get_discover_local_port");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "discover_local_port", PropertyHint::HINT_RANGE, "0,65535"), "set_discover_local_port", "get_discover_local_port");
 
 	ClassDB::bind_method(D_METHOD("set_discover_ipv6", "ipv6"), &UPNP::set_discover_ipv6);
 	ClassDB::bind_method(D_METHOD("is_discover_ipv6"), &UPNP::is_discover_ipv6);

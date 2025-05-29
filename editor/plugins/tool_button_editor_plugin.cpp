@@ -59,7 +59,7 @@ bool EditorInspectorToolButtonPlugin::can_handle(Object *p_object) {
 }
 
 bool EditorInspectorToolButtonPlugin::parse_property(Object *p_object, const Variant::Type p_type, const String &p_path, const PropertyHint p_hint, const String &p_hint_text, const BitField<PropertyUsageFlags> p_usage, const bool p_wide) {
-	if (p_type != Variant::CALLABLE || p_hint != PROPERTY_HINT_TOOL_BUTTON || !p_usage.has_flag(PROPERTY_USAGE_EDITOR)) {
+	if (p_type != Variant::CALLABLE || p_hint != PropertyHint::HINT_TOOL_BUTTON || !p_usage.has_flag(PROPERTY_USAGE_EDITOR)) {
 		return false;
 	}
 

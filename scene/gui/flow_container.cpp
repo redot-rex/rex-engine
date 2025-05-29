@@ -417,8 +417,8 @@ void FlowContainer::_bind_methods() {
 	BIND_ENUM_CONSTANT(LAST_WRAP_ALIGNMENT_CENTER);
 	BIND_ENUM_CONSTANT(LAST_WRAP_ALIGNMENT_END);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "alignment", PROPERTY_HINT_ENUM, "Begin,Center,End"), "set_alignment", "get_alignment");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "last_wrap_alignment", PROPERTY_HINT_ENUM, "Inherit,Begin,Center,End"), "set_last_wrap_alignment", "get_last_wrap_alignment");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "alignment", PropertyHint::HINT_ENUM, "Begin,Center,End"), "set_alignment", "get_alignment");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "last_wrap_alignment", PropertyHint::HINT_ENUM, "Inherit,Begin,Center,End"), "set_last_wrap_alignment", "get_last_wrap_alignment");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "vertical"), "set_vertical", "is_vertical");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "reverse_fill"), "set_reverse_fill", "is_reverse_fill");
 

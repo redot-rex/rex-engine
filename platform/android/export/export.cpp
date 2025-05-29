@@ -48,19 +48,19 @@ void register_android_exporter_types() {
 void register_android_exporter() {
 	// TODO: Move to editor_settings.cpp
 	EDITOR_DEF_BASIC("export/android/debug_keystore", EditorPaths::get_singleton()->get_debug_keystore_path());
-	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::STRING, "export/android/debug_keystore", PROPERTY_HINT_GLOBAL_FILE, "*.keystore,*.jks"));
+	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::STRING, "export/android/debug_keystore", PropertyHint::HINT_GLOBAL_FILE, "*.keystore,*.jks"));
 	EDITOR_DEF_BASIC("export/android/debug_keystore_user", DEFAULT_ANDROID_KEYSTORE_DEBUG_USER);
 	EDITOR_DEF_BASIC("export/android/debug_keystore_pass", DEFAULT_ANDROID_KEYSTORE_DEBUG_PASSWORD);
-	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::STRING, "export/android/debug_keystore_pass", PROPERTY_HINT_PASSWORD));
+	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::STRING, "export/android/debug_keystore_pass", PropertyHint::HINT_PASSWORD));
 
 #ifdef ANDROID_ENABLED
 	EDITOR_DEF_BASIC("export/android/install_exported_apk", !OS::get_singleton()->has_feature("horizonos"));
 #else
 	EDITOR_DEF_BASIC("export/android/java_sdk_path", OS::get_singleton()->get_environment("JAVA_HOME"));
-	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::STRING, "export/android/java_sdk_path", PROPERTY_HINT_GLOBAL_DIR));
+	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::STRING, "export/android/java_sdk_path", PropertyHint::HINT_GLOBAL_DIR));
 
 	EDITOR_DEF_BASIC("export/android/android_sdk_path", OS::get_singleton()->has_environment("ANDROID_HOME") ? OS::get_singleton()->get_environment("ANDROID_HOME") : get_default_android_sdk_path());
-	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::STRING, "export/android/android_sdk_path", PROPERTY_HINT_GLOBAL_DIR));
+	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::STRING, "export/android/android_sdk_path", PropertyHint::HINT_GLOBAL_DIR));
 
 	EDITOR_DEF("export/android/force_system_user", false);
 

@@ -192,8 +192,8 @@ void GraphFrame::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "title"), "set_title", "get_title");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "autoshrink_enabled"), "set_autoshrink_enabled", "is_autoshrink_enabled");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "autoshrink_margin", PROPERTY_HINT_RANGE, "0,128,1"), "set_autoshrink_margin", "get_autoshrink_margin");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "drag_margin", PROPERTY_HINT_RANGE, "0,128,1"), "set_drag_margin", "get_drag_margin");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "autoshrink_margin", PropertyHint::HINT_RANGE, "0,128,1"), "set_autoshrink_margin", "get_autoshrink_margin");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "drag_margin", PropertyHint::HINT_RANGE, "0,128,1"), "set_drag_margin", "get_drag_margin");
 
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "tint_color_enabled"), "set_tint_color_enabled", "is_tint_color_enabled");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "tint_color"), "set_tint_color", "get_tint_color");

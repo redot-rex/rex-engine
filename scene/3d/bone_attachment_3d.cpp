@@ -46,10 +46,10 @@ void BoneAttachment3D::_validate_property(PropertyInfo &p_property) const {
 		}
 
 		if (parent) {
-			p_property.hint = PROPERTY_HINT_ENUM;
+			p_property.hint = PropertyHint::HINT_ENUM;
 			p_property.hint_string = parent->get_concatenated_bone_names();
 		} else {
-			p_property.hint = PROPERTY_HINT_NONE;
+			p_property.hint = PropertyHint::HINT_NONE;
 			p_property.hint_string = "";
 		}
 	}
@@ -80,9 +80,9 @@ bool BoneAttachment3D::_get(const StringName &p_path, Variant &r_ret) const {
 }
 
 void BoneAttachment3D::_get_property_list(List<PropertyInfo> *p_list) const {
-	p_list->push_back(PropertyInfo(Variant::BOOL, "use_external_skeleton", PROPERTY_HINT_NONE, ""));
+	p_list->push_back(PropertyInfo(Variant::BOOL, "use_external_skeleton", PropertyHint::HINT_NONE, ""));
 	if (use_external_skeleton) {
-		p_list->push_back(PropertyInfo(Variant::NODE_PATH, "external_skeleton", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Skeleton3D"));
+		p_list->push_back(PropertyInfo(Variant::NODE_PATH, "external_skeleton", PropertyHint::HINT_NODE_PATH_VALID_TYPES, "Skeleton3D"));
 	}
 }
 

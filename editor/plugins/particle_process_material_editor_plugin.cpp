@@ -452,7 +452,7 @@ bool EditorInspectorParticleProcessMaterialPlugin::parse_property(Object *p_obje
 	if (!ParticleProcessMaterial::has_min_max_property(p_path)) {
 		return false;
 	}
-	ERR_FAIL_COND_V(p_hint != PROPERTY_HINT_RANGE, false);
+	ERR_FAIL_COND_V(p_hint != PropertyHint::HINT_RANGE, false);
 
 	Ref<ParticleProcessMaterial> mat = Ref<ParticleProcessMaterial>(p_object);
 	ERR_FAIL_COND_V(mat.is_null(), false);

@@ -3674,7 +3674,7 @@ void EditorNode::replace_resources_in_object(Object *p_object, const Vector<Ref<
 
 		switch (E.type) {
 			case Variant::OBJECT: {
-				if (E.hint == PROPERTY_HINT_RESOURCE_TYPE) {
+				if (E.hint == PropertyHint::HINT_RESOURCE_TYPE) {
 					const Variant &v = p_object->get(E.name);
 					Ref<Resource> res = v;
 
@@ -4348,7 +4348,7 @@ HashMap<StringName, Variant> EditorNode::get_modified_properties_for_node(Node *
 	p_node->get_property_list(&pinfo);
 	for (const PropertyInfo &E : pinfo) {
 		if (E.usage & PROPERTY_USAGE_STORAGE) {
-			bool node_reference = (E.type == Variant::OBJECT && E.hint == PROPERTY_HINT_NODE_TYPE);
+			bool node_reference = (E.type == Variant::OBJECT && E.hint == PropertyHint::HINT_NODE_TYPE);
 			if (p_node_references_only && !node_reference) {
 				continue;
 			}
@@ -4381,7 +4381,7 @@ HashMap<StringName, Variant> EditorNode::get_modified_properties_reference_to_no
 	p_node->get_property_list(&pinfo);
 	for (const PropertyInfo &E : pinfo) {
 		if (E.usage & PROPERTY_USAGE_STORAGE) {
-			if (E.type != Variant::OBJECT || E.hint != PROPERTY_HINT_NODE_TYPE) {
+			if (E.type != Variant::OBJECT || E.hint != PropertyHint::HINT_NODE_TYPE) {
 				continue;
 			}
 			Variant current_value = p_node->get(E.name);
@@ -4411,7 +4411,7 @@ void EditorNode::update_node_from_node_modification_entry(Node *p_node, Modifica
 		HashMap<StringName, bool> property_node_reference_table;
 		for (const PropertyInfo &E : pinfo) {
 			if (E.usage & PROPERTY_USAGE_STORAGE) {
-				if (E.type == Variant::OBJECT && E.hint == PROPERTY_HINT_NODE_TYPE) {
+				if (E.type == Variant::OBJECT && E.hint == PropertyHint::HINT_NODE_TYPE) {
 					property_node_reference_table[E.name] = true;
 				} else {
 					property_node_reference_table[E.name] = false;

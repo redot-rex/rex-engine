@@ -308,10 +308,10 @@ void SkeletonIK3D::_validate_property(PropertyInfo &p_property) const {
 	if (p_property.name == "root_bone" || p_property.name == "tip_bone") {
 		Skeleton3D *skeleton = get_skeleton();
 		if (skeleton) {
-			p_property.hint = PROPERTY_HINT_ENUM;
+			p_property.hint = PropertyHint::HINT_ENUM;
 			p_property.hint_string = skeleton->get_concatenated_bone_names();
 		} else {
-			p_property.hint = PROPERTY_HINT_NONE;
+			p_property.hint = PropertyHint::HINT_NONE;
 			p_property.hint_string = "";
 		}
 	}
@@ -353,18 +353,18 @@ void SkeletonIK3D::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "root_bone"), "set_root_bone", "get_root_bone");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "tip_bone"), "set_tip_bone", "get_tip_bone");
-	ADD_PROPERTY(PropertyInfo(Variant::TRANSFORM3D, "target", PROPERTY_HINT_NONE, "suffix:m"), "set_target_transform", "get_target_transform");
+	ADD_PROPERTY(PropertyInfo(Variant::TRANSFORM3D, "target", PropertyHint::HINT_NONE, "suffix:m"), "set_target_transform", "get_target_transform");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "override_tip_basis"), "set_override_tip_basis", "is_override_tip_basis");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "use_magnet"), "set_use_magnet", "is_using_magnet");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "magnet", PROPERTY_HINT_NONE, "suffix:m"), "set_magnet_position", "get_magnet_position");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "magnet", PropertyHint::HINT_NONE, "suffix:m"), "set_magnet_position", "get_magnet_position");
 	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "target_node"), "set_target_node", "get_target_node");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "min_distance", PROPERTY_HINT_NONE, "suffix:m"), "set_min_distance", "get_min_distance");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "min_distance", PropertyHint::HINT_NONE, "suffix:m"), "set_min_distance", "get_min_distance");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "max_iterations"), "set_max_iterations", "get_max_iterations");
 
 #ifndef DISABLE_DEPRECATED
 	ClassDB::bind_method(D_METHOD("set_interpolation", "interpolation"), &SkeletonIK3D::_set_interpolation);
 	ClassDB::bind_method(D_METHOD("get_interpolation"), &SkeletonIK3D::_get_interpolation);
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "interpolation", PROPERTY_HINT_RANGE, "0,1,0.001", PROPERTY_USAGE_NONE), "set_interpolation", "get_interpolation");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "interpolation", PropertyHint::HINT_RANGE, "0,1,0.001", PROPERTY_USAGE_NONE), "set_interpolation", "get_interpolation");
 #endif
 }
 

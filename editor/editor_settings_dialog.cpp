@@ -832,7 +832,7 @@ PropertyInfo EditorSettingsDialog::_create_mouse_shortcut_property_info(const St
 	hint_string += _get_shortcut_button_string(p_shortcut_1_name) + _get_shortcut_button_string(p_shortcut_2_name);
 	hint_string += "Mouse Button 5";
 
-	return PropertyInfo(Variant::INT, p_property_name, PROPERTY_HINT_ENUM, hint_string);
+	return PropertyInfo(Variant::INT, p_property_name, PropertyHint::HINT_ENUM, hint_string);
 }
 
 String EditorSettingsDialog::_get_shortcut_button_string(const String &p_shortcut_name) {

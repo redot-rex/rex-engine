@@ -189,7 +189,7 @@ int GDScriptWarning::get_default_value(Code p_code) {
 }
 
 PropertyInfo GDScriptWarning::get_property_info(Code p_code) {
-	return PropertyInfo(Variant::INT, get_settings_path_from_code(p_code), PROPERTY_HINT_ENUM, "Ignore,Warn,Error");
+	return PropertyInfo(Variant::INT, get_settings_path_from_code(p_code), PropertyHint::HINT_ENUM, "Ignore,Warn,Error");
 }
 
 String GDScriptWarning::get_name() const {

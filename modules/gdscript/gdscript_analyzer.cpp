@@ -6108,7 +6108,7 @@ GDScriptParser::DataType GDScriptAnalyzer::type_from_property(const PropertyInfo
 	} else {
 		result.kind = GDScriptParser::DataType::BUILTIN;
 		result.builtin_type = p_property.type;
-		if (p_property.type == Variant::ARRAY && p_property.hint == PROPERTY_HINT_ARRAY_TYPE) {
+		if (p_property.type == Variant::ARRAY && p_property.hint == PropertyHint::HINT_ARRAY_TYPE) {
 			// Check element type.
 			StringName elem_type_name = p_property.hint_string;
 			GDScriptParser::DataType elem_type;
@@ -6135,7 +6135,7 @@ GDScriptParser::DataType GDScriptAnalyzer::type_from_property(const PropertyInfo
 			}
 			elem_type.is_constant = false;
 			result.set_container_element_type(0, elem_type);
-		} else if (p_property.type == Variant::DICTIONARY && p_property.hint == PROPERTY_HINT_DICTIONARY_TYPE) {
+		} else if (p_property.type == Variant::DICTIONARY && p_property.hint == PropertyHint::HINT_DICTIONARY_TYPE) {
 			// Check element type.
 			StringName key_elem_type_name = p_property.hint_string.get_slicec(';', 0);
 			GDScriptParser::DataType key_elem_type;

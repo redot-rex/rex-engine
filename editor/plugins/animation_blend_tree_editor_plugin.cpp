@@ -205,7 +205,7 @@ void AnimationNodeBlendTreeEditor::update_graph() {
 				prop->set_name_split_ratio(0);
 				prop->connect("property_changed", callable_mp(this, &AnimationNodeBlendTreeEditor::_property_changed));
 
-				if (F.hint == PROPERTY_HINT_RESOURCE_TYPE) {
+				if (F.hint == PropertyHint::HINT_RESOURCE_TYPE) {
 					// Give the resource editor some more space to make the inside readable.
 					prop->set_custom_minimum_size(Vector2(180, 0) * EDSCALE);
 					// Align the size of the node with the resource editor, its un-expanding does not trigger a resize.

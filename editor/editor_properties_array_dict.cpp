@@ -358,7 +358,7 @@ void EditorPropertyArray::update_property() {
 	String array_sub_type_name;
 	if (array_type == Variant::ARRAY && subtype != Variant::NIL) {
 		String type_name;
-		if (subtype == Variant::OBJECT && (subtype_hint == PROPERTY_HINT_RESOURCE_TYPE || subtype_hint == PROPERTY_HINT_NODE_TYPE)) {
+		if (subtype == Variant::OBJECT && (subtype_hint == PropertyHint::HINT_RESOURCE_TYPE || subtype_hint == PropertyHint::HINT_NODE_TYPE)) {
 			type_name = subtype_hint_string;
 		} else {
 			type_name = Variant::get_type_name(subtype);
@@ -872,7 +872,7 @@ void EditorPropertyArray::setup(Variant::Type p_array_type, const String &p_hint
 
 			if (subtype == Variant::VARIANT_MAX) {
 				subtype = Variant::OBJECT;
-				subtype_hint = PROPERTY_HINT_RESOURCE_TYPE;
+				subtype_hint = PropertyHint::HINT_RESOURCE_TYPE;
 				subtype_hint_string = p_hint_string;
 			}
 		}
@@ -986,7 +986,7 @@ EditorPropertyArray::EditorPropertyArray() {
 	changing_type_index = -1;
 
 	subtype = Variant::NIL;
-	subtype_hint = PROPERTY_HINT_NONE;
+	subtype_hint = PropertyHint::HINT_NONE;
 	subtype_hint_string = "";
 	has_borders = true;
 }
@@ -1170,7 +1170,7 @@ void EditorPropertyDictionary::setup(PropertyHint p_hint, const String &p_hint_s
 
 			if (key_subtype == Variant::VARIANT_MAX) {
 				key_subtype = Variant::OBJECT;
-				key_subtype_hint = PROPERTY_HINT_RESOURCE_TYPE;
+				key_subtype_hint = PropertyHint::HINT_RESOURCE_TYPE;
 				key_subtype_hint_string = key;
 			}
 		}
@@ -1198,7 +1198,7 @@ void EditorPropertyDictionary::setup(PropertyHint p_hint, const String &p_hint_s
 
 			if (value_subtype == Variant::VARIANT_MAX) {
 				value_subtype = Variant::OBJECT;
-				value_subtype_hint = PROPERTY_HINT_RESOURCE_TYPE;
+				value_subtype_hint = PropertyHint::HINT_RESOURCE_TYPE;
 				value_subtype_hint_string = value;
 			}
 		}
@@ -1220,13 +1220,13 @@ void EditorPropertyDictionary::update_property() {
 	String dict_sub_type_name;
 	if (key_subtype != Variant::NIL || value_subtype != Variant::NIL) {
 		String key_subtype_name = "Variant";
-		if (key_subtype == Variant::OBJECT && (key_subtype_hint == PROPERTY_HINT_RESOURCE_TYPE || key_subtype_hint == PROPERTY_HINT_NODE_TYPE)) {
+		if (key_subtype == Variant::OBJECT && (key_subtype_hint == PropertyHint::HINT_RESOURCE_TYPE || key_subtype_hint == PropertyHint::HINT_NODE_TYPE)) {
 			key_subtype_name = key_subtype_hint_string;
 		} else if (key_subtype != Variant::NIL) {
 			key_subtype_name = Variant::get_type_name(key_subtype);
 		}
 		String value_subtype_name = "Variant";
-		if (value_subtype == Variant::OBJECT && (value_subtype_hint == PROPERTY_HINT_RESOURCE_TYPE || value_subtype_hint == PROPERTY_HINT_NODE_TYPE)) {
+		if (value_subtype == Variant::OBJECT && (value_subtype_hint == PropertyHint::HINT_RESOURCE_TYPE || value_subtype_hint == PropertyHint::HINT_NODE_TYPE)) {
 			value_subtype_name = value_subtype_hint_string;
 		} else if (value_subtype != Variant::NIL) {
 			value_subtype_name = Variant::get_type_name(value_subtype);
@@ -1543,11 +1543,11 @@ EditorPropertyDictionary::EditorPropertyDictionary() {
 	has_borders = true;
 
 	key_subtype = Variant::NIL;
-	key_subtype_hint = PROPERTY_HINT_NONE;
+	key_subtype_hint = PropertyHint::HINT_NONE;
 	key_subtype_hint_string = "";
 
 	value_subtype = Variant::NIL;
-	value_subtype_hint = PROPERTY_HINT_NONE;
+	value_subtype_hint = PropertyHint::HINT_NONE;
 	value_subtype_hint_string = "";
 }
 

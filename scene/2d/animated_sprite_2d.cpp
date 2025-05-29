@@ -156,11 +156,11 @@ void AnimatedSprite2D::_validate_property(PropertyInfo &p_property) const {
 			return;
 		}
 
-		p_property.hint = PROPERTY_HINT_RANGE;
+		p_property.hint = PropertyHint::HINT_RANGE;
 		if (frames->has_animation(animation) && frames->get_frame_count(animation) > 0) {
 			p_property.hint_string = "0," + itos(frames->get_frame_count(animation) - 1) + ",1";
 		} else {
-			// Avoid an error, `hint_string` is required for `PROPERTY_HINT_RANGE`.
+			// Avoid an error, `hint_string` is required for `PropertyHint::HINT_RANGE`.
 			p_property.hint_string = "0,0,1";
 		}
 		p_property.usage |= PROPERTY_USAGE_KEYING_INCREMENTS;
@@ -667,15 +667,15 @@ void AnimatedSprite2D::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("animation_finished"));
 
 	ADD_GROUP("Animation", "");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "sprite_frames", PROPERTY_HINT_RESOURCE_TYPE, "SpriteFrames"), "set_sprite_frames", "get_sprite_frames");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "animation", PROPERTY_HINT_ENUM, ""), "set_animation", "get_animation");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "autoplay", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_autoplay", "get_autoplay");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "sprite_frames", PropertyHint::HINT_RESOURCE_TYPE, "SpriteFrames"), "set_sprite_frames", "get_sprite_frames");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "animation", PropertyHint::HINT_ENUM, ""), "set_animation", "get_animation");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "autoplay", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_autoplay", "get_autoplay");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "frame"), "set_frame", "get_frame");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "frame_progress", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_frame_progress", "get_frame_progress");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "frame_progress", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_frame_progress", "get_frame_progress");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "speed_scale"), "set_speed_scale", "get_speed_scale");
 	ADD_GROUP("Offset", "");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "centered"), "set_centered", "is_centered");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "offset", PROPERTY_HINT_NONE, "suffix:px"), "set_offset", "get_offset");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "offset", PropertyHint::HINT_NONE, "suffix:px"), "set_offset", "get_offset");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "flip_h"), "set_flip_h", "is_flipped_h");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "flip_v"), "set_flip_v", "is_flipped_v");
 }

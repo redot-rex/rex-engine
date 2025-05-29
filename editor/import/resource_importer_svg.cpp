@@ -68,8 +68,8 @@ String ResourceImporterSVG::get_preset_name(int p_idx) const {
 }
 
 void ResourceImporterSVG::get_import_options(const String &p_path, List<ImportOption> *r_options, int p_preset) const {
-	r_options->push_back(ImportOption(PropertyInfo(Variant::FLOAT, "base_scale", PROPERTY_HINT_RANGE, "0.001,100,0.001"), 1.0));
-	r_options->push_back(ImportOption(PropertyInfo(Variant::FLOAT, "saturation", PROPERTY_HINT_RANGE, "0.0,1.0,0.01"), 1.0));
+	r_options->push_back(ImportOption(PropertyInfo(Variant::FLOAT, "base_scale", PropertyHint::HINT_RANGE, "0.001,100,0.001"), 1.0));
+	r_options->push_back(ImportOption(PropertyInfo(Variant::FLOAT, "saturation", PropertyHint::HINT_RANGE, "0.0,1.0,0.01"), 1.0));
 	r_options->push_back(ImportOption(PropertyInfo(Variant::DICTIONARY, "color_map"), Dictionary()));
 	r_options->push_back(ImportOption(PropertyInfo(Variant::BOOL, "compress"), true));
 }
