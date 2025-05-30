@@ -48,27 +48,34 @@ elseif (REX_PLATFORM STREQUAL "windows")
 	)
 endif()
 
-target_sources(rex_drivers PRIVATE
+add_library(vma OBJECT
 	${THIRDPARTY_DIR}vulkan/vk_mem_alloc.cpp
 )
 
+clone_library(rex_engine vma)
+disable_warnings_for_target(vma)
+target_link_libraries(rex_drivers PUBLIC vma)
+
+
 if (USE_VOLK)
-	target_compile_definitions(rex_engine PUBLIC
+	target_compile_definitions(vma PRIVATE
 		VMA_STATIC_VULKAN_FUNCTIONS=1
 	)
-	target_sources(rex_drivers PRIVATE
+	add_library(volk OBJECT
 		${THIRDPARTY_VOLK_DIR}volk.c
 	)
+	clone_library(rex_engine volk)
+	disable_warnings_for_target(volk)
+	target_link_libraries(rex_drivers PUBLIC volk)
 elseif(REX_PLATFORM STREQUAL "android")
-    # Our current NDK version only provides old Vulkan headers,
+	# Our current NDK version only provides old Vulkan headers,
     # so we have to limit VMA.
-	target_compile_definitions(rex_engine PUBLIC
+	target_compile_definitions(vma PRIVATE
 		VMA_VULKAN_VERSION=1000000
 	)
-elseif(REX_PLATFORM STREQUAL "macos"
-		OR REX_PLATFORM STREQUAL "ios")
+elseif(REX_PLATFORM MATCHES "macos|ios")
     # MoltenVK supports only Vulkan 1.1 API, limit VMA to the same version.
-	target_compile_definitions(rex_engine PUBLIC
+	target_compile_definitions(vma PRIVATE
 		VMA_VULKAN_VERSION=1001000
 	)
 endif()

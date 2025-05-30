@@ -1,5 +1,11 @@
 add_library(rex_module_${MODULE_NAME} STATIC)
 set(MODULE_IS_ENABLED ON PARENT_SCOPE)
+
+target_link_libraries(rex_module_${MODULE_NAME} PUBLIC
+	rex_module_jsonrpc
+	rex_module_websocket
+)
+
 add_dependencies(rex_module_${MODULE_NAME}
 	rex_module_jsonrpc
 	rex_module_websocket
@@ -16,11 +22,12 @@ if (EDITOR_BUILD)
 		${GDSCRIPT_EDITOR_SOURCES}
 	)
 	if("jsonrpc" IN_LIST ENABLED_MODULES AND "websocket" IN_LIST ENABLED_MODULES)
-		file(GLOB GDSCRIPT_LANGUAGE_SERVER_SOURCES languange_server/*.cpp)
+		file(GLOB GDSCRIPT_LANGUAGE_SERVER_SOURCES language_server/*.cpp)
 		target_sources(rex_module_${MODULE_NAME} PRIVATE
 			${GDSCRIPT_LANGUAGE_SERVER_SOURCES}
 		)
 	else()
+		message(WARNING "NO LSP")
 		target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
 			GDSCIPT_NO_LSP
 		)
@@ -39,3 +46,4 @@ if (TESTS)
 		${GDSCRIPT_TESTS_SOURCES}
 	)
 endif()
+

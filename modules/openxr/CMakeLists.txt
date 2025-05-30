@@ -104,7 +104,7 @@ if (REX_PLATFORM MATCHES "linuxbsd|android|macos|windows" AND NOT DISABLE_XR)
 	)
 	add_subdirectory(extensions)
 	if (EDITOR_BUILD)
-		file(GLOB OPENXR_EDITOR_SOURCES *.cpp)
+		file(GLOB OPENXR_EDITOR_SOURCES editor/*.cpp)
 		target_sources(rex_module_${MODULE_NAME} PRIVATE
 			${OPENXR_EDITOR_SOURCES}
 		)

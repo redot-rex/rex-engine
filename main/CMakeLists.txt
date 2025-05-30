@@ -4,10 +4,18 @@ add_library(rex_main STATIC
 	${MAIN_SOURCES}
 )
 
-target_include_directories(rex_main PRIVATE "$<TARGET_PROPERTY:rex_engine,INTERFACE_INCLUDE_DIRECTORIES>")
+clone_library(rex_engine rex_main)
 
-get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
+if (STEAMAPI AND EDITOR_BUILD)
+	target_compile_definitions(rex_main PRIVATE
+		STEAMAPI_ENABLED
+	)
+endif()
 
-target_compile_definitions(rex_main PRIVATE ${ENGINE_DEFINITIONS})
+if (TESTS)
+	target_compile_definitions(rex_main PRIVATE
+		TESTS_ENABLED
+	)
+endif()
 
 target_link_libraries(rex_engine PUBLIC rex_main)

@@ -1,6 +1,6 @@
 if(REX_PLATFORM STREQUAL "windows")
 	set(THIRDPARTY_BACKTRACE_DIR ${CMAKE_SOURCE_DIR}/thirdparty/libbacktrace/)
-	target_sources(rex_drivers PRIVATE
+	add_library(libbacktrace OBJECT
 		${THIRDPARTY_BACKTRACE_DIR}atomic.c
 		${THIRDPARTY_BACKTRACE_DIR}dwarf.c
 		${THIRDPARTY_BACKTRACE_DIR}fileline.c
@@ -15,7 +15,11 @@ if(REX_PLATFORM STREQUAL "windows")
 		${THIRDPARTY_BACKTRACE_DIR}alloc.c
 	)
 
-	target_include_directories(rex_drivers PRIVATE
+	target_include_directories(rex_drivers INTERFACE
 		${THIRDPARTY_BACKTRACE_DIR}
 	)
+	clone_library(rex_drivers libbacktrace)
+	disable_warnings_for_target(libbacktrace)
+
+	target_link_libraries(rex_drivers backtrace)
 endif()

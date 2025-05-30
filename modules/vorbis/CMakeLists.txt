@@ -1,6 +1,8 @@
 add_library(rex_module_${MODULE_NAME} STATIC)
 set(MODULE_IS_ENABLED ON PARENT_SCOPE)
 
+target_link_libraries(rex_module_${MODULE_NAME} PUBLIC rex_module_ogg)
+
 add_dependencies(rex_module_${MODULE_NAME}
 	rex_module_ogg
 )

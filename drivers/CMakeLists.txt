@@ -1,12 +1,7 @@
 file(GLOB DRIVERS_SOURCES *.cpp)
 
 add_library(rex_drivers STATIC ${DRIVERS_SOURCES})
-
-target_include_directories(rex_drivers PRIVATE "$<TARGET_PROPERTY:rex_engine,INTERFACE_INCLUDE_DIRECTORIES>")
-
-get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
-
-target_compile_definitions(rex_drivers PRIVATE ${ENGINE_DEFINITIONS})
+clone_library(rex_engine rex_drivers)
 
 add_subdirectory(unix)
 add_subdirectory(windows)
@@ -26,8 +21,7 @@ if (OPENGL3)
 	add_subdirectory(egl)
 endif()
 
-if (REX_PLATFORM STREQUAL "ios"
-	OR REX_PLATFORM STREQUAL "macos")
+if (REX_PLATFORM MATCHES "ios|macos")
 	add_subdirectory(coreaudio)
 	add_subdirectory(apple)
 	add_subdirectory(coremidi)

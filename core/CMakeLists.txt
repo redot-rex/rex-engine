@@ -141,18 +141,19 @@ if (BUILTIN_ZSTD)
         ${THIRDPARTY_ZSTD_DIR}decompress/zstd_decompress_block.c
         ${THIRDPARTY_ZSTD_DIR}decompress/zstd_decompress.c
 	)
-	if (REX_PLATFORM STREQUAL "android"
-		OR REX_PLATFORM STREQUAL "ios"
-		OR REX_PLATFORM STREQUAL "linux"
-		OR REX_PLATFORM STREQUAL "macos")
+	if (REX_PLATFORM MATCHES "android|ios|linuxbsd|macos" AND ARCH STREQUAL "x86_64")
 		target_sources(zstd PRIVATE
 			${THIRDPARTY_ZSTD_DIR}decompress/huf_decompress_amd64.S
 		)
+		enable_language(ASM)
+		set_source_files_properties(${THIRDPARTY_ZSTD_DIR}decompress/huf_decompress_amd64.S PROPERTIES LANGUAGE ASM)
 	endif()
+	target_include_directories(zstd PRIVATE
+		${THIRDPARTY_ZSTD_DIR}common/
+	)
 
 	target_include_directories(rex_engine INTERFACE
 		${THIRDPARTY_ZSTD_DIR}
-		${THIRDPARTY_ZSTD_DIR}common/
 	)
 
 	target_compile_definitions(rex_engine PUBLIC ZSTD_STATIC_LINKING_ONLY)
