@@ -1,6 +1,5 @@
 add_library(rex_module_${MODULE_NAME} STATIC)
 set(MODULE_IS_ENABLED ON PARENT_SCOPE)
-disable_warnings_for_target(rex_module_${MODULE_NAME})
 
 option(MINIMP3_EXTRA_FORMATS "Build minimp3 with MP1/MP2 decoding support" OFF)
 

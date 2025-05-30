@@ -1,11 +1,10 @@
 if (ARCH MATCHES "x86_64|arm64|wasm32" OR (ARCH STREQUAL "x86_32" AND REX_PLATFORM STREQUAL "windows"))
 	add_library(rex_module_${MODULE_NAME} STATIC)
 	set(MODULE_IS_ENABLED ON PARENT_SCOPE)
-	disable_warnings_for_target(rex_module_${MODULE_NAME})
 
 	if (BUILTIN_EMBREE)
 		set(THIRDPARTY_EMBREE_DIR ${CMAKE_SOURCE_DIR}/thirdparty/embree/)
-		target_sources(rex_module_${MODULE_NAME} PRIVATE
+		add_library(embree OBJECT
 			${THIRDPARTY_EMBREE_DIR}common/sys/sysinfo.cpp
 			${THIRDPARTY_EMBREE_DIR}common/sys/alloc.cpp
 			${THIRDPARTY_EMBREE_DIR}common/sys/estring.cpp
@@ -51,18 +50,21 @@ if (ARCH MATCHES "x86_64|arm64|wasm32" OR (ARCH STREQUAL "x86_32" AND REX_PLATFO
 			${THIRDPARTY_EMBREE_DIR}kernels/bvh/bvh_intersector1_bvh4.cpp
 			${THIRDPARTY_EMBREE_DIR}kernels/bvh/bvh_intersector_hybrid4_bvh4.cpp
 		)
-		target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+		target_include_directories(rex_module_${MODULE_NAME} INTERFACE
 			${THIRDPARTY_EMBREE_DIR}include/
 		)
-		target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+		target_compile_definitions(rex_module_${MODULE_NAME} INTERFACE
 			EMBREE_TARGET_SSE2
 			EMBREE_LOWEST_ISA
 			TASKING_INTERNAL
 			NDEBUG
 		)
 
+		clone_library(rex_module_${MODULE_NAME} embree)
+		disable_warnings_for_target(embree)
+
 		if (NOT ARCH STREQUAL "x86_64" OR MSVC)
-			target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+			target_compile_definitions(embree PRIVATE
 				__SSE2__
 				__SSE__
 			)
@@ -71,11 +73,11 @@ if (ARCH MATCHES "x86_64|arm64|wasm32" OR (ARCH STREQUAL "x86_32" AND REX_PLATFO
 		if (NOT MSVC)
 			# Flags synced with upstream gnu.cmake.
 			if (ARCH STREQUAL "arm64" AND REX_PLATFORM STREQUAL "linuxbsd" AND NOT USE_LLVM)
-				target_compile_options(rex_module_${MODULE_NAME} PRIVATE
+				target_compile_options(embree PRIVATE
 					-flax-vector-conversions
 				)
 			endif()
-			target_compile_options(rex_module_${MODULE_NAME} PRIVATE
+			target_compile_options(embree PRIVATE
                 -fno-strict-overflow
                 -fno-delete-null-pointer-checks
                 -fwrapv
@@ -86,6 +88,9 @@ if (ARCH MATCHES "x86_64|arm64|wasm32" OR (ARCH STREQUAL "x86_32" AND REX_PLATFO
                 -fvisibility-inlines-hidden
             )
 		endif()
+
+		target_link_libraries(rex_module_${MODULE_NAME} PUBLIC embree)
+
 	endif()
 
 	file(GLOB RAYCAST_SOURCES *.cpp)

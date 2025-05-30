@@ -10,7 +10,7 @@ target_compile_definitions(rex_core PRIVATE ${ENGINE_DEFINITIONS})
 
 set(THIRDPARTY_DIR ${CMAKE_SOURCE_DIR}/thirdparty/)
 
-target_sources(rex_core PRIVATE
+add_library(misc OBJECT
 	${THIRDPARTY_DIR}misc/fastlz.c
 	${THIRDPARTY_DIR}misc/r128.c
 	${THIRDPARTY_DIR}misc/smaz.c
@@ -18,10 +18,13 @@ target_sources(rex_core PRIVATE
 	${THIRDPARTY_DIR}misc/polypartition.cpp
 	${THIRDPARTY_DIR}misc/smolv.cpp
 )
+clone_library(rex_core misc)
+disable_warnings_for_target(misc)
+target_link_libraries(rex_core PUBLIC misc)
 
 if (BUILTIN_BROTLI)
 	set(THIRDPARTY_BROTLI_DIR ${THIRDPARTY_DIR}brotli/)
-	target_sources(rex_core PRIVATE
+	add_library(brotli OBJECT
         ${THIRDPARTY_BROTLI_DIR}common/constants.c
 		${THIRDPARTY_BROTLI_DIR}common/context.c
 		${THIRDPARTY_BROTLI_DIR}common/dictionary.c
@@ -34,49 +37,45 @@ if (BUILTIN_BROTLI)
         ${THIRDPARTY_BROTLI_DIR}dec/state.c
 	)
 
-	target_include_directories(rex_engine PRIVATE
-		${THIRDPARTY_BROTLI_DIR}include
-	)
-
-	target_include_directories(rex_core PRIVATE
+	target_include_directories(rex_engine INTERFACE
 		${THIRDPARTY_BROTLI_DIR}include
 	)
 
 	if (USE_UBSAN OR USE_ASAN OR USE_TSAN OR USE_LSAN OR USE_MSAN)
-		target_compile_definitions(rex_core PRIVATE
+		target_compile_definitions(brotli PRIVATE
 			BROTLI_BUILD_PORTABLE
 		)
 	endif()
+
+	clone_library(rex_engine brotli)
+	disable_warnings_for_target(brotli)
+	target_link_libraries(rex_core PUBLIC brotli)
 endif()
 
 if (BUILTIN_CLIPPER2)
 	set(THIRDPARTY_CLIPPER2_DIR ${THIRDPARTY_DIR}clipper2/)
-	target_sources(rex_core PRIVATE
+	add_library(clipper2 OBJECT
         ${THIRDPARTY_CLIPPER2_DIR}src/clipper.engine.cpp
         ${THIRDPARTY_CLIPPER2_DIR}src/clipper.offset.cpp
         ${THIRDPARTY_CLIPPER2_DIR}src/clipper.rectclip.cpp
 	)
 
-	target_include_directories(rex_engine PUBLIC
+	target_include_directories(rex_engine INTERFACE
 		${THIRDPARTY_CLIPPER2_DIR}include
 	)
 
-	target_include_directories(rex_core PRIVATE
-		${THIRDPARTY_CLIPPER2_DIR}include
-	)
-
-	target_compile_definitions(rex_engine PUBLIC
+	target_compile_definitions(rex_engine INTERFACE
 		CLIPPER2_ENABLED
 	)
 
-	target_compile_definitions(rex_core PRIVATE
-		CLIPPER2_ENABLED
-	)
+	clone_library(rex_engine clipper2)
+	disable_warnings_for_target(clipper2)
+	target_link_libraries(rex_core PUBLIC clipper2)
 endif()
 
 if (BUILTIN_ZLIB)
 	set(THIRDPARTY_ZLIB_DIR ${THIRDPARTY_DIR}zlib/)
-	target_sources(rex_core PRIVATE
+	add_library(zlib OBJECT
         ${THIRDPARTY_ZLIB_DIR}adler32.c
         ${THIRDPARTY_ZLIB_DIR}compress.c
         ${THIRDPARTY_ZLIB_DIR}crc32.c
@@ -89,32 +88,33 @@ if (BUILTIN_ZLIB)
         ${THIRDPARTY_ZLIB_DIR}zutil.c
 	)
 
-	target_include_directories(rex_engine PRIVATE
-		${THIRDPARTY_ZLIB_DIR}
-	)
-
-	target_include_directories(rex_core PRIVATE
+	target_include_directories(rex_engine INTERFACE
 		${THIRDPARTY_ZLIB_DIR}
 	)
 
 	if (DEV_BUILD)
 		target_compile_definitions(rex_engine PUBLIC ZLIB_DEBUG)
-		target_compile_definitions(rex_core PRIVATE ZLIB_DEBUG)
 	endif()
+	clone_library(rex_engine zlib)
+	disable_warnings_for_target(zlib)
+	target_link_libraries(rex_core PUBLIC zlib)
 endif()
 
 # Minizip library, could be unbundled in theory
 # However, our version has some custom modifications, so it won't compile with the system one
 set(THIRDPARTY_MINIZIP_DIR ${THIRDPARTY_DIR}minizip/)
-target_sources(rex_core PRIVATE
+add_library(minizip OBJECT
 	${THIRDPARTY_MINIZIP_DIR}ioapi.c
 	${THIRDPARTY_MINIZIP_DIR}unzip.c
 	${THIRDPARTY_MINIZIP_DIR}zip.c
 )
+clone_library(rex_engine minizip)
+disable_warnings_for_target(minizip)
+target_link_libraries(rex_core PUBLIC minizip)
 
 if (BUILTIN_ZSTD)
 	set(THIRDPARTY_ZSTD_DIR ${THIRDPARTY_DIR}zstd/)
-	target_sources(rex_core PRIVATE
+	add_library(zstd OBJECT
         ${THIRDPARTY_ZSTD_DIR}common/debug.c
         ${THIRDPARTY_ZSTD_DIR}common/entropy_common.c
         ${THIRDPARTY_ZSTD_DIR}common/error_private.c
@@ -145,24 +145,21 @@ if (BUILTIN_ZSTD)
 		OR REX_PLATFORM STREQUAL "ios"
 		OR REX_PLATFORM STREQUAL "linux"
 		OR REX_PLATFORM STREQUAL "macos")
-		target_sources(rex_core PRIVATE
+		target_sources(zstd PRIVATE
 			${THIRDPARTY_ZSTD_DIR}decompress/huf_decompress_amd64.S
 		)
 	endif()
 
-	target_include_directories(rex_engine PRIVATE
-		${THIRDPARTY_ZSTD_DIR}
-		${THIRDPARTY_ZSTD_DIR}common/
-	)
-
-	target_include_directories(rex_core PRIVATE
+	target_include_directories(rex_engine INTERFACE
 		${THIRDPARTY_ZSTD_DIR}
 		${THIRDPARTY_ZSTD_DIR}common/
 	)
 
 	target_compile_definitions(rex_engine PUBLIC ZSTD_STATIC_LINKING_ONLY)
-	target_compile_definitions(rex_core PRIVATE ZSTD_STATIC_LINKING_ONLY)
 
+	clone_library(rex_engine zstd)
+	disable_warnings_for_target(zstd)
+	target_link_libraries(rex_core PUBLIC zstd)
 endif()
 
 add_subdirectory(os)

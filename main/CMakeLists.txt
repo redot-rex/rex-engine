@@ -10,4 +10,4 @@ get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
 
 target_compile_definitions(rex_main PRIVATE ${ENGINE_DEFINITIONS})
 
-#target_link_libraries(rex_engine PUBLIC rex_main)
+target_link_libraries(rex_engine PUBLIC rex_main)

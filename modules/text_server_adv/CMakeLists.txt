@@ -1,6 +1,5 @@
 add_library(rex_module_${MODULE_NAME} STATIC)
 set(MODULE_IS_ENABLED ON PARENT_SCOPE)
-disable_warnings_for_target(rex_module_${MODULE_NAME})
 
 option(GRAPHITE "Enable SIL Graphite smart fonts support" ON)
 
@@ -118,7 +117,7 @@ if (BUILTIN_HARFBUZZ)
 			)
 		endif()
 	endif()
-	target_include_directories(harfbuzz_builtin PRIVATE
+	target_include_directories(rex_module_${MODULE_NAME} PRIVATE
 		${THIRDPARTY_HARFBUZZ_DIR}src
 	)
 	target_compile_options(harfbuzz_builtin PRIVATE
@@ -484,3 +483,4 @@ file(GLOB TEXT_SERVER_ADV_SOURCES *.cpp)
 target_sources(rex_module_${MODULE_NAME} PRIVATE
 	${TEXT_SERVER_ADV_SOURCES}
 )
+set(BUILTIN_LIBRARIES ${BUILTIN_LIBRARIES} PARENT_SCOPE)

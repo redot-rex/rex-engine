@@ -1,12 +1,9 @@
 add_library(rex_modules STATIC ${CMAKE_CURRENT_SOURCE_DIR}/register_module_types.gen.cpp)
 
-target_include_directories(rex_modules PRIVATE "$<TARGET_PROPERTY:rex_engine,INTERFACE_INCLUDE_DIRECTORIES>")
+clone_library(rex_engine rex_modules)
+#get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
 
-get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
-
-target_compile_definitions(rex_modules PUBLIC ${ENGINE_DEFINITIONS})
-
-#target_link_libraries(rex_engine PUBLIC rex_modules)
+target_link_libraries(rex_engine PUBLIC rex_modules)
 # Modules are added dynamically like it was in Scons
 # Only checking for CMakeLists.txt to find modules
 
@@ -32,7 +29,6 @@ foreach(MODULE_DIR ${MODULE_DIRS})
 	endif()
 endforeach()
 
-set(BUILTIN_LIBRARIES "" PARENT_SCOPE)
 set(MODULE_SOURCES "")
 set(MODULE_COMPILE_DEFINES "")
 set(INIT_MODULES "")
@@ -42,14 +38,15 @@ foreach(MODULE_NAME ${ENABLED_MODULES})
 	if (MODULE_IS_ENABLED)
 		string(TOUPPER "${MODULE_NAME}" MODULE_UPPER)
 		list(APPEND MODULE_COMPILE_DEFINES "MODULE_${MODULE_UPPER}_ENABLED")
-		target_include_directories(rex_module_${MODULE_NAME} PRIVATE "$<TARGET_PROPERTY:rex_engine,INTERFACE_INCLUDE_DIRECTORIES>")
-		get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
-		target_compile_definitions(rex_module_${MODULE_NAME} PUBLIC ${ENGINE_DEFINITIONS})
+		clone_library(rex_modules rex_module_${MODULE_NAME})
+		#target_include_directories(rex_module_${MODULE_NAME} PRIVATE "$<TARGET_PROPERTY:rex_engine,INTERFACE_INCLUDE_DIRECTORIES>")
+		#get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
+		target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE ${ENGINE_DEFINITIONS})
 		target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
 			GODOT_MODULE
 			${MODULE_COMPILE_DEFINES}
 		)
-		target_link_libraries(rex_modules PUBLIC rex_module_${MODULE_NAME})
+		target_link_libraries(rex_engine PUBLIC rex_module_${MODULE_NAME})
 		string(APPEND MODULE_ENABLED_FILE_CONTENT "#define MODULE_${MODULE_UPPER}_ENABLED\n")
 		string(APPEND REGISTER_MODULE_FILE_CONTENT "#include \"modules/${MODULE_NAME}/register_types.h\"\n")
 		string(APPEND INIT_MODULES "\
@@ -80,3 +77,4 @@ ${UNINIT_MODULES}
 file(WRITE ${CMAKE_CURRENT_SOURCE_DIR}/modules_enabled.gen.h ${MODULE_ENABLED_FILE_CONTENT})
 file(WRITE ${CMAKE_CURRENT_SOURCE_DIR}/register_module_types.gen.cpp ${REGISTER_MODULE_FILE_CONTENT})
 
+set(BUILTIN_LIBRARIES ${BUILTIN_LIBRARIES} PARENT_SCOPE)

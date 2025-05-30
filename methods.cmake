@@ -1,3 +1,9 @@
+function(clone_library SRC DEST)
+	target_include_directories(${DEST} PUBLIC "$<TARGET_PROPERTY:${SRC},INTERFACE_INCLUDE_DIRECTORIES>")
+	target_compile_definitions(${DEST} PUBLIC "$<TARGET_PROPERTY:${SRC},INTERFACE_COMPILE_DEFINITIONS>")
+	target_compile_options(${DEST} PUBLIC "$<TARGET_PROPERTY:${SRC},INTERFACE_COMPILE_OPTIONS>")
+endfunction()
+
 function(disable_warnings_for_target TARGET)
 	if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 		target_compile_options(${TARGET} PRIVATE -w)

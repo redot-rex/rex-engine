@@ -384,38 +384,9 @@ if (REX_PLATFORM STREQUAL "windows")
 		)
 	endif()
 endif()
-
-add_subdirectory(core)
-add_subdirectory(servers)
-add_subdirectory(scene)
-if (BUILD_TARGET STREQUAL "editor")
-	add_subdirectory(editor)
-endif()
-add_subdirectory(drivers)
-add_subdirectory(platform)
-add_subdirectory(modules)
-add_subdirectory(main)
-
-target_link_libraries(rex_engine PUBLIC
-	rex_main
-	rex_modules
-	rex_platform
-	rex_drivers
-)
-if (BUILD_TARGET STREQUAL "editor")
-	target_link_libraries(rex_engine PUBLIC rex_editor)
-endif()
-target_link_libraries(rex_engine PUBLIC
-	rex_scene
-	rex_servers
-	rex_core
-	${BUILTIN_LIBRARIES}
-	${SYSTEM_LIBRARIES}
-)
-
 # Output name
 set(OUTPUT_NAME "rex.${REX_PLATFORM}")
-if(REX_TOOLS)
+if(EDITOR_BUILD)
     set(OUTPUT_NAME "${OUTPUT_NAME}.editor")
 else()
     set(OUTPUT_NAME "${OUTPUT_NAME}.opt")
@@ -437,39 +408,69 @@ if (MSVC)
 		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Zi /FS")
 	endif()
 	if (OPTIMIZE MATCHES "speed")
-		target_compile_options(rex_engine PRIVATE -O2)
+		target_compile_options(rex_engine PUBLIC -O2)
 	elseif (OPTIMIZE MATCHES "size")
-		target_compile_options(rex_engine PRIVATE -O1)
+		target_compile_options(rex_engine PUBLIC -O1)
 	else()
-		target_compile_options(rex_engine PRIVATE -Od)
+		target_compile_options(rex_engine PUBLIC -Od)
 	endif()
 else()
 	if (DEBUG_SYMBOLS)
 		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -gdwarf-4")
 		if (REX_DEV_BUILD)
-			target_compile_options(rex_engine PRIVATE -g3)
+			target_compile_options(rex_engine PUBLIC -g3)
 		else()
-			target_compile_options(rex_engine PRIVATE -g2)
+			target_compile_options(rex_engine PUBLIC -g2)
 		endif()
     endif()
 
 	if (OPTIMIZE STREQUAL "speed")
-		target_compile_options(rex_engine PRIVATE -O3)
+		target_compile_options(rex_engine PUBLIC -O3)
 	elseif (OPTIMIZE STREQUAL "speed_trace")
-		target_compile_options(rex_engine PRIVATE -O2)
+		target_compile_options(rex_engine PUBLIC -O2)
 	elseif (OPTIMIZE MATCHES "size")
-		target_compile_options(rex_engine PRIVATE -Os)
+		target_compile_options(rex_engine PUBLIC -Os)
 	elseif (OPTIMIZE STREQUAL "debug")
-		target_compile_options(rex_engine PRIVATE -Og)
+		target_compile_options(rex_engine PUBLIC -Og)
 	elseif (OPTIMIZE STREQUAL "none")
-		target_compile_options(rex_engine PRIVATE -O0)
+		target_compile_options(rex_engine PUBLIC -O0)
 	endif()
 endif()
 
 # Preprocessor definitions
-target_compile_definitions(rex_engine PRIVATE ${PLATFORM_DEFINES})
+target_compile_definitions(rex_engine PUBLIC ${PLATFORM_DEFINES})
 
 # Output binary directory
 set_target_properties(rex_engine PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin
 )
+
+add_subdirectory(core)
+add_subdirectory(servers)
+add_subdirectory(scene)
+if (BUILD_TARGET STREQUAL "editor")
+	add_subdirectory(editor)
+endif()
+add_subdirectory(drivers)
+add_subdirectory(platform)
+add_subdirectory(main)
+add_subdirectory(modules)
+
+target_link_libraries(rex_engine PUBLIC
+	rex_platform
+	rex_drivers
+)
+if (BUILD_TARGET STREQUAL "editor")
+	target_link_libraries(rex_engine PUBLIC rex_editor)
+endif()
+target_link_libraries(rex_engine PUBLIC
+	rex_scene
+	rex_servers
+	rex_core
+	${BUILTIN_LIBRARIES}
+	${SYSTEM_LIBRARIES}
+)
+get_target_property(LINK_LIBRARIES rex_engine LINK_LIBRARIES)
+foreach(LINK ${LINK_LIBRARIES})
+	message("${LINK}")
+endforeach()

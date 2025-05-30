@@ -1,11 +1,10 @@
 if (EDITOR_BUILD)
 	add_library(rex_module_${MODULE_NAME} STATIC)
 	set(MODULE_IS_ENABLED ON PARENT_SCOPE)
-	disable_warnings_for_target(rex_module_${MODULE_NAME})
 
 	set(THIRDPARTY_CVTT_DIR ${CMAKE_SOURCE_DIR}/thirdparty/cvtt/)
 
-	target_sources(rex_module_${MODULE_NAME} PRIVATE
+	add_library(cvtt OBJECT
 		${THIRDPARTY_CVTT_DIR}ConvectionKernels_API.cpp
 		${THIRDPARTY_CVTT_DIR}ConvectionKernels_ETC.cpp
 		${THIRDPARTY_CVTT_DIR}ConvectionKernels_BC67.cpp
@@ -18,10 +17,13 @@ if (EDITOR_BUILD)
 		${THIRDPARTY_CVTT_DIR}ConvectionKernels_Util.cpp
 	)
 
-	target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+	target_include_directories(rex_module_${MODULE_NAME} INTERFACE
 		${THIRDPARTY_CVTT_DIR}
 	)
 
+	clone_library(rex_module_${MODULE_NAME} cvtt)
+	disable_warnings_for_target(cvtt)
+	target_link_libraries(rex_module_${MODULE_NAME} PUBLIC cvtt)
 	file(GLOB_RECURSE CVTT_SOURCES *.cpp)
 	target_sources(rex_module_${MODULE_NAME} PRIVATE
 		${CVTT_SOURCES}

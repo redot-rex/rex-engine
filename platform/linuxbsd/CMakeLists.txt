@@ -21,8 +21,6 @@ option(TOUCHEVENTS "Enable touch events" ON)
 option(EXECINFO "Use libexecinfo on systems where glibc is not available" OFF)
 option(USE_LLVM "Use the LLVM compiler" OFF)
 
-set(SYSTEM_LIBRARIES "" PARENT_SCOPE)
-
 add_executable(rex_engine
 	${CMAKE_CURRENT_SOURCE_DIR}/crash_handler_linuxbsd.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/os_linuxbsd.cpp
@@ -31,6 +29,109 @@ add_executable(rex_engine
 	${CMAKE_CURRENT_SOURCE_DIR}/freedesktop_screensaver.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/freedesktop_at_spi_monitor.cpp
 )
+
+if (USE_COVERAGE)
+	target_compile_options(rex_engine PUBLIC
+		-ftest-coverage
+		-fprofile-arcs
+	)
+	target_link_options(rex_engine PUBLIC
+		-ftest-coverage
+		-fprofile-arcs
+	)
+endif()
+
+if (USE_UBSAN OR USE_ASAN OR USE_LSAN OR USE_TSAN OR USE_MSAN)
+	target_compile_options(rex_engine PUBLIC
+		-DSANITIZERS_ENABLED
+	)
+	if (USE_UBSAN)
+		target_compile_options(rex_engine PUBLIC
+            -fsanitize=undefined,shift,shift-exponent,integer-divide-by-zero,unreachable,vla-bound,null,return,signed-integer-overflow,bounds,float-divide-by-zero,float-cast-overflow,nonnull-attribute,returns-nonnull-attribute,bool,enum,vptr,pointer-overflow,builtin
+		)
+		target_link_options(rex_engine PUBLIC
+			-fsanitize=undefined
+		)
+		if (USE_LLVM)
+			target_compile_options(rex_engine PUBLIC
+				-fsanitize=nullability-return,nullability-arg,function,nullability-assign,implicit-integer-sign-change
+			)
+		endif()
+	endif()
+	if (USE_ASAN)
+		target_compile_options(rex_engine PUBLIC
+			-fsanitize=address,pointer-subtract,pointer-compare
+		)
+		target_link_options(rex_engine PUBLIC
+			-fsanitize=address
+		)
+	endif()
+	if (USE_LSAN)
+		target_compile_options(rex_engine PUBLIC
+			-fsanitize=leak
+		)
+		target_link_options(rex_engine PUBLIC
+			-fsanitize=leak
+		)
+	endif()
+	if (USE_TSAN)
+		target_compile_options(rex_engine PUBLIC
+			-fsanitize=thread
+		)
+		target_link_options(rex_engine PUBLIC
+			-fsanitize=thread
+		)
+	endif()
+	if (USE_MSAN AND USE_LLVM)
+		target_compile_options(rex_engine PUBLIC
+            -fsanitize=memory
+            -fsanitize-memory-track-origins
+            -fsanitize-recover=memory
+		)
+		target_link_options(rex_engine PUBLIC
+			-fsanitize=memory
+		)
+	endif()
+
+endif()
+
+target_compile_options(rex_engine PUBLIC
+	-ffp-contract=off
+	-pipe
+)
+
+if (LTO STREQUAL "auto")
+	if(USE_LLVM)
+		set(LTO "thin")
+	else()
+		set(LTO "full")
+	endif()
+endif()
+
+if (NOT LTO STREQUAL "none")
+	if (LTO STREQUAL "thin")
+		if (NOT USE_LLVM)
+			message(FATAL_ERROR "ThinLTO is only compatible with LLVM, use `use_llvm=yes` or `lto=full`.")
+		endif()
+		target_compile_options(rex_engine PUBLIC
+			-flto=thin
+		)
+		target_link_options(rex_engine PUBLIC
+			-flto=thin
+		)
+	else()
+		target_compile_options(rex_engine PUBLIC
+			-flto
+		)
+		target_link_options(rex_engine PUBLIC
+			-flto
+		)
+	endif()
+	if (NOT USE_LLVM)
+		set(RANLIB "gcc-ranlib")
+		set(AR "gcc-ar")
+	endif()
+endif()
 
 if (NOT BUILTIN_FREETYPE)
 	pkg_check_modules(FREETYPE2 QUIET freetype2)
@@ -617,3 +718,13 @@ if (FONTCONFIG)
 		endif()
 	endif()
 endif()
+
+
+if (USE_STATIC_CPP)
+	target_link_options(rex_engine PUBLIC
+		-static-libgcc
+		-static-libstdc++
+	)
+endif()
+
+set(SYSTEM_LIBRARIES ${SYSTEM_LIBRARIES} PARENT_SCOPE)
