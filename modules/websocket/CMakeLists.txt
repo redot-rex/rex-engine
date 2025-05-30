@@ -36,7 +36,7 @@ target_sources(rex_module_${MODULE_NAME} PRIVATE
 )
 
 if (EDITOR_BUILD)
-	file(GLOB WSLAY_EDITOR_SOURCES *.cpp)
+	file(GLOB WSLAY_EDITOR_SOURCES editor/*.cpp)
 	target_sources(rex_module_${MODULE_NAME} PRIVATE
 		${WSLAY_EDITOR_SOURCES}
 	)

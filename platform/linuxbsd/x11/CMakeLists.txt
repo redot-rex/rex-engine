@@ -28,5 +28,6 @@ if (OPENGL3)
 		${CMAKE_CURRENT_SOURCE_DIR}/gl_manager_x11_egl.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/gl_manager_x11.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/detect_prime_x11.cpp
+		${CMAKE_SOURCE_DIR}/thirdparty/glad/glx.c
     )
 endif()

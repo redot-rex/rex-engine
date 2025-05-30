@@ -1,6 +1,9 @@
 if (NOT DISABLE_3D)
 	add_library(rex_module_${MODULE_NAME} STATIC)
 	set(MODULE_IS_ENABLED ON PARENT_SCOPE)
+
+	target_link_libraries(rex_module_${MODULE_NAME} PUBLIC rex_module_gltf)
+
 	add_dependencies(rex_module_${MODULE_NAME}
 		rex_module_gltf
 	)
@@ -35,7 +38,7 @@ if (NOT DISABLE_3D)
 	# NOTE: extensions is empty
 
 	if (EDITOR_BUILD)
-		file(GLOB FBX_EDITOR_SOURCES *.cpp)
+		file(GLOB FBX_EDITOR_SOURCES editor/*.cpp)
 		target_sources(rex_module_${MODULE_NAME} PRIVATE
 			${FBX_EDITOR_SOURCES}
 		)
