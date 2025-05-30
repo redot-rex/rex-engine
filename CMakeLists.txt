@@ -470,7 +470,3 @@ target_link_libraries(rex_engine PUBLIC
 	${BUILTIN_LIBRARIES}
 	${SYSTEM_LIBRARIES}
 )
-get_target_property(LINK_LIBRARIES rex_engine LINK_LIBRARIES)
-foreach(LINK ${LINK_LIBRARIES})
-	message("${LINK}")
-endforeach()

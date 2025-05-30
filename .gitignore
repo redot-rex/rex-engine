@@ -31,6 +31,7 @@ misc/hooks/pre-commit-custom-*
 
 # Buildsystem
 bin
+build
 *.gen.*
 compile_commands.json
 platform/windows/godot_res.res
