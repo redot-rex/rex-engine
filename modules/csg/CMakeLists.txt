@@ -1,15 +1,14 @@
 if (NOT DISABLE_3D)
 	add_library(rex_module_${MODULE_NAME} STATIC)
 	set(MODULE_IS_ENABLED ON PARENT_SCOPE)
-	disable_warnings_for_target(rex_module_${MODULE_NAME})
 
-	target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+	target_compile_definitions(rex_module_${MODULE_NAME} INTERFACE
 		MANIFOLD_PAR=-1
 	)
 
 	set(THIRDPARTY_MANIFOLD_DIR ${CMAKE_SOURCE_DIR}/thirdparty/manifold/)
 
-	target_sources(rex_module_${MODULE_NAME} PRIVATE
+	add_library(manifold OBJECT
 		${THIRDPARTY_MANIFOLD_DIR}src/boolean_result.cpp
 		${THIRDPARTY_MANIFOLD_DIR}src/boolean3.cpp
 		${THIRDPARTY_MANIFOLD_DIR}src/constructors.cpp
@@ -26,10 +25,13 @@ if (NOT DISABLE_3D)
 		${THIRDPARTY_MANIFOLD_DIR}src/subdivision.cpp
 	)
 
-	target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+	target_include_directories(rex_module_${MODULE_NAME} INTERFACE
 		${THIRDPARTY_MANIFOLD_DIR}include/
 	)
 
+	clone_library(rex_module_${MODULE_NAME} manifold)
+	disable_warnings_for_target(manifold)
+	target_link_libraries(rex_module_${MODULE_NAME} PUBLIC manifold)
 	file(GLOB CSG_SOURCES *.cpp)
 	target_sources(rex_module_${MODULE_NAME} PRIVATE
 		${CSG_SOURCES}

@@ -1,8 +1,7 @@
 add_library(rex_module_${MODULE_NAME} STATIC)
 set(MODULE_IS_ENABLED ON PARENT_SCOPE)
-disable_warnings_for_target(rex_module_${MODULE_NAME})
 set(THIRDPARTY_ASTCENC_DIR ${CMAKE_SOURCE_DIR}/thirdparty/astcenc/)
-target_sources(rex_module_${MODULE_NAME} PRIVATE
+add_library(astcenc OBJECT
     ${THIRDPARTY_ASTCENC_DIR}astcenc_averages_and_directions.cpp
     ${THIRDPARTY_ASTCENC_DIR}astcenc_block_sizes.cpp
     ${THIRDPARTY_ASTCENC_DIR}astcenc_color_quantize.cpp
@@ -27,12 +26,20 @@ target_sources(rex_module_${MODULE_NAME} PRIVATE
     ${THIRDPARTY_ASTCENC_DIR}astcenc_weight_quant_xfer_tables.cpp
 )
 
-target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+target_include_directories(rex_module_${MODULE_NAME} INTERFACE
 	${THIRDPARTY_ASTCENC_DIR}
 )
 
+clone_library(rex_module_${MODULE_NAME} astcenc)
+disable_warnings_for_target(astcenc)
 if (EDITOR_BUILD)
-	target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+	target_compile_definitions(astcenc PRIVATE
 		ASTCENC_DECOMPRESS_ONLY
 	)
 endif()
+target_link_libraries(rex_module_${MODULE_NAME} PUBLIC astcenc)
+
+file(GLOB ASTCENC_SOURCES *.cpp)
+target_sources(rex_module_${MODULE_NAME} PRIVATE
+	${ASTCENC_SOURCES}
+)

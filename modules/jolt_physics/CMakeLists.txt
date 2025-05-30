@@ -4,7 +4,7 @@ if (NOT DISABLE_PHYSICS_3D AND NOT ARCH STREQUAL "ppc32")
 	disable_warnings_for_target(rex_module_${MODULE_NAME})
 
 	set(THIRDPARTY_JOLT_PHYSICS_DIR ${CMAKE_SOURCE_DIR}/thirdparty/jolt_physics/)
-	target_sources(rex_module_${MODULE_NAME} PRIVATE
+	add_library(jolt_physics OBJECT
 		${THIRDPARTY_JOLT_PHYSICS_DIR}Jolt/RegisterTypes.cpp
 		${THIRDPARTY_JOLT_PHYSICS_DIR}Jolt/AABBTree/AABBTreeBuilder.cpp
 		${THIRDPARTY_JOLT_PHYSICS_DIR}Jolt/Core/Color.cpp
@@ -131,24 +131,28 @@ if (NOT DISABLE_PHYSICS_3D AND NOT ARCH STREQUAL "ppc32")
 		${THIRDPARTY_JOLT_PHYSICS_DIR}Jolt/TriangleSplitter/TriangleSplitterBinning.cpp
 		${THIRDPARTY_JOLT_PHYSICS_DIR}Jolt/TriangleSplitter/TriangleSplitterMean.cpp
 	)
-	target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+	target_include_directories(rex_module_${MODULE_NAME} INTERFACE
 		${THIRDPARTY_JOLT_PHYSICS_DIR}
 	)
 	if (REX_DEV_BUILD)
-		target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+		target_compile_definitions(rex_module_${MODULE_NAME} INTERFACE
 			JPH_ENABLE_ASSERTS
 		)
 	endif()
 	if (EDITOR_BUILD)
-		target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+		target_compile_definitions(rex_module_${MODULE_NAME} INTERFACE
 			JPH_DEBUG_RENDERER
 		)
 	endif()
 	if (PRECISION STREQUAL "double")
-		target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+		target_compile_definitions(rex_module_${MODULE_NAME} INTERFACE
 			JPH_DOUBLE_PRECISION
 		)
 	endif()
+	clone_library(rex_module_${MODULE_NAME} jolt_physics)
+	disable_warnings_for_target(jolt_physics)
+
+	target_link_libraries(rex_module_${MODULE_NAME} PUBLIC jolt_physics)
 
 	file(GLOB_RECURSE JOLT_PHYSICS_SOURCES *.cpp)
 	target_sources(rex_module_${MODULE_NAME} PRIVATE

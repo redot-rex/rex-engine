@@ -1,13 +1,12 @@
 add_library(rex_module_${MODULE_NAME} STATIC)
 set(MODULE_IS_ENABLED ON PARENT_SCOPE)
-disable_warnings_for_target(rex_module_${MODULE_NAME})
 set(THIRDPARTY_BASIS_UNIVERSAL_DIR ${CMAKE_SOURCE_DIR}/thirdparty/basis_universal/)
 
-target_sources(rex_module_${MODULE_NAME} PRIVATE
+add_library(basis_universal OBJECT
 	${THIRDPARTY_BASIS_UNIVERSAL_DIR}transcoder/basisu_transcoder.cpp
 )
 
-target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+target_include_directories(rex_module_${MODULE_NAME} INTERFACE
 	${THIRDPARTY_BASIS_UNIVERSAL_DIR}
 )
 
@@ -17,7 +16,7 @@ if (EDITOR_BUILD)
 		rex_module_tinyexr
 	)
 	set(ENCODER_SOURCES_DIR ${THIRDPARTY_BASIS_UNIVERSAL_DIR}encoder/)
-	target_sources(rex_module_${MODULE_NAME} PRIVATE
+	target_sources(basis_universal PRIVATE
         ${ENCODER_SOURCES_DIR}3rdparty/android_astc_decomp.cpp
         ${ENCODER_SOURCES_DIR}basisu_astc_hdr_6x6_enc.cpp
         ${ENCODER_SOURCES_DIR}basisu_astc_hdr_common.cpp
@@ -39,19 +38,22 @@ if (EDITOR_BUILD)
         ${ENCODER_SOURCES_DIR}basisu_uastc_hdr_4x4_enc.cpp
         ${ENCODER_SOURCES_DIR}pvpngreader.cpp
 	)
-	target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+	target_include_directories(rex_module_${MODULE_NAME} INTERFACE
 		${CMAKE_SOURCE_DIR}/thirdparty/jpeg-compressor/
 		${CMAKE_SOURCE_DIR}/thirdparty/tinyexr/
 	)
 endif()
 
 if (BUILTIN_ZSTD)
-	target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+	target_include_directories(rex_module_${MODULE_NAME} INTERFACE
 		${CMAKE_SOURCE_DIR}/thirdparty/zstd/
 	)
 endif()
 
-target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+clone_library(rex_module_${MODULE_NAME} basis_universal)
+disable_warnings_for_target(basis_universal)
+
+target_compile_definitions(basis_universal PRIVATE
 	BASISD_SUPPORT_KTX2_ZSTD=0
 	BASISD_SUPPORT_ATC=0  # Proprietary Adreno format not supported by Godot.
 	BASISD_SUPPORT_FXT1=0  # Legacy format not supported by Godot.
@@ -59,3 +61,9 @@ target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
 	BASISD_SUPPORT_PVRTC2=0  # Legacy format not supported by Godot.
 )
 
+target_link_libraries(rex_module_${MODULE_NAME} PUBLIC basis_universal)
+
+file(GLOB BASIS_UNIVERSAL_SOURCES *.cpp)
+target_sources(rex_module_${MODULE_NAME} PRIVATE
+	${BASIS_UNIVERSAL_SOURCES}
+)

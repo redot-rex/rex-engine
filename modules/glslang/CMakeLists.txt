@@ -1,11 +1,10 @@
 if (VULKAN OR D3D12 OR METAL)
 	add_library(rex_module_${MODULE_NAME} STATIC)
 	set(MODULE_IS_ENABLED ON PARENT_SCOPE)
-	disable_warnings_for_target(rex_module_${MODULE_NAME})
 
 	if (BUILTIN_GLSLANG)
 		set(THIRDPARTY_GLSLANG_DIR ${CMAKE_SOURCE_DIR}/thirdparty/glslang/)
-		target_sources(rex_module_${MODULE_NAME} PRIVATE
+		add_library(glslang OBJECT
 			${THIRDPARTY_GLSLANG_DIR}glslang/GenericCodeGen/CodeGen.cpp
 			${THIRDPARTY_GLSLANG_DIR}glslang/GenericCodeGen/Link.cpp
 			${THIRDPARTY_GLSLANG_DIR}glslang/MachineIndependent/attribute.cpp
@@ -48,24 +47,27 @@ if (VULKAN OR D3D12 OR METAL)
 			${THIRDPARTY_GLSLANG_DIR}SPIRV/SpvTools.cpp
 		)
 		if (REX_PLATFORM STREQUAL "windows")
-			target_sources(rex_module_${MODULE_NAME} PRIVATE
+			target_sources(rex_module_${MODULE_NAME} INTERFACE
 				${THIRDPARTY_GLSLANG_DIR}glslang/OSDependent/Windows/ossource.cpp
 			)
 		else()
-			target_sources(rex_module_${MODULE_NAME} PRIVATE
+			target_sources(rex_module_${MODULE_NAME} INTERFACE
 				${THIRDPARTY_GLSLANG_DIR}glslang/OSDependent/Unix/ossource.cpp
 			)
 		endif()
 
 		# Include `#thirdparty` to workaround mismatch between location of `SPIRV` in library source
 		# and in installed public headers.
-		target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+		target_include_directories(rex_module_${MODULE_NAME} INTERFACE
 			${THIRDPARTY_GLSLANG_DIR}
 			${CMAKE_SOURCE_DIR}/thirdparty/
 		)
-		target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+		target_compile_definitions(rex_module_${MODULE_NAME} INTERFACE
 			ENABLE_OPT=0
 		)
+		clone_library(rex_module_${MODULE_NAME} glslang)
+		disable_warnings_for_target(glslang)
+		target_link_libraries(rex_module_${MODULE_NAME} PUBLIC glslang)
 	endif()
 
 	file(GLOB GLSLANG_SOURCES *.cpp)

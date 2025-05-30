@@ -5,9 +5,9 @@ disable_warnings_for_target(rex_module_${MODULE_NAME})
 add_dependencies(rex_module_${MODULE_NAME}
 	rex_module_basis_universal
 )
-
+clone_library(rex_modules rex_module_${MODULE_NAME})
 set(THIRDPARTY_KTX_DIR ${CMAKE_SOURCE_DIR}/thirdparty/libktx/)
-target_sources(rex_module_${MODULE_NAME} PRIVATE
+add_library(libktx OBJECT
     ${THIRDPARTY_KTX_DIR}lib/basis_transcode.cpp
     ${THIRDPARTY_KTX_DIR}lib/checkheader.c
     ${THIRDPARTY_KTX_DIR}lib/filestream.c
@@ -27,36 +27,34 @@ target_sources(rex_module_${MODULE_NAME} PRIVATE
     ${THIRDPARTY_KTX_DIR}lib/dfdutils/queries.c
     ${THIRDPARTY_KTX_DIR}lib/dfdutils/vk2dfd.c
 )
-target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+target_include_directories(rex_module_${MODULE_NAME} INTERFACE
 	${THIRDPARTY_KTX_DIR}include/
 	${THIRDPARTY_KTX_DIR}utils/
 	${THIRDPARTY_KTX_DIR}lib/
 	${THIRDPARTY_KTX_DIR}other_include/
 	${CMAKE_SOURCE_DIR}/thirdparty/basis_universal/
 )
-if (BUILTIN_ZSTD)
-	target_include_directories(rex_module_${MODULE_NAME} PRIVATE
-		${CMAKE_SOURCE_DIR}/thirdparty/zstd/
-	)
-endif()
-
 if (EDITOR_BUILD)
-	target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+	target_compile_definitions(rex_module_${MODULE_NAME} INTERFACE
 		MINIZ_HEADER_FILE_ONLY
 	)
 endif()
 if (VULKAN)
-	target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+	target_include_directories(rex_module_${MODULE_NAME} INTERFACE
 		${CMAKE_SOURCE_DIR}/thirdparty/vulkan/include/
 	)
 else()
-	target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+	target_compile_definitions(rex_module_${MODULE_NAME} INTERFACE
 		LIBKTX
 	)
 endif()
-target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+target_compile_definitions(rex_module_${MODULE_NAME} INTERFACE
 	KHRONOS_STATIC=1
 )
+clone_library(rex_module_${MODULE_NAME} libktx)
+disable_warnings_for_target(libktx)
+
+target_link_libraries(rex_module_${MODULE_NAME} PUBLIC libktx)
 
 file(GLOB KTX_SOURCES *.cpp)
 target_sources(rex_module_${MODULE_NAME} PRIVATE

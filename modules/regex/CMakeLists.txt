@@ -1,6 +1,5 @@
 add_library(rex_module_${MODULE_NAME} STATIC)
 set(MODULE_IS_ENABLED ON PARENT_SCOPE)
-disable_warnings_for_target(rex_module_${MODULE_NAME})
 
 if (BUILTIN_PCRE2)
 	set(THIRDPARTY_PCRE2_DIR ${CMAKE_SOURCE_DIR}/thirdparty/pcre2/src/)
@@ -51,8 +50,7 @@ if (BUILTIN_PCRE2)
 			${PCRE2_FLAGS}
 			PCRE2_CODE_UNIT_WIDTH=${WIDTH}
 		)
-		disable_warnings_for_target(pcre2_${WIDTH})
-		target_link_libraries(rex_module_${MODULE_NAME} pcre2_${WIDTH})
+		target_link_libraries(rex_module_${MODULE_NAME} PUBLIC pcre2_${WIDTH})
 	endforeach()
 
 	target_include_directories(rex_module_${MODULE_NAME} PRIVATE

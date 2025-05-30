@@ -1,6 +1,5 @@
 add_library(rex_module_${MODULE_NAME} STATIC)
 set(MODULE_IS_ENABLED ON PARENT_SCOPE)
-disable_warnings_for_target(rex_module_${MODULE_NAME})
 
 add_dependencies(rex_module_${MODULE_NAME}
 	rex_module_freetype
@@ -28,18 +27,22 @@ if (BUILTIN_MSDFGEN)
         ${THIRDPARTY_MSDFGEN_DIR}core/sdf-error-estimation.cpp
         ${THIRDPARTY_MSDFGEN_DIR}core/shape-description.cpp
 	)
-	target_compile_definitions(msdfgen_builtin PRIVATE
+	target_compile_definitions(rex_module_${MODULE_NAME} INTERFACE
 		MSDFGEN_PUBLIC=
 	)
-	target_include_directories(msdfgen_builtin PRIVATE
+	target_include_directories(rex_module_${MODULE_NAME} INTERFACE
 		${CMAKE_SOURCE_DIR}/thirdparty/freetype/include
 		${CMAKE_SOURCE_DIR}/thirdparty/msdfgen
 		${CMAKE_SOURCE_DIR}/thirdparty/nanosvg
 	)
-	target_link_libraries(rex_engine PUBLIC msdfgen_builtin)
+	clone_library(rex_module_${MODULE_NAME} msdfgen_builtin)
+	disable_warnings_for_target(msdfgen_builtin)
+	list(APPEND BUILTIN_LIBRARIES msdfgen_builtin)
+
 endif()
 
 file(GLOB MSDFGEN_SOURCES *.cpp)
 target_sources(rex_module_${MODULE_NAME} PRIVATE
 	${MSDFGEN_SOURCES}
 )
+set(BUILTIN_LIBRARIES ${BUILTIN_LIBRARIES} PARENT_SCOPE)

@@ -1,9 +1,8 @@
 add_library(rex_module_${MODULE_NAME} STATIC)
 set(MODULE_IS_ENABLED ON PARENT_SCOPE)
-disable_warnings_for_target(rex_module_${MODULE_NAME})
 
 set(THIRDPARTY_THORVG_DIR ${CMAKE_SOURCE_DIR}/thirdparty/thorvg/)
-target_sources(rex_module_${MODULE_NAME} PRIVATE
+add_library(thorvg OBJECT
     # common
     ${THIRDPARTY_THORVG_DIR}src/common/tvgCompressor.cpp
     ${THIRDPARTY_THORVG_DIR}src/common/tvgMath.cpp
@@ -46,25 +45,32 @@ target_sources(rex_module_${MODULE_NAME} PRIVATE
     ${THIRDPARTY_THORVG_DIR}src/renderer/sw_engine/tvgSwShape.cpp
     ${THIRDPARTY_THORVG_DIR}src/renderer/sw_engine/tvgSwStroke.cpp
 )
+target_include_directories(rex_module_${MODULE_NAME} INTERFACE
+	${THIRDPARTY_THORVG_DIR}inc/
+)
+target_compile_definitions(rex_module_${MODULE_NAME} INTERFACE
+	TVG_STATIC
+	THORVG_FILE_IO_SUPPORT
+)
 if ("webp" IN_LIST ENABLED_MODULES)
-	target_sources(rex_module_${MODULE_NAME} PRIVATE
+	target_sources(thorvg PRIVATE
 		${THIRDPARTY_THORVG_DIR}src/loaders/external_webp/tvgWebpLoader.cpp
 	)
-	target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+	target_compile_definitions(rex_module_${MODULE_NAME} INTERFACE
 		THORVG_WEBP_LOADER_SUPPORT
 	)
-	target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+	target_include_directories(rex_module_${MODULE_NAME} INTERFACE
 		${THIRDPARTY_THORVG_DIR}src/loaders/external_webp/
 	)
 	if (BUILTIN_LIBWEBP)
-        target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+        target_include_directories(rex_module_${MODULE_NAME} INTERFACE
 			${CMAKE_SOURCE_DIR}thirdparty/libwebp/src/
 		)
 	endif()
 endif()
-
-target_include_directories(rex_module_${MODULE_NAME} PRIVATE
-	${THIRDPARTY_THORVG_DIR}inc/
+clone_library(rex_module_${MODULE_NAME} thorvg)
+disable_warnings_for_target(thorvg)
+target_include_directories(thorvg PRIVATE
 	${THIRDPARTY_THORVG_DIR}src/common
 	${THIRDPARTY_THORVG_DIR}src/loaders/svg
 	${THIRDPARTY_THORVG_DIR}src/renderer
@@ -73,15 +79,23 @@ target_include_directories(rex_module_${MODULE_NAME} PRIVATE
 	${THIRDPARTY_THORVG_DIR}src/loaders/external_png
 	${THIRDPARTY_THORVG_DIR}src/loaders/jpg
 )
-target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
-	TVG_STATIC
-	THORVG_FILE_IO_SUPPORT
-)
 if (BUILTIN_LIBPNG)
-	target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+	target_include_directories(thorvg PRIVATE
 		${CMAKE_SOURCE_DIR}/thirdparty/libpng/
 	)
 endif()
+if("webp" IN_LIST ENABLED_MODULES)
+	target_include_directories(thorvg PRIVATE
+		${THIRDPARTY_THORVG_DIR}src/loaders/external_webp/
+	)
+	if (BUILTIN_LIBWEBP)
+		target_include_directories(thorvg PRIVATE
+			${CMAKE_SOURCE_DIR}/thirdparty/libwebp/src/
+		)
+	endif()
+endif()
+
+target_link_libraries(rex_module_${MODULE_NAME} PUBLIC thorvg)
 
 file(GLOB SVG_SOURCES *.cpp)
 target_sources(rex_module_${MODULE_NAME} PRIVATE

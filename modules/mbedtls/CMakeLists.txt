@@ -1,9 +1,8 @@
-
+add_library(rex_module_${MODULE_NAME} STATIC)
+set(MODULE_IS_ENABLED ON PARENT_SCOPE)
 if (BUILTIN_MBEDTLS)
-	add_library(rex_module_${MODULE_NAME} STATIC)
-	set(MODULE_IS_ENABLED ON PARENT_SCOPE)
 	set(THIRDPARTY_MBEDTLS_DIR ${CMAKE_SOURCE_DIR}/thirdparty/mbedtls/)
-	target_sources(rex_module_${MODULE_NAME} PRIVATE
+	add_library(mbedtls OBJECT
         ${THIRDPARTY_MBEDTLS_DIR}library/aes.c
         ${THIRDPARTY_MBEDTLS_DIR}library/aesce.c
         ${THIRDPARTY_MBEDTLS_DIR}library/aesni.c
@@ -109,7 +108,39 @@ if (BUILTIN_MBEDTLS)
         ${THIRDPARTY_MBEDTLS_DIR}library/x509write_csr.c
 	)
 
-	target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+	target_include_directories(rex_module_${MODULE_NAME} INTERFACE
 		${THIRDPARTY_MBEDTLS_DIR}include
 	)
+	# TODO: ninja MSVC fix?
+	set(MBEDTLS_CONFIG_PATH "<${CMAKE_SOURCE_DIR}/thirdparty/mbedtls/include/godot_module_mbedtls_config.h>")
+	target_compile_definitions(rex_module_${MODULE_NAME} INTERFACE
+		MBEDTLS_CONFIG_FILE=${MBEDTLS_CONFIG_PATH}
+	)
+
+	clone_library(rex_module_${MODULE_NAME} mbedtls)
+	disable_warnings_for_target(mbedtls)
+
+	target_link_libraries(rex_module_${MODULE_NAME} PUBLIC mbedtls)
+	target_link_libraries(rex_core PUBLIC mbedtls)
+
+endif()
+
+file(GLOB MBEDTLS_SOURCES *.cpp)
+target_sources(rex_module_${MODULE_NAME} PRIVATE
+	${MBEDTLS_SOURCES}
+)
+
+if (TESTS)
+	target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+		TESTS_ENABLED
+	)
+	file(GLOB MBEDTLS_TESTS_SOURCES tests/*.cpp)
+	target_sources(rex_module_${MODULE_NAME} PRIVATE
+		${MBEDTLS_TESTS_SOURCES}
+	)
+	if (DISABLE_EXCEPTIONS)
+		target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+			DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS
+		)
+	endif()
 endif()
