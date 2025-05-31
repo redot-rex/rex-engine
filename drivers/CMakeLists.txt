@@ -11,6 +11,10 @@ add_subdirectory(alsamidi)
 add_subdirectory(winmidi)
 add_subdirectory(png)
 
+if (ACCESSKIT AND REX_PLATFORM MATCHES "macos|windows|linuxbsd")
+	add_subdirectory(accesskit)
+endif()
+
 if (VULKAN)
 	add_subdirectory(vulkan)
 endif()
