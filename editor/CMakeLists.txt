@@ -18,11 +18,7 @@ add_library(rex_editor STATIC
 	${EDITOR_PLATFORM_WINDOWS_SOURCES}
 )
 
-target_include_directories(rex_editor PRIVATE "$<TARGET_PROPERTY:rex_engine,INTERFACE_INCLUDE_DIRECTORIES>")
-
-get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
-
-target_compile_definitions(rex_editor PRIVATE ${ENGINE_DEFINITIONS})
+clone_library(rex_engine rex_editor)
 
 add_subdirectory(debugger)
 add_subdirectory(export)

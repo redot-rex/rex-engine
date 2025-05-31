@@ -11,11 +11,7 @@ add_library(rex_servers STATIC
 	${SERVERS_DIR}text_server.cpp
 )
 
-target_include_directories(rex_servers PRIVATE "$<TARGET_PROPERTY:rex_engine,INTERFACE_INCLUDE_DIRECTORIES>")
-
-get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
-
-target_compile_definitions(rex_servers PUBLIC ${ENGINE_DEFINITIONS})
+clone_library(rex_engine rex_servers)
 
 add_subdirectory(audio)
 add_subdirectory(camera)

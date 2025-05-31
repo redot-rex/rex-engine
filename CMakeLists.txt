@@ -454,6 +454,9 @@ endif()
 add_subdirectory(drivers)
 add_subdirectory(platform)
 add_subdirectory(main)
+if (REX_TESTS)
+	add_subdirectory(tests)
+endif()
 add_subdirectory(modules)
 
 target_link_libraries(rex_engine PUBLIC

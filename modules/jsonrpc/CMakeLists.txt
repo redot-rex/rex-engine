@@ -5,7 +5,7 @@ file(GLOB JSONRPC_SOURCES *.cpp)
 target_sources(rex_module_${MODULE_NAME} PRIVATE
 	${JSONRPC_SOURCES}
 )
-if (TESTS)
+if (REX_TESTS)
 	target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
 		TESTS_ENABLED
 	)

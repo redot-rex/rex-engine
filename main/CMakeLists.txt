@@ -12,7 +12,7 @@ if (STEAMAPI AND EDITOR_BUILD)
 	)
 endif()
 
-if (TESTS)
+if (REX_TESTS)
 	target_compile_definitions(rex_main PRIVATE
 		TESTS_ENABLED
 	)

@@ -12,7 +12,7 @@ if (EDITOR_BUILD)
 	)
 endif()
 
-if (TESTS)
+if (REX_TESTS)
 	target_compile_definitions(rex_moudle_${MODULE_NAME} PRIVATE
 		TESTS_ENABLED
 	)

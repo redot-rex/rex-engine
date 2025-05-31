@@ -2,11 +2,7 @@ file(GLOB SCENE_SOURCES *.cpp)
 
 add_library(rex_scene STATIC ${SCENE_SOURCES})
 
-target_include_directories(rex_scene PRIVATE "$<TARGET_PROPERTY:rex_engine,INTERFACE_INCLUDE_DIRECTORIES>")
-
-get_target_property(ENGINE_DEFINITIONS rex_engine INTERFACE_COMPILE_DEFINITIONS)
-
-target_compile_definitions(rex_scene PRIVATE ${ENGINE_DEFINITIONS})
+clone_library(rex_engine rex_scene)
 
 add_subdirectory(main)
 add_subdirectory(gui)
