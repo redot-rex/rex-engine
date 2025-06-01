@@ -12,13 +12,13 @@ list(TRANSFORM GL_INCLUDE_FILES APPEND ".gen.h")
 
 add_custom_command(
 	OUTPUT ${GLSL_FILES}
-	COMMAND ${_Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/rex_glsl_builders.py build_rd_headers ${SHADER_FILES_ARGS}
+	COMMAND ${_Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/generators/rex_glsl_builders.py build_rd_headers ${SHADER_FILES_ARGS}
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 	COMMENT "Generating GLSL Shader Files..."
 )
 add_custom_command(
 	OUTPUT ${GL_INCLUDE_FILES}
-	COMMAND ${_Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/rex_glsl_builders.py build_raw_headers ${INCLUDE_FILES_ARGS}
+	COMMAND ${_Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/generators/rex_glsl_builders.py build_raw_headers ${INCLUDE_FILES_ARGS}
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 	COMMENT "Generating GLSL Include Files..."
 )

@@ -11,7 +11,7 @@ if (EDITOR_BUILD)
 	list(TRANSFORM GLSL_FILES APPEND ".gen.h")
 	add_custom_command(
 		OUTPUT ${GLSL_FILES}
-		COMMAND ${_Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/rex_glsl_builders.py build_raw_headers ${SHADER_FILES_ARGS}
+		COMMAND ${_Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/generators/rex_glsl_builders.py build_raw_headers ${SHADER_FILES_ARGS}
 		WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 		COMMENT "Generating betsy GLSL Include Files..."
 	)
