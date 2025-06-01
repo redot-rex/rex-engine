@@ -42,7 +42,7 @@ void OpenXRFutureResult::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_future"), &OpenXRFutureResult::_get_future);
 	ClassDB::bind_method(D_METHOD("cancel_future"), &OpenXRFutureResult::cancel_future);
 
-	ADD_SIGNAL(MethodInfo("completed", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "OpenXRFutureResult")));
+	ADD_SIGNAL(MethodInfo("completed", PropertyInfo(Variant::OBJECT, "result", PropertyHint::HINT_RESOURCE_TYPE, "OpenXRFutureResult")));
 
 	BIND_ENUM_CONSTANT(RESULT_RUNNING);
 	BIND_ENUM_CONSTANT(RESULT_FINISHED);

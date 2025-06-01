@@ -271,7 +271,6 @@ bool ScriptCreateDialog::_validate_parent(const String &p_string) {
 	return EditorNode::get_editor_data().is_type_recognized(p_string);
 }
 
-
 String ScriptCreateDialog::_validate_path(const String &p_path, bool p_file_must_exist, bool p_try_match) {
 	String p = p_path.strip_edges();
 
@@ -338,7 +337,6 @@ String ScriptCreateDialog::_validate_path(const String &p_path, bool p_file_must
 	// Let ScriptLanguage do custom validation.
 	return language->validate_path(p);
 }
-
 
 Error ScriptCreateDialog::_extension_update_selected_language(const String &p_extension) {
 	for (int i = 0; i < language_list.size(); i++) {
@@ -991,7 +989,7 @@ String ScriptCreateDialog::_get_script_origin_label(const ScriptLanguage::Templa
 void ScriptCreateDialog::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("config", "inherits", "path", "built_in_enabled", "load_enabled"), &ScriptCreateDialog::config, DEFVAL(true), DEFVAL(true));
 
-	ADD_SIGNAL(MethodInfo("script_created", PropertyInfo(Variant::OBJECT, "script", PROPERTY_HINT_RESOURCE_TYPE, "Script")));
+	ADD_SIGNAL(MethodInfo("script_created", PropertyInfo(Variant::OBJECT, "script", PropertyHint::HINT_RESOURCE_TYPE, "Script")));
 }
 
 ScriptCreateDialog::ScriptCreateDialog() {

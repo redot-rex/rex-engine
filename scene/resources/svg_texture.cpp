@@ -376,9 +376,9 @@ void SVGTexture::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_color_map"), &SVGTexture::get_color_map);
 	ClassDB::bind_method(D_METHOD("set_size_override", "size"), &SVGTexture::set_size_override);
 
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "_source", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_INTERNAL | PROPERTY_USAGE_STORAGE), "set_source", "get_source");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "base_scale", PROPERTY_HINT_RANGE, "0.01,10.0,0.01"), "set_base_scale", "get_base_scale");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "saturation", PROPERTY_HINT_RANGE, "0.0,1.0,0.01"), "set_saturation", "get_saturation");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "_source", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_INTERNAL | PROPERTY_USAGE_STORAGE), "set_source", "get_source");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "base_scale", PropertyHint::HINT_RANGE, "0.01,10.0,0.01"), "set_base_scale", "get_base_scale");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "saturation", PropertyHint::HINT_RANGE, "0.0,1.0,0.01"), "set_saturation", "get_saturation");
 	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "color_map"), "set_color_map", "get_color_map");
 }
 

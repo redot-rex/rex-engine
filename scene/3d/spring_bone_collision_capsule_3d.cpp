@@ -88,8 +88,8 @@ void SpringBoneCollisionCapsule3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_inside", "enabled"), &SpringBoneCollisionCapsule3D::set_inside);
 	ClassDB::bind_method(D_METHOD("is_inside"), &SpringBoneCollisionCapsule3D::is_inside);
 
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "radius", PROPERTY_HINT_RANGE, "0,1,0.001,or_greater,suffix:m"), "set_radius", "get_radius");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "height", PROPERTY_HINT_RANGE, "0,1,0.001,or_greater,suffix:m"), "set_height", "get_height");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "radius", PropertyHint::HINT_RANGE, "0,1,0.001,or_greater,suffix:m"), "set_radius", "get_radius");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "height", PropertyHint::HINT_RANGE, "0,1,0.001,or_greater,suffix:m"), "set_height", "get_height");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "inside"), "set_inside", "is_inside");
 }
 

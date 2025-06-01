@@ -693,7 +693,7 @@ SceneDebuggerObject::SceneDebuggerObject(ObjectID p_id) {
 	if (Node *node = Object::cast_to<Node>(obj)) {
 		// For debugging multiplayer.
 		{
-			PropertyInfo pi(Variant::INT, String("Node/multiplayer_authority"), PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_READ_ONLY);
+			PropertyInfo pi(Variant::INT, String("Node/multiplayer_authority"), PropertyHint::HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_READ_ONLY);
 			properties.push_back(SceneDebuggerProperty(pi, node->get_multiplayer_authority()));
 		}
 
@@ -764,7 +764,7 @@ void SceneDebuggerObject::_parse_script_properties(Script *p_script, ScriptInsta
 			String script_path = sc.key == p_script ? "" : sc.key->get_path().get_file() + "/";
 			if (E.value.get_type() == Variant::OBJECT) {
 				Variant inst_id = ((Object *)E.value)->get_instance_id();
-				PropertyInfo pi(inst_id.get_type(), "Constants/" + E.key, PROPERTY_HINT_OBJECT_ID, "Object");
+				PropertyInfo pi(inst_id.get_type(), "Constants/" + E.key, PropertyHint::HINT_OBJECT_ID, "Object");
 				properties.push_back(SceneDebuggerProperty(pi, inst_id));
 			} else {
 				PropertyInfo pi(E.value.get_type(), "Constants/" + script_path + E.key);
@@ -791,7 +791,7 @@ void SceneDebuggerObject::serialize(Array &r_arr, int p_max_size) {
 			int len = 0; //test how big is this to encode
 			encode_variant(var, nullptr, len);
 			if (len > p_max_size) { //limit to max size
-				hint = PROPERTY_HINT_OBJECT_TOO_BIG;
+				hint = PropertyHint::HINT_OBJECT_TOO_BIG;
 				hint_string = "";
 				var = Variant();
 			}
@@ -844,7 +844,7 @@ void SceneDebuggerObject::deserialize(const Array &p_arr) {
 				if (((Object *)var)->is_class("EncodedObjectAsID")) {
 					var = Object::cast_to<EncodedObjectAsID>(var)->get_object_id();
 					pinfo.type = var.get_type();
-					pinfo.hint = PROPERTY_HINT_OBJECT_ID;
+					pinfo.hint = PropertyHint::HINT_OBJECT_ID;
 					pinfo.hint_string = "Object";
 				}
 			}

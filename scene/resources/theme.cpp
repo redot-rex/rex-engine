@@ -122,28 +122,28 @@ void Theme::_get_property_list(List<PropertyInfo> *p_list) const {
 	// Icons.
 	for (const KeyValue<StringName, ThemeIconMap> &E : icon_map) {
 		for (const KeyValue<StringName, Ref<Texture2D>> &F : E.value) {
-			list.push_back(PropertyInfo(Variant::OBJECT, String() + E.key + "/icons/" + F.key, PROPERTY_HINT_RESOURCE_TYPE, "Texture2D", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORE_IF_NULL));
+			list.push_back(PropertyInfo(Variant::OBJECT, String() + E.key + "/icons/" + F.key, PropertyHint::HINT_RESOURCE_TYPE, "Texture2D", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORE_IF_NULL));
 		}
 	}
 
 	// Styles.
 	for (const KeyValue<StringName, ThemeStyleMap> &E : style_map) {
 		for (const KeyValue<StringName, Ref<StyleBox>> &F : E.value) {
-			list.push_back(PropertyInfo(Variant::OBJECT, String() + E.key + "/styles/" + F.key, PROPERTY_HINT_RESOURCE_TYPE, "StyleBox", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORE_IF_NULL));
+			list.push_back(PropertyInfo(Variant::OBJECT, String() + E.key + "/styles/" + F.key, PropertyHint::HINT_RESOURCE_TYPE, "StyleBox", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORE_IF_NULL));
 		}
 	}
 
 	// Fonts.
 	for (const KeyValue<StringName, ThemeFontMap> &E : font_map) {
 		for (const KeyValue<StringName, Ref<Font>> &F : E.value) {
-			list.push_back(PropertyInfo(Variant::OBJECT, String() + E.key + "/fonts/" + F.key, PROPERTY_HINT_RESOURCE_TYPE, "Font", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORE_IF_NULL));
+			list.push_back(PropertyInfo(Variant::OBJECT, String() + E.key + "/fonts/" + F.key, PropertyHint::HINT_RESOURCE_TYPE, "Font", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORE_IF_NULL));
 		}
 	}
 
 	// Font sizes.
 	for (const KeyValue<StringName, ThemeFontSizeMap> &E : font_size_map) {
 		for (const KeyValue<StringName, int> &F : E.value) {
-			list.push_back(PropertyInfo(Variant::INT, String() + E.key + "/font_sizes/" + F.key, PROPERTY_HINT_RANGE, "0,256,1,or_greater,suffix:px"));
+			list.push_back(PropertyInfo(Variant::INT, String() + E.key + "/font_sizes/" + F.key, PropertyHint::HINT_RANGE, "0,256,1,or_greater,suffix:px"));
 		}
 	}
 
@@ -168,7 +168,7 @@ void Theme::_get_property_list(List<PropertyInfo> *p_list) const {
 		// Add groups for types so that their names are left unchanged in the inspector.
 		String current_type = E.name.get_slicec('/', 0);
 		if (prev_type != current_type) {
-			p_list->push_back(PropertyInfo(Variant::NIL, current_type, PROPERTY_HINT_NONE, current_type + "/", PROPERTY_USAGE_GROUP));
+			p_list->push_back(PropertyInfo(Variant::NIL, current_type, PropertyHint::HINT_NONE, current_type + "/", PROPERTY_USAGE_GROUP));
 			prev_type = current_type;
 		}
 
@@ -1776,9 +1776,9 @@ void Theme::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("merge_with", "other"), &Theme::merge_with);
 	ClassDB::bind_method(D_METHOD("clear"), &Theme::clear);
 
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "default_base_scale", PROPERTY_HINT_RANGE, "0.0,2.0,0.01,or_greater"), "set_default_base_scale", "get_default_base_scale");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "default_font", PROPERTY_HINT_RESOURCE_TYPE, "Font"), "set_default_font", "get_default_font");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "default_font_size", PROPERTY_HINT_RANGE, "0,256,1,or_greater,suffix:px"), "set_default_font_size", "get_default_font_size");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "default_base_scale", PropertyHint::HINT_RANGE, "0.0,2.0,0.01,or_greater"), "set_default_base_scale", "get_default_base_scale");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "default_font", PropertyHint::HINT_RESOURCE_TYPE, "Font"), "set_default_font", "get_default_font");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "default_font_size", PropertyHint::HINT_RANGE, "0,256,1,or_greater,suffix:px"), "set_default_font_size", "get_default_font_size");
 
 	BIND_ENUM_CONSTANT(DATA_TYPE_COLOR);
 	BIND_ENUM_CONSTANT(DATA_TYPE_CONSTANT);

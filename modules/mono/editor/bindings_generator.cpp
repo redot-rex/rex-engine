@@ -3844,11 +3844,11 @@ bool BindingsGenerator::_arg_default_value_is_assignable_to_type(const Variant &
 }
 
 bool method_has_ptr_parameter(MethodInfo p_method_info) {
-	if (p_method_info.return_val.type == Variant::INT && p_method_info.return_val.hint == PROPERTY_HINT_INT_IS_POINTER) {
+	if (p_method_info.return_val.type == Variant::INT && p_method_info.return_val.hint == PropertyHint::HINT_INT_IS_POINTER) {
 		return true;
 	}
 	for (PropertyInfo arg : p_method_info.arguments) {
-		if (arg.type == Variant::INT && arg.hint == PROPERTY_HINT_INT_IS_POINTER) {
+		if (arg.type == Variant::INT && arg.hint == PropertyHint::HINT_INT_IS_POINTER) {
 			return true;
 		}
 	}
@@ -4095,20 +4095,20 @@ bool BindingsGenerator::_populate_object_type_interfaces() {
 			} else if (return_info.class_name != StringName()) {
 				imethod.return_type.cname = return_info.class_name;
 
-				bool bad_reference_hint = !imethod.is_virtual && return_info.hint != PROPERTY_HINT_RESOURCE_TYPE &&
+				bool bad_reference_hint = !imethod.is_virtual && return_info.hint != PropertyHint::HINT_RESOURCE_TYPE &&
 						ClassDB::is_parent_class(return_info.class_name, name_cache.type_RefCounted);
 				ERR_FAIL_COND_V_MSG(bad_reference_hint, false,
-						String() + "Return type is reference but hint is not '" _STR(PROPERTY_HINT_RESOURCE_TYPE) "'." +
+						String() + "Return type is reference but hint is not '" _STR(PropertyHint::HINT_RESOURCE_TYPE) "'." +
 								" Are you returning a reference type by pointer? Method: '" + itype.name + "." + imethod.name + "'.");
-			} else if (return_info.type == Variant::ARRAY && return_info.hint == PROPERTY_HINT_ARRAY_TYPE) {
+			} else if (return_info.type == Variant::ARRAY && return_info.hint == PropertyHint::HINT_ARRAY_TYPE) {
 				imethod.return_type.cname = Variant::get_type_name(return_info.type) + "_@generic";
 				imethod.return_type.generic_type_parameters.push_back(TypeReference(return_info.hint_string));
-			} else if (return_info.type == Variant::DICTIONARY && return_info.hint == PROPERTY_HINT_DICTIONARY_TYPE) {
+			} else if (return_info.type == Variant::DICTIONARY && return_info.hint == PropertyHint::HINT_DICTIONARY_TYPE) {
 				imethod.return_type.cname = Variant::get_type_name(return_info.type) + "_@generic";
 				Vector<String> split = return_info.hint_string.split(";");
 				imethod.return_type.generic_type_parameters.push_back(TypeReference(split.get(0)));
 				imethod.return_type.generic_type_parameters.push_back(TypeReference(split.get(1)));
-			} else if (return_info.hint == PROPERTY_HINT_RESOURCE_TYPE) {
+			} else if (return_info.hint == PropertyHint::HINT_RESOURCE_TYPE) {
 				imethod.return_type.cname = return_info.hint_string;
 			} else if (return_info.type == Variant::NIL && return_info.usage & PROPERTY_USAGE_NIL_IS_VARIANT) {
 				imethod.return_type.cname = name_cache.type_Variant;
@@ -4131,15 +4131,15 @@ bool BindingsGenerator::_populate_object_type_interfaces() {
 					iarg.type.is_enum = true;
 				} else if (arginfo.class_name != StringName()) {
 					iarg.type.cname = arginfo.class_name;
-				} else if (arginfo.type == Variant::ARRAY && arginfo.hint == PROPERTY_HINT_ARRAY_TYPE) {
+				} else if (arginfo.type == Variant::ARRAY && arginfo.hint == PropertyHint::HINT_ARRAY_TYPE) {
 					iarg.type.cname = Variant::get_type_name(arginfo.type) + "_@generic";
 					iarg.type.generic_type_parameters.push_back(TypeReference(arginfo.hint_string));
-				} else if (arginfo.type == Variant::DICTIONARY && arginfo.hint == PROPERTY_HINT_DICTIONARY_TYPE) {
+				} else if (arginfo.type == Variant::DICTIONARY && arginfo.hint == PropertyHint::HINT_DICTIONARY_TYPE) {
 					iarg.type.cname = Variant::get_type_name(arginfo.type) + "_@generic";
 					Vector<String> split = arginfo.hint_string.split(";");
 					iarg.type.generic_type_parameters.push_back(TypeReference(split.get(0)));
 					iarg.type.generic_type_parameters.push_back(TypeReference(split.get(1)));
-				} else if (arginfo.hint == PROPERTY_HINT_RESOURCE_TYPE) {
+				} else if (arginfo.hint == PropertyHint::HINT_RESOURCE_TYPE) {
 					iarg.type.cname = arginfo.hint_string;
 				} else if (arginfo.type == Variant::NIL) {
 					iarg.type.cname = name_cache.type_Variant;
@@ -4274,15 +4274,15 @@ bool BindingsGenerator::_populate_object_type_interfaces() {
 					iarg.type.is_enum = true;
 				} else if (arginfo.class_name != StringName()) {
 					iarg.type.cname = arginfo.class_name;
-				} else if (arginfo.type == Variant::ARRAY && arginfo.hint == PROPERTY_HINT_ARRAY_TYPE) {
+				} else if (arginfo.type == Variant::ARRAY && arginfo.hint == PropertyHint::HINT_ARRAY_TYPE) {
 					iarg.type.cname = Variant::get_type_name(arginfo.type) + "_@generic";
 					iarg.type.generic_type_parameters.push_back(TypeReference(arginfo.hint_string));
-				} else if (arginfo.type == Variant::DICTIONARY && arginfo.hint == PROPERTY_HINT_DICTIONARY_TYPE) {
+				} else if (arginfo.type == Variant::DICTIONARY && arginfo.hint == PropertyHint::HINT_DICTIONARY_TYPE) {
 					iarg.type.cname = Variant::get_type_name(arginfo.type) + "_@generic";
 					Vector<String> split = arginfo.hint_string.split(";");
 					iarg.type.generic_type_parameters.push_back(TypeReference(split.get(0)));
 					iarg.type.generic_type_parameters.push_back(TypeReference(split.get(1)));
-				} else if (arginfo.hint == PROPERTY_HINT_RESOURCE_TYPE) {
+				} else if (arginfo.hint == PropertyHint::HINT_RESOURCE_TYPE) {
 					iarg.type.cname = arginfo.hint_string;
 				} else if (arginfo.type == Variant::NIL) {
 					iarg.type.cname = name_cache.type_Variant;

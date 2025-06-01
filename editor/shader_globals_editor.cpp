@@ -142,17 +142,17 @@ protected:
 				} break;
 				case RS::GLOBAL_VAR_TYPE_BVEC2: {
 					pinfo.type = Variant::INT;
-					pinfo.hint = PROPERTY_HINT_FLAGS;
+					pinfo.hint = PropertyHint::HINT_FLAGS;
 					pinfo.hint_string = "x,y";
 				} break;
 				case RS::GLOBAL_VAR_TYPE_BVEC3: {
 					pinfo.type = Variant::INT;
-					pinfo.hint = PROPERTY_HINT_FLAGS;
+					pinfo.hint = PropertyHint::HINT_FLAGS;
 					pinfo.hint_string = "x,y,z";
 				} break;
 				case RS::GLOBAL_VAR_TYPE_BVEC4: {
 					pinfo.type = Variant::INT;
-					pinfo.hint = PROPERTY_HINT_FLAGS;
+					pinfo.hint = PropertyHint::HINT_FLAGS;
 					pinfo.hint_string = "x,y,z,w";
 				} break;
 				case RS::GLOBAL_VAR_TYPE_INT: {
@@ -217,27 +217,27 @@ protected:
 				} break;
 				case RS::GLOBAL_VAR_TYPE_SAMPLER2D: {
 					pinfo.type = Variant::OBJECT;
-					pinfo.hint = PROPERTY_HINT_RESOURCE_TYPE;
+					pinfo.hint = PropertyHint::HINT_RESOURCE_TYPE;
 					pinfo.hint_string = "Texture2D";
 				} break;
 				case RS::GLOBAL_VAR_TYPE_SAMPLER2DARRAY: {
 					pinfo.type = Variant::OBJECT;
-					pinfo.hint = PROPERTY_HINT_RESOURCE_TYPE;
+					pinfo.hint = PropertyHint::HINT_RESOURCE_TYPE;
 					pinfo.hint_string = "Texture2DArray,CompressedTexture2DArray";
 				} break;
 				case RS::GLOBAL_VAR_TYPE_SAMPLER3D: {
 					pinfo.type = Variant::OBJECT;
-					pinfo.hint = PROPERTY_HINT_RESOURCE_TYPE;
+					pinfo.hint = PropertyHint::HINT_RESOURCE_TYPE;
 					pinfo.hint_string = "Texture3D";
 				} break;
 				case RS::GLOBAL_VAR_TYPE_SAMPLERCUBE: {
 					pinfo.type = Variant::OBJECT;
-					pinfo.hint = PROPERTY_HINT_RESOURCE_TYPE;
+					pinfo.hint = PropertyHint::HINT_RESOURCE_TYPE;
 					pinfo.hint_string = "Cubemap,CompressedCubemap";
 				} break;
 				case RS::GLOBAL_VAR_TYPE_SAMPLEREXT: {
 					pinfo.type = Variant::OBJECT;
-					pinfo.hint = PROPERTY_HINT_RESOURCE_TYPE;
+					pinfo.hint = PropertyHint::HINT_RESOURCE_TYPE;
 					pinfo.hint_string = "ExternalTexture";
 				} break;
 				default: {

@@ -575,7 +575,7 @@ String ConnectDialog::get_signature(const MethodInfo &p_method, PackedStringArra
 				}
 				break;
 			case Variant::ARRAY:
-				if (pi.hint == PROPERTY_HINT_ARRAY_TYPE && !pi.hint_string.is_empty() && !pi.hint_string.begins_with("res://")) {
+				if (pi.hint == PropertyHint::HINT_ARRAY_TYPE && !pi.hint_string.is_empty() && !pi.hint_string.begins_with("res://")) {
 					type_name = "Array[" + pi.hint_string + "]";
 				} else {
 					type_name = "Array";
@@ -583,7 +583,7 @@ String ConnectDialog::get_signature(const MethodInfo &p_method, PackedStringArra
 				break;
 			case Variant::DICTIONARY:
 				type_name = "Dictionary";
-				if (pi.hint == PROPERTY_HINT_DICTIONARY_TYPE && !pi.hint_string.is_empty()) {
+				if (pi.hint == PropertyHint::HINT_DICTIONARY_TYPE && !pi.hint_string.is_empty()) {
 					String key_hint = pi.hint_string.get_slicec(';', 0);
 					String value_hint = pi.hint_string.get_slicec(';', 1);
 					if (key_hint.is_empty() || key_hint.begins_with("res://")) {

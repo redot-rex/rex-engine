@@ -92,7 +92,7 @@ bool TileSetScenesCollectionSourceEditor::TileSetScenesCollectionProxyObject::_g
 }
 
 void TileSetScenesCollectionSourceEditor::TileSetScenesCollectionProxyObject::_get_property_list(List<PropertyInfo> *p_list) const {
-	p_list->push_back(PropertyInfo(Variant::STRING, "name", PROPERTY_HINT_NONE, ""));
+	p_list->push_back(PropertyInfo(Variant::STRING, "name", PropertyHint::HINT_NONE, ""));
 }
 
 void TileSetScenesCollectionSourceEditor::TileSetScenesCollectionProxyObject::_bind_methods() {
@@ -191,9 +191,9 @@ void TileSetScenesCollectionSourceEditor::SceneTileProxyObject::_get_property_li
 		return;
 	}
 
-	p_list->push_back(PropertyInfo(Variant::INT, "id", PROPERTY_HINT_NONE, ""));
-	p_list->push_back(PropertyInfo(Variant::OBJECT, "scene", PROPERTY_HINT_RESOURCE_TYPE, "PackedScene"));
-	p_list->push_back(PropertyInfo(Variant::BOOL, "display_placeholder", PROPERTY_HINT_NONE, ""));
+	p_list->push_back(PropertyInfo(Variant::INT, "id", PropertyHint::HINT_NONE, ""));
+	p_list->push_back(PropertyInfo(Variant::OBJECT, "scene", PropertyHint::HINT_RESOURCE_TYPE, "PackedScene"));
+	p_list->push_back(PropertyInfo(Variant::BOOL, "display_placeholder", PropertyHint::HINT_NONE, ""));
 }
 
 void TileSetScenesCollectionSourceEditor::SceneTileProxyObject::edit(TileSetScenesCollectionSource *p_tile_set_scenes_collection_source, int p_scene_id) {

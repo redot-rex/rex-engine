@@ -314,7 +314,7 @@ void BonePropertiesEditor::_update_properties() {
 				if (split[2] == "bone_meta") {
 					meta_seen.insert(E.name);
 					if (!meta_editors.find(E.name)) {
-						EditorProperty *editor = EditorInspectorDefaultPlugin::get_editor_for_property(skeleton, E.type, E.name, PROPERTY_HINT_NONE, "", E.usage);
+						EditorProperty *editor = EditorInspectorDefaultPlugin::get_editor_for_property(skeleton, E.type, E.name, PropertyHint::HINT_NONE, "", E.usage);
 						editor->set_label(split[3]);
 						editor->set_object_and_property(skeleton, E.name);
 						editor->set_deletable(true);

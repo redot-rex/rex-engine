@@ -809,7 +809,7 @@ Error SceneState::_parse_node(Node *p_owner, Node *p_node, int p_parent_idx, Has
 		Variant value = p_node->get(name);
 		bool use_deferred_node_path_bit = false;
 
-		if (E.type == Variant::OBJECT && E.hint == PROPERTY_HINT_NODE_TYPE) {
+		if (E.type == Variant::OBJECT && E.hint == PropertyHint::HINT_NODE_TYPE) {
 			if (value.get_type() == Variant::OBJECT) {
 				if (Node *n = Object::cast_to<Node>(value)) {
 					value = p_node->get_path_to(n);
@@ -825,19 +825,19 @@ Error SceneState::_parse_node(Node *p_owner, Node *p_node, int p_parent_idx, Has
 			if (ures.is_null()) {
 				value = missing_resource_properties[E.name];
 			}
-		} else if (E.type == Variant::ARRAY && E.hint == PROPERTY_HINT_TYPE_STRING) {
+		} else if (E.type == Variant::ARRAY && E.hint == PropertyHint::HINT_TYPE_STRING) {
 			int hint_subtype_separator = E.hint_string.find_char(':');
 			if (hint_subtype_separator >= 0) {
 				String subtype_string = E.hint_string.substr(0, hint_subtype_separator);
 				int slash_pos = subtype_string.find_char('/');
-				PropertyHint subtype_hint = PropertyHint::PROPERTY_HINT_NONE;
+				PropertyHint subtype_hint = PropertyHint::HINT_NONE;
 				if (slash_pos >= 0) {
 					subtype_hint = PropertyHint(subtype_string.get_slicec('/', 1).to_int());
 					subtype_string = subtype_string.substr(0, slash_pos);
 				}
 				Variant::Type subtype = Variant::Type(subtype_string.to_int());
 
-				if (subtype == Variant::OBJECT && subtype_hint == PROPERTY_HINT_NODE_TYPE) {
+				if (subtype == Variant::OBJECT && subtype_hint == PropertyHint::HINT_NODE_TYPE) {
 					use_deferred_node_path_bit = true;
 					Array array = value;
 					Array new_array;
@@ -854,30 +854,30 @@ Error SceneState::_parse_node(Node *p_owner, Node *p_node, int p_parent_idx, Has
 					value = new_array;
 				}
 			}
-		} else if (E.type == Variant::DICTIONARY && E.hint == PROPERTY_HINT_TYPE_STRING) {
+		} else if (E.type == Variant::DICTIONARY && E.hint == PropertyHint::HINT_TYPE_STRING) {
 			int key_value_separator = E.hint_string.find_char(';');
 			if (key_value_separator >= 0) {
 				int key_subtype_separator = E.hint_string.find_char(':');
 				String key_subtype_string = E.hint_string.substr(0, key_subtype_separator);
 				int key_slash_pos = key_subtype_string.find_char('/');
-				PropertyHint key_subtype_hint = PropertyHint::PROPERTY_HINT_NONE;
+				PropertyHint key_subtype_hint = PropertyHint::HINT_NONE;
 				if (key_slash_pos >= 0) {
 					key_subtype_hint = PropertyHint(key_subtype_string.get_slicec('/', 1).to_int());
 					key_subtype_string = key_subtype_string.substr(0, key_slash_pos);
 				}
 				Variant::Type key_subtype = Variant::Type(key_subtype_string.to_int());
-				bool convert_key = key_subtype == Variant::OBJECT && key_subtype_hint == PROPERTY_HINT_NODE_TYPE;
+				bool convert_key = key_subtype == Variant::OBJECT && key_subtype_hint == PropertyHint::HINT_NODE_TYPE;
 
 				int value_subtype_separator = E.hint_string.find_char(':', key_value_separator) - (key_value_separator + 1);
 				String value_subtype_string = E.hint_string.substr(key_value_separator + 1, value_subtype_separator);
 				int value_slash_pos = value_subtype_string.find_char('/');
-				PropertyHint value_subtype_hint = PropertyHint::PROPERTY_HINT_NONE;
+				PropertyHint value_subtype_hint = PropertyHint::HINT_NONE;
 				if (value_slash_pos >= 0) {
 					value_subtype_hint = PropertyHint(value_subtype_string.get_slicec('/', 1).to_int());
 					value_subtype_string = value_subtype_string.substr(0, value_slash_pos);
 				}
 				Variant::Type value_subtype = Variant::Type(value_subtype_string.to_int());
-				bool convert_value = value_subtype == Variant::OBJECT && value_subtype_hint == PROPERTY_HINT_NODE_TYPE;
+				bool convert_value = value_subtype == Variant::OBJECT && value_subtype_hint == PropertyHint::HINT_NODE_TYPE;
 
 				if (convert_key || convert_value) {
 					use_deferred_node_path_bit = true;
@@ -2286,7 +2286,7 @@ void PackedScene::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_get_bundled_scene"), &PackedScene::_get_bundled_scene);
 	ClassDB::bind_method(D_METHOD("get_state"), &PackedScene::get_state);
 
-	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "_bundled", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_INTERNAL), "_set_bundled_scene", "_get_bundled_scene");
+	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "_bundled", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_INTERNAL), "_set_bundled_scene", "_get_bundled_scene");
 
 	BIND_ENUM_CONSTANT(GEN_EDIT_STATE_DISABLED);
 	BIND_ENUM_CONSTANT(GEN_EDIT_STATE_INSTANCE);

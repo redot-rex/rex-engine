@@ -577,14 +577,14 @@ void AnimationTrackKeyEdit::_get_property_list(List<PropertyInfo> *p_list) const
 				pi.name = PNAME("value");
 				p_list->push_back(pi);
 			} else {
-				PropertyHint val_hint = PROPERTY_HINT_NONE;
+				PropertyHint val_hint = PropertyHint::HINT_NONE;
 				String val_hint_string;
 
 				if (v.get_type() == Variant::OBJECT) {
 					// Could actually check the object property if exists..? Yes I will!
 					Ref<Resource> res = v;
 					if (res.is_valid()) {
-						val_hint = PROPERTY_HINT_RESOURCE_TYPE;
+						val_hint = PropertyHint::HINT_RESOURCE_TYPE;
 						val_hint_string = res->get_class();
 					}
 				}
@@ -597,7 +597,7 @@ void AnimationTrackKeyEdit::_get_property_list(List<PropertyInfo> *p_list) const
 		} break;
 		case Animation::TYPE_METHOD: {
 			p_list->push_back(PropertyInfo(Variant::STRING_NAME, PNAME("name")));
-			p_list->push_back(PropertyInfo(Variant::INT, PNAME("arg_count"), PROPERTY_HINT_RANGE, "0,32,1,or_greater"));
+			p_list->push_back(PropertyInfo(Variant::INT, PNAME("arg_count"), PropertyHint::HINT_RANGE, "0,32,1,or_greater"));
 
 			Dictionary d = animation->track_get_key_value(track, key);
 			ERR_FAIL_COND(!d.has("args"));
@@ -611,7 +611,7 @@ void AnimationTrackKeyEdit::_get_property_list(List<PropertyInfo> *p_list) const
 			}
 
 			for (int i = 0; i < args.size(); i++) {
-				p_list->push_back(PropertyInfo(Variant::INT, vformat("%s/%d/%s", PNAME("args"), i, PNAME("type")), PROPERTY_HINT_ENUM, vtypes));
+				p_list->push_back(PropertyInfo(Variant::INT, vformat("%s/%d/%s", PNAME("args"), i, PNAME("type")), PropertyHint::HINT_ENUM, vtypes));
 				if (args[i].get_type() != Variant::NIL) {
 					p_list->push_back(PropertyInfo(args[i].get_type(), vformat("%s/%d/%s", PNAME("args"), i, PNAME("value"))));
 				}
@@ -622,21 +622,21 @@ void AnimationTrackKeyEdit::_get_property_list(List<PropertyInfo> *p_list) const
 			Animation::HandleMode hm = animation->bezier_track_get_key_handle_mode(track, key);
 			p_list->push_back(PropertyInfo(Variant::FLOAT, PNAME("value")));
 			if (hm == Animation::HANDLE_MODE_LINEAR) {
-				p_list->push_back(PropertyInfo(Variant::VECTOR2, PNAME("in_handle"), PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_READ_ONLY));
-				p_list->push_back(PropertyInfo(Variant::VECTOR2, PNAME("out_handle"), PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_READ_ONLY));
+				p_list->push_back(PropertyInfo(Variant::VECTOR2, PNAME("in_handle"), PropertyHint::HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_READ_ONLY));
+				p_list->push_back(PropertyInfo(Variant::VECTOR2, PNAME("out_handle"), PropertyHint::HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_READ_ONLY));
 			} else {
 				p_list->push_back(PropertyInfo(Variant::VECTOR2, PNAME("in_handle")));
 				p_list->push_back(PropertyInfo(Variant::VECTOR2, PNAME("out_handle")));
 			}
-			p_list->push_back(PropertyInfo(Variant::INT, PNAME("handle_mode"), PROPERTY_HINT_ENUM, "Free,Linear,Balanced,Mirrored"));
+			p_list->push_back(PropertyInfo(Variant::INT, PNAME("handle_mode"), PropertyHint::HINT_ENUM, "Free,Linear,Balanced,Mirrored"));
 
 		} break;
 		case Animation::TYPE_AUDIO: {
-			p_list->push_back(PropertyInfo(Variant::OBJECT, PNAME("stream"), PROPERTY_HINT_RESOURCE_TYPE, "AudioStream"));
+			p_list->push_back(PropertyInfo(Variant::OBJECT, PNAME("stream"), PropertyHint::HINT_RESOURCE_TYPE, "AudioStream"));
 			Ref<AudioStream> audio_stream = animation->audio_track_get_key_stream(track, key);
 			String hint_string = vformat("0,%.4f,0.0001,or_greater", audio_stream.is_valid() ? audio_stream->get_length() : 3600.0);
-			p_list->push_back(PropertyInfo(Variant::FLOAT, PNAME("start_offset"), PROPERTY_HINT_RANGE, hint_string));
-			p_list->push_back(PropertyInfo(Variant::FLOAT, PNAME("end_offset"), PROPERTY_HINT_RANGE, hint_string));
+			p_list->push_back(PropertyInfo(Variant::FLOAT, PNAME("start_offset"), PropertyHint::HINT_RANGE, hint_string));
+			p_list->push_back(PropertyInfo(Variant::FLOAT, PNAME("end_offset"), PropertyHint::HINT_RANGE, hint_string));
 
 		} break;
 		case Animation::TYPE_ANIMATION: {
@@ -662,13 +662,13 @@ void AnimationTrackKeyEdit::_get_property_list(List<PropertyInfo> *p_list) const
 			}
 			animations += "[stop]";
 
-			p_list->push_back(PropertyInfo(Variant::STRING_NAME, PNAME("animation"), PROPERTY_HINT_ENUM, animations));
+			p_list->push_back(PropertyInfo(Variant::STRING_NAME, PNAME("animation"), PropertyHint::HINT_ENUM, animations));
 
 		} break;
 	}
 
 	if (animation->track_get_type(track) == Animation::TYPE_VALUE) {
-		p_list->push_back(PropertyInfo(Variant::FLOAT, PNAME("easing"), PROPERTY_HINT_EXP_EASING));
+		p_list->push_back(PropertyInfo(Variant::FLOAT, PNAME("easing"), PropertyHint::HINT_EXP_EASING));
 	}
 }
 
@@ -1187,14 +1187,14 @@ void AnimationMultiTrackKeyEdit::_get_property_list(List<PropertyInfo> *p_list) 
 						pi.name = "value";
 						p_list->push_back(pi);
 					} else {
-						PropertyHint val_hint = PROPERTY_HINT_NONE;
+						PropertyHint val_hint = PropertyHint::HINT_NONE;
 						String val_hint_string;
 
 						if (v.get_type() == Variant::OBJECT) {
 							// Could actually check the object property if exists..? Yes I will!
 							Ref<Resource> res = v;
 							if (res.is_valid()) {
-								val_hint = PROPERTY_HINT_RESOURCE_TYPE;
+								val_hint = PropertyHint::HINT_RESOURCE_TYPE;
 								val_hint_string = res->get_class();
 							}
 						}
@@ -1205,12 +1205,12 @@ void AnimationMultiTrackKeyEdit::_get_property_list(List<PropertyInfo> *p_list) 
 					}
 				}
 
-				p_list->push_back(PropertyInfo(Variant::FLOAT, "easing", PROPERTY_HINT_EXP_EASING));
+				p_list->push_back(PropertyInfo(Variant::FLOAT, "easing", PropertyHint::HINT_EXP_EASING));
 			} break;
 			case Animation::TYPE_METHOD: {
 				p_list->push_back(PropertyInfo(Variant::STRING_NAME, "name"));
 
-				p_list->push_back(PropertyInfo(Variant::INT, "arg_count", PROPERTY_HINT_RANGE, "0,32,1,or_greater"));
+				p_list->push_back(PropertyInfo(Variant::INT, "arg_count", PropertyHint::HINT_RANGE, "0,32,1,or_greater"));
 
 				Dictionary d = animation->track_get_key_value(first_track, first_key);
 				ERR_FAIL_COND(!d.has("args"));
@@ -1224,7 +1224,7 @@ void AnimationMultiTrackKeyEdit::_get_property_list(List<PropertyInfo> *p_list) 
 				}
 
 				for (int i = 0; i < args.size(); i++) {
-					p_list->push_back(PropertyInfo(Variant::INT, "args/" + itos(i) + "/type", PROPERTY_HINT_ENUM, vtypes));
+					p_list->push_back(PropertyInfo(Variant::INT, "args/" + itos(i) + "/type", PropertyHint::HINT_ENUM, vtypes));
 					if (args[i].get_type() != Variant::NIL) {
 						p_list->push_back(PropertyInfo(args[i].get_type(), "args/" + itos(i) + "/value"));
 					}
@@ -1234,12 +1234,12 @@ void AnimationMultiTrackKeyEdit::_get_property_list(List<PropertyInfo> *p_list) 
 				p_list->push_back(PropertyInfo(Variant::FLOAT, "value"));
 				p_list->push_back(PropertyInfo(Variant::VECTOR2, "in_handle"));
 				p_list->push_back(PropertyInfo(Variant::VECTOR2, "out_handle"));
-				p_list->push_back(PropertyInfo(Variant::INT, "handle_mode", PROPERTY_HINT_ENUM, "Free,Linear,Balanced,Mirrored"));
+				p_list->push_back(PropertyInfo(Variant::INT, "handle_mode", PropertyHint::HINT_ENUM, "Free,Linear,Balanced,Mirrored"));
 			} break;
 			case Animation::TYPE_AUDIO: {
-				p_list->push_back(PropertyInfo(Variant::OBJECT, "stream", PROPERTY_HINT_RESOURCE_TYPE, "AudioStream"));
-				p_list->push_back(PropertyInfo(Variant::FLOAT, "start_offset", PROPERTY_HINT_RANGE, "0,3600,0.0001,or_greater"));
-				p_list->push_back(PropertyInfo(Variant::FLOAT, "end_offset", PROPERTY_HINT_RANGE, "0,3600,0.0001,or_greater"));
+				p_list->push_back(PropertyInfo(Variant::OBJECT, "stream", PropertyHint::HINT_RESOURCE_TYPE, "AudioStream"));
+				p_list->push_back(PropertyInfo(Variant::FLOAT, "start_offset", PropertyHint::HINT_RANGE, "0,3600,0.0001,or_greater"));
+				p_list->push_back(PropertyInfo(Variant::FLOAT, "end_offset", PropertyHint::HINT_RANGE, "0,3600,0.0001,or_greater"));
 			} break;
 			case Animation::TYPE_ANIMATION: {
 				if (key_ofs_map.size() > 1) {
@@ -1268,7 +1268,7 @@ void AnimationMultiTrackKeyEdit::_get_property_list(List<PropertyInfo> *p_list) 
 				}
 				animations += "[stop]";
 
-				p_list->push_back(PropertyInfo(Variant::STRING_NAME, "animation", PROPERTY_HINT_ENUM, animations));
+				p_list->push_back(PropertyInfo(Variant::STRING_NAME, "animation", PropertyHint::HINT_ENUM, animations));
 			} break;
 		}
 	}
@@ -9269,8 +9269,8 @@ void AnimationMarkerKeyEdit::_get_property_list(List<PropertyInfo> *p_list) cons
 		return;
 	}
 
-	p_list->push_back(PropertyInfo(Variant::STRING_NAME, "name", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_READ_ONLY | PROPERTY_USAGE_EDITOR));
-	p_list->push_back(PropertyInfo(Variant::COLOR, "color", PROPERTY_HINT_COLOR_NO_ALPHA));
+	p_list->push_back(PropertyInfo(Variant::STRING_NAME, "name", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_READ_ONLY | PROPERTY_USAGE_EDITOR));
+	p_list->push_back(PropertyInfo(Variant::COLOR, "color", PropertyHint::HINT_COLOR_NO_ALPHA));
 }
 
 void AnimationMultiMarkerKeyEdit::_bind_methods() {
@@ -9316,7 +9316,7 @@ void AnimationMultiMarkerKeyEdit::_get_property_list(List<PropertyInfo> *p_list)
 		return;
 	}
 
-	p_list->push_back(PropertyInfo(Variant::COLOR, "color", PROPERTY_HINT_COLOR_NO_ALPHA));
+	p_list->push_back(PropertyInfo(Variant::COLOR, "color", PropertyHint::HINT_COLOR_NO_ALPHA));
 }
 
 // AnimationMarkerKeyEditEditorPlugin

@@ -145,7 +145,7 @@ PropertyInfo Script::get_class_category() const {
 		}
 	}
 
-	return PropertyInfo(Variant::NIL, scr_name, PROPERTY_HINT_NONE, path, PROPERTY_USAGE_CATEGORY);
+	return PropertyInfo(Variant::NIL, scr_name, PropertyHint::HINT_NONE, path, PROPERTY_USAGE_CATEGORY);
 }
 
 #endif // TOOLS_ENABLED
@@ -177,7 +177,7 @@ void Script::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("get_rpc_config"), &Script::get_rpc_config);
 
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "source_code", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_source_code", "get_source_code");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "source_code", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NONE), "set_source_code", "get_source_code");
 }
 
 void Script::reload_from_file() {
@@ -853,10 +853,10 @@ void PlaceHolderScriptInstance::property_set_fallback(const StringName &p_name, 
 			}
 		}
 		if (!found) {
-			PropertyHint hint = PROPERTY_HINT_NONE;
+			PropertyHint hint = PropertyHint::HINT_NONE;
 			const Object *obj = p_value.get_validated_object();
 			if (obj && obj->is_class("Node")) {
-				hint = PROPERTY_HINT_NODE_TYPE;
+				hint = PropertyHint::HINT_NODE_TYPE;
 			}
 			properties.push_back(PropertyInfo(p_value.get_type(), p_name, hint, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_SCRIPT_VARIABLE));
 		}

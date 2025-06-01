@@ -163,7 +163,7 @@ class SceneImportSettingsData : public Object {
 				default:
 					break;
 			}
-			r_option.hint = PROPERTY_HINT_ENUM;
+			r_option.hint = PropertyHint::HINT_ENUM;
 			r_option.hint_string = hint_string;
 		}
 	}

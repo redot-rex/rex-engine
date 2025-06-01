@@ -50,13 +50,13 @@ protected:
 		ClassDB::bind_method(D_METHOD("set_reference_property", "reference_property"), &_TestInstancePlaceholderNode::set_reference_property);
 		ClassDB::bind_method(D_METHOD("get_reference_property"), &_TestInstancePlaceholderNode::get_reference_property);
 
-		ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "reference_property", PROPERTY_HINT_NODE_TYPE), "set_reference_property", "get_reference_property");
+		ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "reference_property", PropertyHint::HINT_NODE_TYPE), "set_reference_property", "get_reference_property");
 
 		ClassDB::bind_method(D_METHOD("set_reference_array_property", "reference_array_property"), &_TestInstancePlaceholderNode::set_reference_array_property);
 		ClassDB::bind_method(D_METHOD("get_reference_array_property"), &_TestInstancePlaceholderNode::get_reference_array_property);
 
 		// The hint string value "24/34:Node" is determined from existing PackedScenes with typed Array properties.
-		ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "reference_array_property", PROPERTY_HINT_TYPE_STRING, "24/34:Node"), "set_reference_array_property", "get_reference_array_property");
+		ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "reference_array_property", PropertyHint::HINT_TYPE_STRING, "24/34:Node"), "set_reference_array_property", "get_reference_array_property");
 	}
 
 public:

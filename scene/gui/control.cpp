@@ -403,7 +403,7 @@ void Control::_get_property_list(List<PropertyInfo> *p_list) const {
 	List<ThemeDB::ThemeItemBind> theme_items;
 	ThemeDB::get_singleton()->get_class_items(get_class_name(), &theme_items, true);
 
-	p_list->push_back(PropertyInfo(Variant::NIL, GNAME("Theme Overrides", "theme_override_"), PROPERTY_HINT_NONE, "theme_override_", PROPERTY_USAGE_GROUP));
+	p_list->push_back(PropertyInfo(Variant::NIL, GNAME("Theme Overrides", "theme_override_"), PropertyHint::HINT_NONE, "theme_override_", PROPERTY_USAGE_GROUP));
 
 	for (const ThemeDB::ThemeItemBind &E : theme_items) {
 		uint32_t usage = PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_CHECKABLE;
@@ -413,42 +413,42 @@ void Control::_get_property_list(List<PropertyInfo> *p_list) const {
 				if (data.theme_color_override.has(E.item_name)) {
 					usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
 				}
-				p_list->push_back(PropertyInfo(Variant::COLOR, PNAME("theme_override_colors") + String("/") + E.item_name, PROPERTY_HINT_NONE, "", usage));
+				p_list->push_back(PropertyInfo(Variant::COLOR, PNAME("theme_override_colors") + String("/") + E.item_name, PropertyHint::HINT_NONE, "", usage));
 			} break;
 
 			case Theme::DATA_TYPE_CONSTANT: {
 				if (data.theme_constant_override.has(E.item_name)) {
 					usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
 				}
-				p_list->push_back(PropertyInfo(Variant::INT, PNAME("theme_override_constants") + String("/") + E.item_name, PROPERTY_HINT_RANGE, "-16384,16384", usage));
+				p_list->push_back(PropertyInfo(Variant::INT, PNAME("theme_override_constants") + String("/") + E.item_name, PropertyHint::HINT_RANGE, "-16384,16384", usage));
 			} break;
 
 			case Theme::DATA_TYPE_FONT: {
 				if (data.theme_font_override.has(E.item_name)) {
 					usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
 				}
-				p_list->push_back(PropertyInfo(Variant::OBJECT, PNAME("theme_override_fonts") + String("/") + E.item_name, PROPERTY_HINT_RESOURCE_TYPE, "Font", usage));
+				p_list->push_back(PropertyInfo(Variant::OBJECT, PNAME("theme_override_fonts") + String("/") + E.item_name, PropertyHint::HINT_RESOURCE_TYPE, "Font", usage));
 			} break;
 
 			case Theme::DATA_TYPE_FONT_SIZE: {
 				if (data.theme_font_size_override.has(E.item_name)) {
 					usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
 				}
-				p_list->push_back(PropertyInfo(Variant::INT, PNAME("theme_override_font_sizes") + String("/") + E.item_name, PROPERTY_HINT_RANGE, "1,256,1,or_greater,suffix:px", usage));
+				p_list->push_back(PropertyInfo(Variant::INT, PNAME("theme_override_font_sizes") + String("/") + E.item_name, PropertyHint::HINT_RANGE, "1,256,1,or_greater,suffix:px", usage));
 			} break;
 
 			case Theme::DATA_TYPE_ICON: {
 				if (data.theme_icon_override.has(E.item_name)) {
 					usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
 				}
-				p_list->push_back(PropertyInfo(Variant::OBJECT, PNAME("theme_override_icons") + String("/") + E.item_name, PROPERTY_HINT_RESOURCE_TYPE, "Texture2D", usage));
+				p_list->push_back(PropertyInfo(Variant::OBJECT, PNAME("theme_override_icons") + String("/") + E.item_name, PropertyHint::HINT_RESOURCE_TYPE, "Texture2D", usage));
 			} break;
 
 			case Theme::DATA_TYPE_STYLEBOX: {
 				if (data.theme_style_override.has(E.item_name)) {
 					usage |= PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_CHECKED;
 				}
-				p_list->push_back(PropertyInfo(Variant::OBJECT, PNAME("theme_override_styles") + String("/") + E.item_name, PROPERTY_HINT_RESOURCE_TYPE, "StyleBox", usage));
+				p_list->push_back(PropertyInfo(Variant::OBJECT, PNAME("theme_override_styles") + String("/") + E.item_name, PropertyHint::HINT_RESOURCE_TYPE, "StyleBox", usage));
 			} break;
 
 			default: {
@@ -494,7 +494,7 @@ void Control::_validate_property(PropertyInfo &p_property) const {
 	}
 
 	if (p_property.name == "scale") {
-		p_property.hint = PROPERTY_HINT_LINK;
+		p_property.hint = PropertyHint::HINT_LINK;
 	}
 
 	// Validate which positioning properties should be displayed depending on the parent and the layout mode.
@@ -3987,9 +3987,9 @@ void Control::_bind_methods() {
 
 	ADD_GROUP("Layout", "");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "clip_contents"), "set_clip_contents", "is_clipping_contents");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "custom_minimum_size", PROPERTY_HINT_NONE, "suffix:px"), "set_custom_minimum_size", "get_custom_minimum_size");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "layout_direction", PROPERTY_HINT_ENUM, "Inherited,Based on Application Locale,Left-to-Right,Right-to-Left,Based on System Locale"), "set_layout_direction", "get_layout_direction");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "layout_mode", PROPERTY_HINT_ENUM, "Position,Anchors,Container,Uncontrolled", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_INTERNAL), "_set_layout_mode", "_get_layout_mode");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "custom_minimum_size", PropertyHint::HINT_NONE, "suffix:px"), "set_custom_minimum_size", "get_custom_minimum_size");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "layout_direction", PropertyHint::HINT_ENUM, "Inherited,Based on Application Locale,Left-to-Right,Right-to-Left,Based on System Locale"), "set_layout_direction", "get_layout_direction");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "layout_mode", PropertyHint::HINT_ENUM, "Position,Anchors,Container,Uncontrolled", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_INTERNAL), "_set_layout_mode", "_get_layout_mode");
 	ADD_PROPERTY_DEFAULT("layout_mode", LayoutMode::LAYOUT_MODE_POSITION);
 
 	constexpr struct {
@@ -4024,72 +4024,72 @@ void Control::_bind_methods() {
 	}
 	const String anchors_presets_options = builder.as_string();
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "anchors_preset", PROPERTY_HINT_ENUM, anchors_presets_options, PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_INTERNAL), "_set_anchors_layout_preset", "_get_anchors_layout_preset");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "anchors_preset", PropertyHint::HINT_ENUM, anchors_presets_options, PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_INTERNAL), "_set_anchors_layout_preset", "_get_anchors_layout_preset");
 	ADD_PROPERTY_DEFAULT("anchors_preset", -1);
 
 	ADD_SUBGROUP_INDENT("Anchor Points", "anchor_", 1);
-	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "anchor_left", PROPERTY_HINT_RANGE, "0,1,0.001,or_less,or_greater"), "_set_anchor", "get_anchor", SIDE_LEFT);
-	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "anchor_top", PROPERTY_HINT_RANGE, "0,1,0.001,or_less,or_greater"), "_set_anchor", "get_anchor", SIDE_TOP);
-	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "anchor_right", PROPERTY_HINT_RANGE, "0,1,0.001,or_less,or_greater"), "_set_anchor", "get_anchor", SIDE_RIGHT);
-	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "anchor_bottom", PROPERTY_HINT_RANGE, "0,1,0.001,or_less,or_greater"), "_set_anchor", "get_anchor", SIDE_BOTTOM);
+	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "anchor_left", PropertyHint::HINT_RANGE, "0,1,0.001,or_less,or_greater"), "_set_anchor", "get_anchor", SIDE_LEFT);
+	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "anchor_top", PropertyHint::HINT_RANGE, "0,1,0.001,or_less,or_greater"), "_set_anchor", "get_anchor", SIDE_TOP);
+	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "anchor_right", PropertyHint::HINT_RANGE, "0,1,0.001,or_less,or_greater"), "_set_anchor", "get_anchor", SIDE_RIGHT);
+	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "anchor_bottom", PropertyHint::HINT_RANGE, "0,1,0.001,or_less,or_greater"), "_set_anchor", "get_anchor", SIDE_BOTTOM);
 
 	ADD_SUBGROUP_INDENT("Anchor Offsets", "offset_", 1);
-	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "offset_left", PROPERTY_HINT_RANGE, "-4096,4096,1,or_less,or_greater,suffix:px"), "set_offset", "get_offset", SIDE_LEFT);
-	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "offset_top", PROPERTY_HINT_RANGE, "-4096,4096,1,or_less,or_greater,suffix:px"), "set_offset", "get_offset", SIDE_TOP);
-	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "offset_right", PROPERTY_HINT_RANGE, "-4096,4096,1,or_less,or_greater,suffix:px"), "set_offset", "get_offset", SIDE_RIGHT);
-	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "offset_bottom", PROPERTY_HINT_RANGE, "-4096,4096,1,or_less,or_greater,suffix:px"), "set_offset", "get_offset", SIDE_BOTTOM);
+	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "offset_left", PropertyHint::HINT_RANGE, "-4096,4096,1,or_less,or_greater,suffix:px"), "set_offset", "get_offset", SIDE_LEFT);
+	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "offset_top", PropertyHint::HINT_RANGE, "-4096,4096,1,or_less,or_greater,suffix:px"), "set_offset", "get_offset", SIDE_TOP);
+	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "offset_right", PropertyHint::HINT_RANGE, "-4096,4096,1,or_less,or_greater,suffix:px"), "set_offset", "get_offset", SIDE_RIGHT);
+	ADD_PROPERTYI(PropertyInfo(Variant::FLOAT, "offset_bottom", PropertyHint::HINT_RANGE, "-4096,4096,1,or_less,or_greater,suffix:px"), "set_offset", "get_offset", SIDE_BOTTOM);
 
 	ADD_SUBGROUP_INDENT("Grow Direction", "grow_", 1);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "grow_horizontal", PROPERTY_HINT_ENUM, "Left,Right,Both"), "set_h_grow_direction", "get_h_grow_direction");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "grow_vertical", PROPERTY_HINT_ENUM, "Top,Bottom,Both"), "set_v_grow_direction", "get_v_grow_direction");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "grow_horizontal", PropertyHint::HINT_ENUM, "Left,Right,Both"), "set_h_grow_direction", "get_h_grow_direction");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "grow_vertical", PropertyHint::HINT_ENUM, "Top,Bottom,Both"), "set_v_grow_direction", "get_v_grow_direction");
 
 	ADD_SUBGROUP("Transform", "");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "size", PROPERTY_HINT_NONE, "suffix:px", PROPERTY_USAGE_EDITOR), "_set_size", "get_size");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "position", PROPERTY_HINT_NONE, "suffix:px", PROPERTY_USAGE_EDITOR), "_set_position", "get_position");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "global_position", PROPERTY_HINT_NONE, "suffix:px", PROPERTY_USAGE_NONE), "_set_global_position", "get_global_position");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "rotation", PROPERTY_HINT_RANGE, "-360,360,0.1,or_less,or_greater,radians_as_degrees"), "set_rotation", "get_rotation");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "rotation_degrees", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_rotation_degrees", "get_rotation_degrees");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "size", PropertyHint::HINT_NONE, "suffix:px", PROPERTY_USAGE_EDITOR), "_set_size", "get_size");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "position", PropertyHint::HINT_NONE, "suffix:px", PROPERTY_USAGE_EDITOR), "_set_position", "get_position");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "global_position", PropertyHint::HINT_NONE, "suffix:px", PROPERTY_USAGE_NONE), "_set_global_position", "get_global_position");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "rotation", PropertyHint::HINT_RANGE, "-360,360,0.1,or_less,or_greater,radians_as_degrees"), "set_rotation", "get_rotation");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "rotation_degrees", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NONE), "set_rotation_degrees", "get_rotation_degrees");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "scale"), "set_scale", "get_scale");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "pivot_offset", PROPERTY_HINT_NONE, "suffix:px"), "set_pivot_offset", "get_pivot_offset");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "pivot_offset", PropertyHint::HINT_NONE, "suffix:px"), "set_pivot_offset", "get_pivot_offset");
 
 	ADD_SUBGROUP("Container Sizing", "size_flags_");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "size_flags_horizontal", PROPERTY_HINT_FLAGS, "Fill:1,Expand:2,Shrink Center:4,Shrink End:8"), "set_h_size_flags", "get_h_size_flags");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "size_flags_vertical", PROPERTY_HINT_FLAGS, "Fill:1,Expand:2,Shrink Center:4,Shrink End:8"), "set_v_size_flags", "get_v_size_flags");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "size_flags_stretch_ratio", PROPERTY_HINT_RANGE, "0,20,0.01,or_greater"), "set_stretch_ratio", "get_stretch_ratio");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "size_flags_horizontal", PropertyHint::HINT_FLAGS, "Fill:1,Expand:2,Shrink Center:4,Shrink End:8"), "set_h_size_flags", "get_h_size_flags");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "size_flags_vertical", PropertyHint::HINT_FLAGS, "Fill:1,Expand:2,Shrink Center:4,Shrink End:8"), "set_v_size_flags", "get_v_size_flags");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "size_flags_stretch_ratio", PropertyHint::HINT_RANGE, "0,20,0.01,or_greater"), "set_stretch_ratio", "get_stretch_ratio");
 
 	ADD_GROUP("Localization", "");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "localize_numeral_system"), "set_localize_numeral_system", "is_localizing_numeral_system");
 
 #ifndef DISABLE_DEPRECATED
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "auto_translate", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_auto_translate", "is_auto_translating");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "auto_translate", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NONE), "set_auto_translate", "is_auto_translating");
 #endif // DISABLE_DEPRECATED
 
 	ADD_GROUP("Tooltip", "tooltip_");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "tooltip_text", PROPERTY_HINT_MULTILINE_TEXT), "set_tooltip_text", "get_tooltip_text");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "tooltip_auto_translate_mode", PROPERTY_HINT_ENUM, "Inherit,Always,Disabled"), "set_tooltip_auto_translate_mode", "get_tooltip_auto_translate_mode");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "tooltip_text", PropertyHint::HINT_MULTILINE_TEXT), "set_tooltip_text", "get_tooltip_text");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "tooltip_auto_translate_mode", PropertyHint::HINT_ENUM, "Inherit,Always,Disabled"), "set_tooltip_auto_translate_mode", "get_tooltip_auto_translate_mode");
 
 	ADD_GROUP("Focus", "focus_");
-	ADD_PROPERTYI(PropertyInfo(Variant::NODE_PATH, "focus_neighbor_left", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_neighbor", "get_focus_neighbor", SIDE_LEFT);
-	ADD_PROPERTYI(PropertyInfo(Variant::NODE_PATH, "focus_neighbor_top", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_neighbor", "get_focus_neighbor", SIDE_TOP);
-	ADD_PROPERTYI(PropertyInfo(Variant::NODE_PATH, "focus_neighbor_right", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_neighbor", "get_focus_neighbor", SIDE_RIGHT);
-	ADD_PROPERTYI(PropertyInfo(Variant::NODE_PATH, "focus_neighbor_bottom", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_neighbor", "get_focus_neighbor", SIDE_BOTTOM);
-	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "focus_next", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_next", "get_focus_next");
-	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "focus_previous", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_previous", "get_focus_previous");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "focus_mode", PROPERTY_HINT_ENUM, "None,Click,All,Accessibility"), "set_focus_mode", "get_focus_mode");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "focus_behavior_recursive", PROPERTY_HINT_ENUM, "Inherited,Disabled,Enabled"), "set_focus_behavior_recursive", "get_focus_behavior_recursive");
+	ADD_PROPERTYI(PropertyInfo(Variant::NODE_PATH, "focus_neighbor_left", PropertyHint::HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_neighbor", "get_focus_neighbor", SIDE_LEFT);
+	ADD_PROPERTYI(PropertyInfo(Variant::NODE_PATH, "focus_neighbor_top", PropertyHint::HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_neighbor", "get_focus_neighbor", SIDE_TOP);
+	ADD_PROPERTYI(PropertyInfo(Variant::NODE_PATH, "focus_neighbor_right", PropertyHint::HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_neighbor", "get_focus_neighbor", SIDE_RIGHT);
+	ADD_PROPERTYI(PropertyInfo(Variant::NODE_PATH, "focus_neighbor_bottom", PropertyHint::HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_neighbor", "get_focus_neighbor", SIDE_BOTTOM);
+	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "focus_next", PropertyHint::HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_next", "get_focus_next");
+	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "focus_previous", PropertyHint::HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_previous", "get_focus_previous");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "focus_mode", PropertyHint::HINT_ENUM, "None,Click,All,Accessibility"), "set_focus_mode", "get_focus_mode");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "focus_behavior_recursive", PropertyHint::HINT_ENUM, "Inherited,Disabled,Enabled"), "set_focus_behavior_recursive", "get_focus_behavior_recursive");
 
 	ADD_GROUP("Mouse", "mouse_");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "mouse_filter", PROPERTY_HINT_ENUM, "Stop,Pass (Propagate Up),Ignore"), "set_mouse_filter", "get_mouse_filter");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "mouse_behavior_recursive", PROPERTY_HINT_ENUM, "Inherited,Disabled,Enabled"), "set_mouse_behavior_recursive", "get_mouse_behavior_recursive");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "mouse_filter", PropertyHint::HINT_ENUM, "Stop,Pass (Propagate Up),Ignore"), "set_mouse_filter", "get_mouse_filter");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "mouse_behavior_recursive", PropertyHint::HINT_ENUM, "Inherited,Disabled,Enabled"), "set_mouse_behavior_recursive", "get_mouse_behavior_recursive");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "mouse_force_pass_scroll_events"), "set_force_pass_scroll_events", "is_force_pass_scroll_events");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "mouse_default_cursor_shape", PROPERTY_HINT_ENUM, "Arrow,I-Beam,Pointing Hand,Cross,Wait,Busy,Drag,Can Drop,Forbidden,Vertical Resize,Horizontal Resize,Secondary Diagonal Resize,Main Diagonal Resize,Move,Vertical Split,Horizontal Split,Help"), "set_default_cursor_shape", "get_default_cursor_shape");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "mouse_default_cursor_shape", PropertyHint::HINT_ENUM, "Arrow,I-Beam,Pointing Hand,Cross,Wait,Busy,Drag,Can Drop,Forbidden,Vertical Resize,Horizontal Resize,Secondary Diagonal Resize,Main Diagonal Resize,Move,Vertical Split,Horizontal Split,Help"), "set_default_cursor_shape", "get_default_cursor_shape");
 
 	ADD_GROUP("Input", "");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "shortcut_context", PROPERTY_HINT_NODE_TYPE, "Node"), "set_shortcut_context", "get_shortcut_context");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "shortcut_context", PropertyHint::HINT_NODE_TYPE, "Node"), "set_shortcut_context", "get_shortcut_context");
 
 	ADD_GROUP("Theme", "theme_");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "theme", PROPERTY_HINT_RESOURCE_TYPE, "Theme"), "set_theme", "get_theme");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "theme_type_variation", PROPERTY_HINT_ENUM_SUGGESTION), "set_theme_type_variation", "get_theme_type_variation");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "theme", PropertyHint::HINT_RESOURCE_TYPE, "Theme"), "set_theme", "get_theme");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "theme_type_variation", PropertyHint::HINT_ENUM_SUGGESTION), "set_theme_type_variation", "get_theme_type_variation");
 
 	BIND_ENUM_CONSTANT(FOCUS_NONE);
 	BIND_ENUM_CONSTANT(FOCUS_CLICK);
@@ -4190,7 +4190,7 @@ void Control::_bind_methods() {
 	BIND_ENUM_CONSTANT(TEXT_DIRECTION_RTL);
 
 	ADD_SIGNAL(MethodInfo("resized"));
-	ADD_SIGNAL(MethodInfo("gui_input", PropertyInfo(Variant::OBJECT, "event", PROPERTY_HINT_RESOURCE_TYPE, "InputEvent")));
+	ADD_SIGNAL(MethodInfo("gui_input", PropertyInfo(Variant::OBJECT, "event", PropertyHint::HINT_RESOURCE_TYPE, "InputEvent")));
 	ADD_SIGNAL(MethodInfo("mouse_entered"));
 	ADD_SIGNAL(MethodInfo("mouse_exited"));
 	ADD_SIGNAL(MethodInfo("focus_entered"));

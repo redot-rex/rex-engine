@@ -80,7 +80,7 @@ void VisualShaderNodeVectorBase::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_op_type", "type"), &VisualShaderNodeVectorBase::set_op_type);
 	ClassDB::bind_method(D_METHOD("get_op_type"), &VisualShaderNodeVectorBase::get_op_type);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PROPERTY_HINT_ENUM, "Vector2,Vector3,Vector4"), "set_op_type", "get_op_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PropertyHint::HINT_ENUM, "Vector2,Vector3,Vector4"), "set_op_type", "get_op_type");
 
 	BIND_ENUM_CONSTANT(OP_TYPE_VECTOR_2D);
 	BIND_ENUM_CONSTANT(OP_TYPE_VECTOR_3D);
@@ -604,7 +604,7 @@ void VisualShaderNodeVec4Constant::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_get_constant_v4"), &VisualShaderNodeVec4Constant::_get_constant_v4);
 
 	ADD_PROPERTY(PropertyInfo(Variant::QUATERNION, "constant"), "set_constant", "get_constant");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR4, "constant_v4", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_INTERNAL), "_set_constant_v4", "_get_constant_v4");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR4, "constant_v4", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_INTERNAL), "_set_constant_v4", "_get_constant_v4");
 }
 
 VisualShaderNodeVec4Constant::VisualShaderNodeVec4Constant() {
@@ -1030,9 +1030,9 @@ void VisualShaderNodeTexture::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_texture_type", "value"), &VisualShaderNodeTexture::set_texture_type);
 	ClassDB::bind_method(D_METHOD("get_texture_type"), &VisualShaderNodeTexture::get_texture_type);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "source", PROPERTY_HINT_ENUM, "Texture,Screen,Texture2D,NormalMap2D,Depth,SamplerPort,Normal3D,Roughness"), "set_source", "get_source");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture", "get_texture");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_type", PROPERTY_HINT_ENUM, "Data,Color,Normal Map"), "set_texture_type", "get_texture_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "source", PropertyHint::HINT_ENUM, "Texture,Screen,Texture2D,NormalMap2D,Depth,SamplerPort,Normal3D,Roughness"), "set_source", "get_source");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PropertyHint::HINT_RESOURCE_TYPE, "Texture2D"), "set_texture", "get_texture");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_type", PropertyHint::HINT_ENUM, "Data,Color,Normal Map"), "set_texture_type", "get_texture_type");
 
 	BIND_ENUM_CONSTANT(SOURCE_TEXTURE);
 	BIND_ENUM_CONSTANT(SOURCE_SCREEN);
@@ -1125,7 +1125,7 @@ void VisualShaderNodeCurveTexture::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_texture", "texture"), &VisualShaderNodeCurveTexture::set_texture);
 	ClassDB::bind_method(D_METHOD("get_texture"), &VisualShaderNodeCurveTexture::get_texture);
 
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "CurveTexture"), "set_texture", "get_texture");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PropertyHint::HINT_RESOURCE_TYPE, "CurveTexture"), "set_texture", "get_texture");
 }
 
 bool VisualShaderNodeCurveTexture::is_use_prop_slots() const {
@@ -1210,7 +1210,7 @@ void VisualShaderNodeCurveXYZTexture::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_texture", "texture"), &VisualShaderNodeCurveXYZTexture::set_texture);
 	ClassDB::bind_method(D_METHOD("get_texture"), &VisualShaderNodeCurveXYZTexture::get_texture);
 
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "CurveXYZTexture"), "set_texture", "get_texture");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PropertyHint::HINT_RESOURCE_TYPE, "CurveXYZTexture"), "set_texture", "get_texture");
 }
 
 bool VisualShaderNodeCurveXYZTexture::is_use_prop_slots() const {
@@ -1319,7 +1319,7 @@ void VisualShaderNodeSample3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_source", "value"), &VisualShaderNodeSample3D::set_source);
 	ClassDB::bind_method(D_METHOD("get_source"), &VisualShaderNodeSample3D::get_source);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "source", PROPERTY_HINT_ENUM, "Texture,SamplerPort"), "set_source", "get_source");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "source", PropertyHint::HINT_ENUM, "Texture,SamplerPort"), "set_source", "get_source");
 
 	BIND_ENUM_CONSTANT(SOURCE_TEXTURE);
 	BIND_ENUM_CONSTANT(SOURCE_PORT);
@@ -1388,7 +1388,7 @@ void VisualShaderNodeTexture2DArray::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_texture_array", "value"), &VisualShaderNodeTexture2DArray::set_texture_array);
 	ClassDB::bind_method(D_METHOD("get_texture_array"), &VisualShaderNodeTexture2DArray::get_texture_array);
 
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture_array", PROPERTY_HINT_RESOURCE_TYPE, "Texture2DArray,CompressedTexture2DArray,PlaceholderTexture2DArray,Texture2DArrayRD"), "set_texture_array", "get_texture_array");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture_array", PropertyHint::HINT_RESOURCE_TYPE, "Texture2DArray,CompressedTexture2DArray,PlaceholderTexture2DArray,Texture2DArrayRD"), "set_texture_array", "get_texture_array");
 }
 
 VisualShaderNodeTexture2DArray::VisualShaderNodeTexture2DArray() {
@@ -1445,7 +1445,7 @@ void VisualShaderNodeTexture3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_texture", "value"), &VisualShaderNodeTexture3D::set_texture);
 	ClassDB::bind_method(D_METHOD("get_texture"), &VisualShaderNodeTexture3D::get_texture);
 
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture3D"), "set_texture", "get_texture");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PropertyHint::HINT_RESOURCE_TYPE, "Texture3D"), "set_texture", "get_texture");
 }
 
 VisualShaderNodeTexture3D::VisualShaderNodeTexture3D() {
@@ -1630,9 +1630,9 @@ void VisualShaderNodeCubemap::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_texture_type", "value"), &VisualShaderNodeCubemap::set_texture_type);
 	ClassDB::bind_method(D_METHOD("get_texture_type"), &VisualShaderNodeCubemap::get_texture_type);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "source", PROPERTY_HINT_ENUM, "Texture,SamplerPort"), "set_source", "get_source");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "cube_map", PROPERTY_HINT_RESOURCE_TYPE, "Cubemap,CompressedCubemap,PlaceholderCubemap,TextureCubemapRD"), "set_cube_map", "get_cube_map");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_type", PROPERTY_HINT_ENUM, "Data,Color,Normal Map"), "set_texture_type", "get_texture_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "source", PropertyHint::HINT_ENUM, "Texture,SamplerPort"), "set_source", "get_source");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "cube_map", PropertyHint::HINT_RESOURCE_TYPE, "Cubemap,CompressedCubemap,PlaceholderCubemap,TextureCubemapRD"), "set_cube_map", "get_cube_map");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_type", PropertyHint::HINT_ENUM, "Data,Color,Normal Map"), "set_texture_type", "get_texture_type");
 
 	BIND_ENUM_CONSTANT(SOURCE_TEXTURE);
 	BIND_ENUM_CONSTANT(SOURCE_PORT);
@@ -1929,7 +1929,7 @@ void VisualShaderNodeFloatOp::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_operator", "op"), &VisualShaderNodeFloatOp::set_operator);
 	ClassDB::bind_method(D_METHOD("get_operator"), &VisualShaderNodeFloatOp::get_operator);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "operator", PROPERTY_HINT_ENUM, "Add,Subtract,Multiply,Divide,Remainder,Power,Max,Min,ATan2,Step"), "set_operator", "get_operator");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "operator", PropertyHint::HINT_ENUM, "Add,Subtract,Multiply,Divide,Remainder,Power,Max,Min,ATan2,Step"), "set_operator", "get_operator");
 
 	BIND_ENUM_CONSTANT(OP_ADD);
 	BIND_ENUM_CONSTANT(OP_SUB);
@@ -2048,7 +2048,7 @@ void VisualShaderNodeIntOp::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_operator", "op"), &VisualShaderNodeIntOp::set_operator);
 	ClassDB::bind_method(D_METHOD("get_operator"), &VisualShaderNodeIntOp::get_operator);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "operator", PROPERTY_HINT_ENUM, "Add,Subtract,Multiply,Divide,Remainder,Max,Min,Bitwise AND,Bitwise OR,Bitwise XOR,Bitwise Left Shift,Bitwise Right Shift"), "set_operator", "get_operator");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "operator", PropertyHint::HINT_ENUM, "Add,Subtract,Multiply,Divide,Remainder,Max,Min,Bitwise AND,Bitwise OR,Bitwise XOR,Bitwise Left Shift,Bitwise Right Shift"), "set_operator", "get_operator");
 
 	BIND_ENUM_CONSTANT(OP_ADD);
 	BIND_ENUM_CONSTANT(OP_SUB);
@@ -2169,7 +2169,7 @@ void VisualShaderNodeUIntOp::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_operator", "op"), &VisualShaderNodeUIntOp::set_operator);
 	ClassDB::bind_method(D_METHOD("get_operator"), &VisualShaderNodeUIntOp::get_operator);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "operator", PROPERTY_HINT_ENUM, "Add,Subtract,Multiply,Divide,Remainder,Max,Min,Bitwise AND,Bitwise OR,Bitwise XOR,Bitwise Left Shift,Bitwise Right Shift"), "set_operator", "get_operator");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "operator", PropertyHint::HINT_ENUM, "Add,Subtract,Multiply,Divide,Remainder,Max,Min,Bitwise AND,Bitwise OR,Bitwise XOR,Bitwise Left Shift,Bitwise Right Shift"), "set_operator", "get_operator");
 
 	BIND_ENUM_CONSTANT(OP_ADD);
 	BIND_ENUM_CONSTANT(OP_SUB);
@@ -2329,7 +2329,7 @@ void VisualShaderNodeVectorOp::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_operator", "op"), &VisualShaderNodeVectorOp::set_operator);
 	ClassDB::bind_method(D_METHOD("get_operator"), &VisualShaderNodeVectorOp::get_operator);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "operator", PROPERTY_HINT_ENUM, "Add,Subtract,Multiply,Divide,Remainder,Power,Max,Min,Cross,ATan2,Reflect,Step"), "set_operator", "get_operator");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "operator", PropertyHint::HINT_ENUM, "Add,Subtract,Multiply,Divide,Remainder,Power,Max,Min,Cross,ATan2,Reflect,Step"), "set_operator", "get_operator");
 
 	BIND_ENUM_CONSTANT(OP_ADD);
 	BIND_ENUM_CONSTANT(OP_SUB);
@@ -2522,7 +2522,7 @@ void VisualShaderNodeColorOp::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_operator", "op"), &VisualShaderNodeColorOp::set_operator);
 	ClassDB::bind_method(D_METHOD("get_operator"), &VisualShaderNodeColorOp::get_operator);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "operator", PROPERTY_HINT_ENUM, "Screen,Difference,Darken,Lighten,Overlay,Dodge,Burn,Soft Light,Hard Light"), "set_operator", "get_operator");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "operator", PropertyHint::HINT_ENUM, "Screen,Difference,Darken,Lighten,Overlay,Dodge,Burn,Soft Light,Hard Light"), "set_operator", "get_operator");
 
 	BIND_ENUM_CONSTANT(OP_SCREEN);
 	BIND_ENUM_CONSTANT(OP_DIFFERENCE);
@@ -2619,7 +2619,7 @@ void VisualShaderNodeTransformOp::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_operator", "op"), &VisualShaderNodeTransformOp::set_operator);
 	ClassDB::bind_method(D_METHOD("get_operator"), &VisualShaderNodeTransformOp::get_operator);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "operator", PROPERTY_HINT_ENUM, "A x B,B x A,A x B(per component),B x A(per component),A + B,A - B,B - A,A / B,B / A"), "set_operator", "get_operator");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "operator", PropertyHint::HINT_ENUM, "A x B,B x A,A x B(per component),B x A(per component),A + B,A - B,B - A,A / B,B / A"), "set_operator", "get_operator");
 
 	BIND_ENUM_CONSTANT(OP_AxB);
 	BIND_ENUM_CONSTANT(OP_BxA);
@@ -2703,7 +2703,7 @@ void VisualShaderNodeTransformVecMult::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_operator", "op"), &VisualShaderNodeTransformVecMult::set_operator);
 	ClassDB::bind_method(D_METHOD("get_operator"), &VisualShaderNodeTransformVecMult::get_operator);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "operator", PROPERTY_HINT_ENUM, "A x B,B x A,A x B (3x3),B x A (3x3)"), "set_operator", "get_operator");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "operator", PropertyHint::HINT_ENUM, "A x B,B x A,A x B (3x3),B x A (3x3)"), "set_operator", "get_operator");
 
 	BIND_ENUM_CONSTANT(OP_AxB);
 	BIND_ENUM_CONSTANT(OP_BxA);
@@ -2808,7 +2808,7 @@ void VisualShaderNodeFloatFunc::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_function", "func"), &VisualShaderNodeFloatFunc::set_function);
 	ClassDB::bind_method(D_METHOD("get_function"), &VisualShaderNodeFloatFunc::get_function);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PROPERTY_HINT_ENUM, "Sin,Cos,Tan,ASin,ACos,ATan,SinH,CosH,TanH,Log,Exp,Sqrt,Abs,Sign,Floor,Round,Ceil,Fract,Saturate,Negate,ACosH,ASinH,ATanH,Degrees,Exp2,InverseSqrt,Log2,Radians,Reciprocal,RoundEven,Trunc,OneMinus"), "set_function", "get_function");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PropertyHint::HINT_ENUM, "Sin,Cos,Tan,ASin,ACos,ATan,SinH,CosH,TanH,Log,Exp,Sqrt,Abs,Sign,Floor,Round,Ceil,Fract,Saturate,Negate,ACosH,ASinH,ATanH,Degrees,Exp2,InverseSqrt,Log2,Radians,Reciprocal,RoundEven,Trunc,OneMinus"), "set_function", "get_function");
 
 	BIND_ENUM_CONSTANT(FUNC_SIN);
 	BIND_ENUM_CONSTANT(FUNC_COS);
@@ -2913,7 +2913,7 @@ void VisualShaderNodeIntFunc::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_function", "func"), &VisualShaderNodeIntFunc::set_function);
 	ClassDB::bind_method(D_METHOD("get_function"), &VisualShaderNodeIntFunc::get_function);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PROPERTY_HINT_ENUM, "Abs,Negate,Sign,Bitwise NOT"), "set_function", "get_function");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PropertyHint::HINT_ENUM, "Abs,Negate,Sign,Bitwise NOT"), "set_function", "get_function");
 
 	BIND_ENUM_CONSTANT(FUNC_ABS);
 	BIND_ENUM_CONSTANT(FUNC_NEGATE);
@@ -2988,7 +2988,7 @@ void VisualShaderNodeUIntFunc::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_function", "func"), &VisualShaderNodeUIntFunc::set_function);
 	ClassDB::bind_method(D_METHOD("get_function"), &VisualShaderNodeUIntFunc::get_function);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PROPERTY_HINT_ENUM, "Negate,Bitwise NOT"), "set_function", "get_function");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PropertyHint::HINT_ENUM, "Negate,Bitwise NOT"), "set_function", "get_function");
 
 	BIND_ENUM_CONSTANT(FUNC_NEGATE);
 	BIND_ENUM_CONSTANT(FUNC_BITWISE_NOT);
@@ -3132,7 +3132,7 @@ void VisualShaderNodeVectorFunc::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_function", "func"), &VisualShaderNodeVectorFunc::set_function);
 	ClassDB::bind_method(D_METHOD("get_function"), &VisualShaderNodeVectorFunc::get_function);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PROPERTY_HINT_ENUM, "Normalize,Saturate,Negate,Reciprocal,Abs,ACos,ACosH,ASin,ASinH,ATan,ATanH,Ceil,Cos,CosH,Degrees,Exp,Exp2,Floor,Fract,InverseSqrt,Log,Log2,Radians,Round,RoundEven,Sign,Sin,SinH,Sqrt,Tan,TanH,Trunc,OneMinus"), "set_function", "get_function");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PropertyHint::HINT_ENUM, "Normalize,Saturate,Negate,Reciprocal,Abs,ACos,ACosH,ASin,ASinH,ATan,ATanH,Ceil,Cos,CosH,Degrees,Exp,Exp2,Floor,Fract,InverseSqrt,Log,Log2,Radians,Round,RoundEven,Sign,Sin,SinH,Sqrt,Tan,TanH,Trunc,OneMinus"), "set_function", "get_function");
 
 	BIND_ENUM_CONSTANT(FUNC_NORMALIZE);
 	BIND_ENUM_CONSTANT(FUNC_SATURATE);
@@ -3309,7 +3309,7 @@ void VisualShaderNodeColorFunc::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_function", "func"), &VisualShaderNodeColorFunc::set_function);
 	ClassDB::bind_method(D_METHOD("get_function"), &VisualShaderNodeColorFunc::get_function);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PROPERTY_HINT_ENUM, "Grayscale,HSV2RGB,RGB2HSV,Sepia,LinearToSRGB,SRGBToLinear"), "set_function", "get_function");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PropertyHint::HINT_ENUM, "Grayscale,HSV2RGB,RGB2HSV,Sepia,LinearToSRGB,SRGBToLinear"), "set_function", "get_function");
 
 	BIND_ENUM_CONSTANT(FUNC_GRAYSCALE);
 	BIND_ENUM_CONSTANT(FUNC_HSV2RGB);
@@ -3389,7 +3389,7 @@ void VisualShaderNodeTransformFunc::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_function", "func"), &VisualShaderNodeTransformFunc::set_function);
 	ClassDB::bind_method(D_METHOD("get_function"), &VisualShaderNodeTransformFunc::get_function);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PROPERTY_HINT_ENUM, "Inverse,Transpose"), "set_function", "get_function");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PropertyHint::HINT_ENUM, "Inverse,Transpose"), "set_function", "get_function");
 
 	BIND_ENUM_CONSTANT(FUNC_INVERSE);
 	BIND_ENUM_CONSTANT(FUNC_TRANSPOSE);
@@ -3528,7 +3528,7 @@ void VisualShaderNodeUVFunc::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_function", "func"), &VisualShaderNodeUVFunc::set_function);
 	ClassDB::bind_method(D_METHOD("get_function"), &VisualShaderNodeUVFunc::get_function);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PROPERTY_HINT_ENUM, "Panning,Scaling"), "set_function", "get_function");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PropertyHint::HINT_ENUM, "Panning,Scaling"), "set_function", "get_function");
 
 	BIND_ENUM_CONSTANT(FUNC_PANNING);
 	BIND_ENUM_CONSTANT(FUNC_SCALING);
@@ -3944,9 +3944,9 @@ void VisualShaderNodeDerivativeFunc::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_precision", "precision"), &VisualShaderNodeDerivativeFunc::set_precision);
 	ClassDB::bind_method(D_METHOD("get_precision"), &VisualShaderNodeDerivativeFunc::get_precision);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PROPERTY_HINT_ENUM, "Scalar,Vector2,Vector3,Vector4"), "set_op_type", "get_op_type");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PROPERTY_HINT_ENUM, "Sum,X,Y"), "set_function", "get_function");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "precision", PROPERTY_HINT_ENUM, "None,Coarse,Fine"), "set_precision", "get_precision");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PropertyHint::HINT_ENUM, "Scalar,Vector2,Vector3,Vector4"), "set_op_type", "get_op_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PropertyHint::HINT_ENUM, "Sum,X,Y"), "set_function", "get_function");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "precision", PropertyHint::HINT_ENUM, "None,Coarse,Fine"), "set_precision", "get_precision");
 
 	BIND_ENUM_CONSTANT(OP_TYPE_SCALAR);
 	BIND_ENUM_CONSTANT(OP_TYPE_VECTOR_2D);
@@ -4091,7 +4091,7 @@ void VisualShaderNodeClamp::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_op_type", "op_type"), &VisualShaderNodeClamp::set_op_type);
 	ClassDB::bind_method(D_METHOD("get_op_type"), &VisualShaderNodeClamp::get_op_type);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PROPERTY_HINT_ENUM, "Float,Int,UInt,Vector2,Vector3,Vector4"), "set_op_type", "get_op_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PropertyHint::HINT_ENUM, "Float,Int,UInt,Vector2,Vector3,Vector4"), "set_op_type", "get_op_type");
 
 	BIND_ENUM_CONSTANT(OP_TYPE_FLOAT);
 	BIND_ENUM_CONSTANT(OP_TYPE_INT);
@@ -4360,7 +4360,7 @@ void VisualShaderNodeStep::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_op_type", "op_type"), &VisualShaderNodeStep::set_op_type);
 	ClassDB::bind_method(D_METHOD("get_op_type"), &VisualShaderNodeStep::get_op_type);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PROPERTY_HINT_ENUM, "Scalar,Vector2,Vector2Scalar,Vector3,Vector3Scalar,Vector4,Vector4Scalar"), "set_op_type", "get_op_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PropertyHint::HINT_ENUM, "Scalar,Vector2,Vector2Scalar,Vector3,Vector3Scalar,Vector4,Vector4Scalar"), "set_op_type", "get_op_type");
 
 	BIND_ENUM_CONSTANT(OP_TYPE_SCALAR);
 	BIND_ENUM_CONSTANT(OP_TYPE_VECTOR_2D);
@@ -4523,7 +4523,7 @@ void VisualShaderNodeSmoothStep::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_op_type", "op_type"), &VisualShaderNodeSmoothStep::set_op_type);
 	ClassDB::bind_method(D_METHOD("get_op_type"), &VisualShaderNodeSmoothStep::get_op_type);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PROPERTY_HINT_ENUM, "Scalar,Vector2,Vector2Scalar,Vector3,Vector3Scalar,Vector4,Vector4Scalar"), "set_op_type", "get_op_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PropertyHint::HINT_ENUM, "Scalar,Vector2,Vector2Scalar,Vector3,Vector3Scalar,Vector4,Vector4Scalar"), "set_op_type", "get_op_type");
 
 	BIND_ENUM_CONSTANT(OP_TYPE_SCALAR);
 	BIND_ENUM_CONSTANT(OP_TYPE_VECTOR_2D);
@@ -4812,7 +4812,7 @@ void VisualShaderNodeMix::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_op_type", "op_type"), &VisualShaderNodeMix::set_op_type);
 	ClassDB::bind_method(D_METHOD("get_op_type"), &VisualShaderNodeMix::get_op_type);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PROPERTY_HINT_ENUM, "Scalar,Vector2,Vector2Scalar,Vector3,Vector3Scalar,Vector4,Vector4Scalar"), "set_op_type", "get_op_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PropertyHint::HINT_ENUM, "Scalar,Vector2,Vector2Scalar,Vector3,Vector3Scalar,Vector4,Vector4Scalar"), "set_op_type", "get_op_type");
 
 	BIND_ENUM_CONSTANT(OP_TYPE_SCALAR);
 	BIND_ENUM_CONSTANT(OP_TYPE_VECTOR_2D);
@@ -5333,7 +5333,7 @@ void VisualShaderNodeFloatParameter::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_default_value", "value"), &VisualShaderNodeFloatParameter::set_default_value);
 	ClassDB::bind_method(D_METHOD("get_default_value"), &VisualShaderNodeFloatParameter::get_default_value);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "hint", PROPERTY_HINT_ENUM, "None,Range,Range+Step"), "set_hint", "get_hint");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "hint", PropertyHint::HINT_ENUM, "None,Range,Range+Step"), "set_hint", "get_hint");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "min"), "set_min", "get_min");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "max"), "set_max", "get_max");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "step"), "set_step", "get_step");
@@ -5553,7 +5553,7 @@ void VisualShaderNodeIntParameter::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_default_value", "value"), &VisualShaderNodeIntParameter::set_default_value);
 	ClassDB::bind_method(D_METHOD("get_default_value"), &VisualShaderNodeIntParameter::get_default_value);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "hint", PROPERTY_HINT_ENUM, "None,Range,Range + Step,Enum"), "set_hint", "get_hint");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "hint", PropertyHint::HINT_ENUM, "None,Range,Range + Step,Enum"), "set_hint", "get_hint");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "min"), "set_min", "get_min");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "max"), "set_max", "get_max");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "step"), "set_step", "get_step");
@@ -6659,11 +6659,11 @@ void VisualShaderNodeTextureParameter::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_texture_source", "source"), &VisualShaderNodeTextureParameter::set_texture_source);
 	ClassDB::bind_method(D_METHOD("get_texture_source"), &VisualShaderNodeTextureParameter::get_texture_source);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_type", PROPERTY_HINT_ENUM, "Data,Color,Normal Map,Anisotropic"), "set_texture_type", "get_texture_type");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "color_default", PROPERTY_HINT_ENUM, "White,Black,Transparent"), "set_color_default", "get_color_default");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_filter", PROPERTY_HINT_ENUM, "Default,Nearest,Linear,Nearest Mipmap,Linear Mipmap,Nearest Mipmap Anisotropic,Linear Mipmap Anisotropic"), "set_texture_filter", "get_texture_filter");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_repeat", PROPERTY_HINT_ENUM, "Default,Enabled,Disabled"), "set_texture_repeat", "get_texture_repeat");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_source", PROPERTY_HINT_ENUM, "None,Screen,Depth,NormalRoughness"), "set_texture_source", "get_texture_source");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_type", PropertyHint::HINT_ENUM, "Data,Color,Normal Map,Anisotropic"), "set_texture_type", "get_texture_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "color_default", PropertyHint::HINT_ENUM, "White,Black,Transparent"), "set_color_default", "get_color_default");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_filter", PropertyHint::HINT_ENUM, "Default,Nearest,Linear,Nearest Mipmap,Linear Mipmap,Nearest Mipmap Anisotropic,Linear Mipmap Anisotropic"), "set_texture_filter", "get_texture_filter");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_repeat", PropertyHint::HINT_ENUM, "Default,Enabled,Disabled"), "set_texture_repeat", "get_texture_repeat");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_source", PropertyHint::HINT_ENUM, "None,Screen,Depth,NormalRoughness"), "set_texture_source", "get_texture_source");
 
 	BIND_ENUM_CONSTANT(TYPE_DATA);
 	BIND_ENUM_CONSTANT(TYPE_COLOR);
@@ -7140,7 +7140,7 @@ void VisualShaderNodeSwitch::_bind_methods() { // static
 	ClassDB::bind_method(D_METHOD("set_op_type", "type"), &VisualShaderNodeSwitch::set_op_type);
 	ClassDB::bind_method(D_METHOD("get_op_type"), &VisualShaderNodeSwitch::get_op_type);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PROPERTY_HINT_ENUM, "Float,Int,UInt,Vector2,Vector3,Vector4,Boolean,Transform"), "set_op_type", "get_op_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PropertyHint::HINT_ENUM, "Float,Int,UInt,Vector2,Vector3,Vector4,Boolean,Transform"), "set_op_type", "get_op_type");
 
 	BIND_ENUM_CONSTANT(OP_TYPE_FLOAT);
 	BIND_ENUM_CONSTANT(OP_TYPE_INT);
@@ -7366,7 +7366,7 @@ void VisualShaderNodeIs::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_function", "func"), &VisualShaderNodeIs::set_function);
 	ClassDB::bind_method(D_METHOD("get_function"), &VisualShaderNodeIs::get_function);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PROPERTY_HINT_ENUM, "Inf,NaN"), "set_function", "get_function");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PropertyHint::HINT_ENUM, "Inf,NaN"), "set_function", "get_function");
 
 	BIND_ENUM_CONSTANT(FUNC_IS_INF);
 	BIND_ENUM_CONSTANT(FUNC_IS_NAN);
@@ -7622,9 +7622,9 @@ void VisualShaderNodeCompare::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_condition", "condition"), &VisualShaderNodeCompare::set_condition);
 	ClassDB::bind_method(D_METHOD("get_condition"), &VisualShaderNodeCompare::get_condition);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "type", PROPERTY_HINT_ENUM, "Float,Int,UInt,Vector2,Vector3,Vector4,Boolean,Transform"), "set_comparison_type", "get_comparison_type");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PROPERTY_HINT_ENUM, "a == b,a != b,a > b,a >= b,a < b,a <= b"), "set_function", "get_function");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "condition", PROPERTY_HINT_ENUM, "All,Any"), "set_condition", "get_condition");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "type", PropertyHint::HINT_ENUM, "Float,Int,UInt,Vector2,Vector3,Vector4,Boolean,Transform"), "set_comparison_type", "get_comparison_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "function", PropertyHint::HINT_ENUM, "a == b,a != b,a > b,a >= b,a < b,a <= b"), "set_function", "get_function");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "condition", PropertyHint::HINT_ENUM, "All,Any"), "set_condition", "get_condition");
 
 	BIND_ENUM_CONSTANT(CTYPE_SCALAR);
 	BIND_ENUM_CONSTANT(CTYPE_SCALAR_INT);
@@ -7766,7 +7766,7 @@ void VisualShaderNodeMultiplyAdd::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_op_type", "type"), &VisualShaderNodeMultiplyAdd::set_op_type);
 	ClassDB::bind_method(D_METHOD("get_op_type"), &VisualShaderNodeMultiplyAdd::get_op_type);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PROPERTY_HINT_ENUM, "Scalar,Vector2,Vector3,Vector4"), "set_op_type", "get_op_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PropertyHint::HINT_ENUM, "Scalar,Vector2,Vector3,Vector4"), "set_op_type", "get_op_type");
 
 	BIND_ENUM_CONSTANT(OP_TYPE_SCALAR);
 	BIND_ENUM_CONSTANT(OP_TYPE_VECTOR_2D);
@@ -7897,7 +7897,7 @@ void VisualShaderNodeBillboard::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_keep_scale_enabled", "enabled"), &VisualShaderNodeBillboard::set_keep_scale_enabled);
 	ClassDB::bind_method(D_METHOD("is_keep_scale_enabled"), &VisualShaderNodeBillboard::is_keep_scale_enabled);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "billboard_type", PROPERTY_HINT_ENUM, "Disabled,Enabled,Y-Billboard,Particles"), "set_billboard_type", "get_billboard_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "billboard_type", PropertyHint::HINT_ENUM, "Disabled,Enabled,Y-Billboard,Particles"), "set_billboard_type", "get_billboard_type");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "keep_scale"), "set_keep_scale_enabled", "is_keep_scale_enabled");
 
 	BIND_ENUM_CONSTANT(BILLBOARD_TYPE_DISABLED);
@@ -8316,7 +8316,7 @@ void VisualShaderNodeRemap::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_op_type", "op_type"), &VisualShaderNodeRemap::set_op_type);
 	ClassDB::bind_method(D_METHOD("get_op_type"), &VisualShaderNodeRemap::get_op_type);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PROPERTY_HINT_ENUM, "Scalar,Vector2,Vector2Scalar,Vector3,Vector3Scalar,Vector4,Vector4Scalar"), "set_op_type", "get_op_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "op_type", PropertyHint::HINT_ENUM, "Scalar,Vector2,Vector2Scalar,Vector3,Vector3Scalar,Vector4,Vector4Scalar"), "set_op_type", "get_op_type");
 
 	BIND_ENUM_CONSTANT(OP_TYPE_SCALAR);
 	BIND_ENUM_CONSTANT(OP_TYPE_VECTOR_2D);
@@ -8514,7 +8514,7 @@ void VisualShaderNodeReroute::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_set_port_type", "port_type"), &VisualShaderNodeReroute::_set_port_type);
 	ClassDB::bind_method(D_METHOD("get_port_type"), &VisualShaderNodeReroute::get_port_type);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "port_type", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_port_type", "get_port_type");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "port_type", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_port_type", "get_port_type");
 }
 
 VisualShaderNodeReroute::VisualShaderNodeReroute() {

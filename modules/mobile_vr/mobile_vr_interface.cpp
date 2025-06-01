@@ -243,14 +243,14 @@ void MobileVRInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_k2", "k"), &MobileVRInterface::set_k2);
 	ClassDB::bind_method(D_METHOD("get_k2"), &MobileVRInterface::get_k2);
 
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "eye_height", PROPERTY_HINT_RANGE, "0.0,3.0,0.1"), "set_eye_height", "get_eye_height");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "iod", PROPERTY_HINT_RANGE, "4.0,10.0,0.1"), "set_iod", "get_iod");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "display_width", PROPERTY_HINT_RANGE, "5.0,25.0,0.1"), "set_display_width", "get_display_width");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "display_to_lens", PROPERTY_HINT_RANGE, "5.0,25.0,0.1"), "set_display_to_lens", "get_display_to_lens");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "eye_height", PropertyHint::HINT_RANGE, "0.0,3.0,0.1"), "set_eye_height", "get_eye_height");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "iod", PropertyHint::HINT_RANGE, "4.0,10.0,0.1"), "set_iod", "get_iod");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "display_width", PropertyHint::HINT_RANGE, "5.0,25.0,0.1"), "set_display_width", "get_display_width");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "display_to_lens", PropertyHint::HINT_RANGE, "5.0,25.0,0.1"), "set_display_to_lens", "get_display_to_lens");
 	ADD_PROPERTY(PropertyInfo(Variant::RECT2, "offset_rect"), "set_offset_rect", "get_offset_rect");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "oversample", PROPERTY_HINT_RANGE, "1.0,2.0,0.1"), "set_oversample", "get_oversample");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "k1", PROPERTY_HINT_RANGE, "0.1,10.0,0.0001"), "set_k1", "get_k1");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "k2", PROPERTY_HINT_RANGE, "0.1,10.0,0.0001"), "set_k2", "get_k2");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "oversample", PropertyHint::HINT_RANGE, "1.0,2.0,0.1"), "set_oversample", "get_oversample");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "k1", PropertyHint::HINT_RANGE, "0.1,10.0,0.0001"), "set_k1", "get_k1");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "k2", PropertyHint::HINT_RANGE, "0.1,10.0,0.0001"), "set_k2", "get_k2");
 
 	ClassDB::bind_method(D_METHOD("get_vrs_min_radius"), &MobileVRInterface::get_vrs_min_radius);
 	ClassDB::bind_method(D_METHOD("set_vrs_min_radius", "radius"), &MobileVRInterface::set_vrs_min_radius);
@@ -259,8 +259,8 @@ void MobileVRInterface::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_vrs_strength", "strength"), &MobileVRInterface::set_vrs_strength);
 
 	ADD_GROUP("Vulkan VRS", "vrs_");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "vrs_min_radius", PROPERTY_HINT_RANGE, "1.0,100.0,1.0"), "set_vrs_min_radius", "get_vrs_min_radius");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "vrs_strength", PROPERTY_HINT_RANGE, "0.1,10.0,0.1"), "set_vrs_strength", "get_vrs_strength");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "vrs_min_radius", PropertyHint::HINT_RANGE, "1.0,100.0,1.0"), "set_vrs_min_radius", "get_vrs_min_radius");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "vrs_strength", PropertyHint::HINT_RANGE, "0.1,10.0,0.1"), "set_vrs_strength", "get_vrs_strength");
 }
 
 void MobileVRInterface::set_eye_height(const double p_eye_height) {

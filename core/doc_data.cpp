@@ -43,7 +43,7 @@ String DocData::get_default_value_string(const Variant &p_value) {
 }
 
 void DocData::return_doc_from_retinfo(DocData::MethodDoc &p_method, const PropertyInfo &p_retinfo) {
-	if (p_retinfo.type == Variant::INT && p_retinfo.hint == PROPERTY_HINT_INT_IS_POINTER) {
+	if (p_retinfo.type == Variant::INT && p_retinfo.hint == PropertyHint::HINT_INT_IS_POINTER) {
 		p_method.return_type = p_retinfo.hint_string;
 		if (p_method.return_type.is_empty()) {
 			p_method.return_type = "void*";
@@ -59,11 +59,11 @@ void DocData::return_doc_from_retinfo(DocData::MethodDoc &p_method, const Proper
 		p_method.return_type = "int";
 	} else if (p_retinfo.class_name != StringName()) {
 		p_method.return_type = p_retinfo.class_name;
-	} else if (p_retinfo.type == Variant::ARRAY && p_retinfo.hint == PROPERTY_HINT_ARRAY_TYPE) {
+	} else if (p_retinfo.type == Variant::ARRAY && p_retinfo.hint == PropertyHint::HINT_ARRAY_TYPE) {
 		p_method.return_type = p_retinfo.hint_string + "[]";
-	} else if (p_retinfo.type == Variant::DICTIONARY && p_retinfo.hint == PROPERTY_HINT_DICTIONARY_TYPE) {
+	} else if (p_retinfo.type == Variant::DICTIONARY && p_retinfo.hint == PropertyHint::HINT_DICTIONARY_TYPE) {
 		p_method.return_type = "Dictionary[" + p_retinfo.hint_string.replace(";", ", ") + "]";
-	} else if (p_retinfo.hint == PROPERTY_HINT_RESOURCE_TYPE) {
+	} else if (p_retinfo.hint == PropertyHint::HINT_RESOURCE_TYPE) {
 		p_method.return_type = p_retinfo.hint_string;
 	} else if (p_retinfo.type == Variant::NIL && p_retinfo.usage & PROPERTY_USAGE_NIL_IS_VARIANT) {
 		p_method.return_type = "Variant";
@@ -77,7 +77,7 @@ void DocData::return_doc_from_retinfo(DocData::MethodDoc &p_method, const Proper
 void DocData::argument_doc_from_arginfo(DocData::ArgumentDoc &p_argument, const PropertyInfo &p_arginfo) {
 	p_argument.name = p_arginfo.name;
 
-	if (p_arginfo.type == Variant::INT && p_arginfo.hint == PROPERTY_HINT_INT_IS_POINTER) {
+	if (p_arginfo.type == Variant::INT && p_arginfo.hint == PropertyHint::HINT_INT_IS_POINTER) {
 		p_argument.type = p_arginfo.hint_string;
 		if (p_argument.type.is_empty()) {
 			p_argument.type = "void*";
@@ -93,11 +93,11 @@ void DocData::argument_doc_from_arginfo(DocData::ArgumentDoc &p_argument, const 
 		p_argument.type = "int";
 	} else if (p_arginfo.class_name != StringName()) {
 		p_argument.type = p_arginfo.class_name;
-	} else if (p_arginfo.type == Variant::ARRAY && p_arginfo.hint == PROPERTY_HINT_ARRAY_TYPE) {
+	} else if (p_arginfo.type == Variant::ARRAY && p_arginfo.hint == PropertyHint::HINT_ARRAY_TYPE) {
 		p_argument.type = p_arginfo.hint_string + "[]";
-	} else if (p_arginfo.type == Variant::DICTIONARY && p_arginfo.hint == PROPERTY_HINT_DICTIONARY_TYPE) {
+	} else if (p_arginfo.type == Variant::DICTIONARY && p_arginfo.hint == PropertyHint::HINT_DICTIONARY_TYPE) {
 		p_argument.type = "Dictionary[" + p_arginfo.hint_string.replace(";", ", ") + "]";
-	} else if (p_arginfo.hint == PROPERTY_HINT_RESOURCE_TYPE) {
+	} else if (p_arginfo.hint == PropertyHint::HINT_RESOURCE_TYPE) {
 		p_argument.type = p_arginfo.hint_string;
 	} else if (p_arginfo.type == Variant::NIL) {
 		// Parameters cannot be void, so PROPERTY_USAGE_NIL_IS_VARIANT is not necessary

@@ -395,20 +395,20 @@ void Line2D::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::PACKED_VECTOR2_ARRAY, "points"), "set_points", "get_points");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "closed"), "set_closed", "is_closed");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "width", PROPERTY_HINT_NONE, "suffix:px"), "set_width", "get_width");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "width_curve", PROPERTY_HINT_RESOURCE_TYPE, "Curve"), "set_curve", "get_curve");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "width", PropertyHint::HINT_NONE, "suffix:px"), "set_width", "get_width");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "width_curve", PropertyHint::HINT_RESOURCE_TYPE, "Curve"), "set_curve", "get_curve");
 	ADD_PROPERTY(PropertyInfo(Variant::COLOR, "default_color"), "set_default_color", "get_default_color");
 	ADD_GROUP("Fill", "");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "gradient", PROPERTY_HINT_RESOURCE_TYPE, "Gradient"), "set_gradient", "get_gradient");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D"), "set_texture", "get_texture");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_mode", PROPERTY_HINT_ENUM, "None,Tile,Stretch"), "set_texture_mode", "get_texture_mode");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "gradient", PropertyHint::HINT_RESOURCE_TYPE, "Gradient"), "set_gradient", "get_gradient");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PropertyHint::HINT_RESOURCE_TYPE, "Texture2D"), "set_texture", "get_texture");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "texture_mode", PropertyHint::HINT_ENUM, "None,Tile,Stretch"), "set_texture_mode", "get_texture_mode");
 	ADD_GROUP("Capping", "");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "joint_mode", PROPERTY_HINT_ENUM, "Sharp,Bevel,Round"), "set_joint_mode", "get_joint_mode");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "begin_cap_mode", PROPERTY_HINT_ENUM, "None,Box,Round"), "set_begin_cap_mode", "get_begin_cap_mode");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "end_cap_mode", PROPERTY_HINT_ENUM, "None,Box,Round"), "set_end_cap_mode", "get_end_cap_mode");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "joint_mode", PropertyHint::HINT_ENUM, "Sharp,Bevel,Round"), "set_joint_mode", "get_joint_mode");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "begin_cap_mode", PropertyHint::HINT_ENUM, "None,Box,Round"), "set_begin_cap_mode", "get_begin_cap_mode");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "end_cap_mode", PropertyHint::HINT_ENUM, "None,Box,Round"), "set_end_cap_mode", "get_end_cap_mode");
 	ADD_GROUP("Border", "");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "sharp_limit"), "set_sharp_limit", "get_sharp_limit");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "round_precision", PROPERTY_HINT_RANGE, "1,32,1"), "set_round_precision", "get_round_precision");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "round_precision", PropertyHint::HINT_RANGE, "1,32,1"), "set_round_precision", "get_round_precision");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "antialiased"), "set_antialiased", "get_antialiased");
 
 	BIND_ENUM_CONSTANT(LINE_JOINT_SHARP);

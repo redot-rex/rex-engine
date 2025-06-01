@@ -254,11 +254,11 @@ void PrimitiveMesh::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("request_update"), &PrimitiveMesh::request_update);
 
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "material", PROPERTY_HINT_RESOURCE_TYPE, "BaseMaterial3D,ShaderMaterial"), "set_material", "get_material");
-	ADD_PROPERTY(PropertyInfo(Variant::AABB, "custom_aabb", PROPERTY_HINT_NONE, "suffix:m"), "set_custom_aabb", "get_custom_aabb");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "material", PropertyHint::HINT_RESOURCE_TYPE, "BaseMaterial3D,ShaderMaterial"), "set_material", "get_material");
+	ADD_PROPERTY(PropertyInfo(Variant::AABB, "custom_aabb", PropertyHint::HINT_NONE, "suffix:m"), "set_custom_aabb", "get_custom_aabb");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "flip_faces"), "set_flip_faces", "get_flip_faces");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "add_uv2"), "set_add_uv2", "get_add_uv2");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "uv2_padding", PROPERTY_HINT_RANGE, "0,10,0.01,or_greater"), "set_uv2_padding", "get_uv2_padding");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "uv2_padding", PropertyHint::HINT_RANGE, "0,10,0.01,or_greater"), "set_uv2_padding", "get_uv2_padding");
 
 	GDVIRTUAL_BIND(_create_mesh_array);
 }
@@ -621,10 +621,10 @@ void CapsuleMesh::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_rings", "rings"), &CapsuleMesh::set_rings);
 	ClassDB::bind_method(D_METHOD("get_rings"), &CapsuleMesh::get_rings);
 
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "radius", PROPERTY_HINT_RANGE, "0.001,100.0,0.001,or_greater,suffix:m"), "set_radius", "get_radius");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "height", PROPERTY_HINT_RANGE, "0.001,100.0,0.001,or_greater,suffix:m"), "set_height", "get_height");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "radial_segments", PROPERTY_HINT_RANGE, "1,100,1,or_greater"), "set_radial_segments", "get_radial_segments");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "rings", PROPERTY_HINT_RANGE, "0,100,1,or_greater"), "set_rings", "get_rings");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "radius", PropertyHint::HINT_RANGE, "0.001,100.0,0.001,or_greater,suffix:m"), "set_radius", "get_radius");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "height", PropertyHint::HINT_RANGE, "0.001,100.0,0.001,or_greater,suffix:m"), "set_height", "get_height");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "radial_segments", PropertyHint::HINT_RANGE, "1,100,1,or_greater"), "set_radial_segments", "get_radial_segments");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "rings", PropertyHint::HINT_RANGE, "0,100,1,or_greater"), "set_rings", "get_rings");
 
 	ADD_LINKED_PROPERTY("radius", "height");
 	ADD_LINKED_PROPERTY("height", "radius");
@@ -979,10 +979,10 @@ void BoxMesh::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_subdivide_depth", "divisions"), &BoxMesh::set_subdivide_depth);
 	ClassDB::bind_method(D_METHOD("get_subdivide_depth"), &BoxMesh::get_subdivide_depth);
 
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "size", PROPERTY_HINT_NONE, "suffix:m"), "set_size", "get_size");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivide_width", PROPERTY_HINT_RANGE, "0,100,1,or_greater"), "set_subdivide_width", "get_subdivide_width");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivide_height", PROPERTY_HINT_RANGE, "0,100,1,or_greater"), "set_subdivide_height", "get_subdivide_height");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivide_depth", PROPERTY_HINT_RANGE, "0,100,1,or_greater"), "set_subdivide_depth", "get_subdivide_depth");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "size", PropertyHint::HINT_NONE, "suffix:m"), "set_size", "get_size");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivide_width", PropertyHint::HINT_RANGE, "0,100,1,or_greater"), "set_subdivide_width", "get_subdivide_width");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivide_height", PropertyHint::HINT_RANGE, "0,100,1,or_greater"), "set_subdivide_height", "get_subdivide_height");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivide_depth", PropertyHint::HINT_RANGE, "0,100,1,or_greater"), "set_subdivide_depth", "get_subdivide_depth");
 }
 
 void BoxMesh::set_size(const Vector3 &p_size) {
@@ -1293,11 +1293,11 @@ void CylinderMesh::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_cap_bottom", "cap_bottom"), &CylinderMesh::set_cap_bottom);
 	ClassDB::bind_method(D_METHOD("is_cap_bottom"), &CylinderMesh::is_cap_bottom);
 
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "top_radius", PROPERTY_HINT_RANGE, "0,100,0.001,or_greater,suffix:m"), "set_top_radius", "get_top_radius");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "bottom_radius", PROPERTY_HINT_RANGE, "0,100,0.001,or_greater,suffix:m"), "set_bottom_radius", "get_bottom_radius");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "height", PROPERTY_HINT_RANGE, "0.001,100,0.001,or_greater,suffix:m"), "set_height", "get_height");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "radial_segments", PROPERTY_HINT_RANGE, "1,100,1,or_greater"), "set_radial_segments", "get_radial_segments");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "rings", PROPERTY_HINT_RANGE, "0,100,1,or_greater"), "set_rings", "get_rings");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "top_radius", PropertyHint::HINT_RANGE, "0,100,0.001,or_greater,suffix:m"), "set_top_radius", "get_top_radius");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "bottom_radius", PropertyHint::HINT_RANGE, "0,100,0.001,or_greater,suffix:m"), "set_bottom_radius", "get_bottom_radius");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "height", PropertyHint::HINT_RANGE, "0.001,100,0.001,or_greater,suffix:m"), "set_height", "get_height");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "radial_segments", PropertyHint::HINT_RANGE, "1,100,1,or_greater"), "set_radial_segments", "get_radial_segments");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "rings", PropertyHint::HINT_RANGE, "0,100,1,or_greater"), "set_rings", "get_rings");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "cap_top"), "set_cap_top", "is_cap_top");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "cap_bottom"), "set_cap_bottom", "is_cap_bottom");
 }
@@ -1519,11 +1519,11 @@ void PlaneMesh::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_orientation", "orientation"), &PlaneMesh::set_orientation);
 	ClassDB::bind_method(D_METHOD("get_orientation"), &PlaneMesh::get_orientation);
 
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "size", PROPERTY_HINT_NONE, "suffix:m"), "set_size", "get_size");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivide_width", PROPERTY_HINT_RANGE, "0,100,1,or_greater"), "set_subdivide_width", "get_subdivide_width");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivide_depth", PROPERTY_HINT_RANGE, "0,100,1,or_greater"), "set_subdivide_depth", "get_subdivide_depth");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "center_offset", PROPERTY_HINT_NONE, "suffix:m"), "set_center_offset", "get_center_offset");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "orientation", PROPERTY_HINT_ENUM, "Face X,Face Y,Face Z"), "set_orientation", "get_orientation");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "size", PropertyHint::HINT_NONE, "suffix:m"), "set_size", "get_size");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivide_width", PropertyHint::HINT_RANGE, "0,100,1,or_greater"), "set_subdivide_width", "get_subdivide_width");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivide_depth", PropertyHint::HINT_RANGE, "0,100,1,or_greater"), "set_subdivide_depth", "get_subdivide_depth");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "center_offset", PropertyHint::HINT_NONE, "suffix:m"), "set_center_offset", "get_center_offset");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "orientation", PropertyHint::HINT_ENUM, "Face X,Face Y,Face Z"), "set_orientation", "get_orientation");
 
 	BIND_ENUM_CONSTANT(FACE_X)
 	BIND_ENUM_CONSTANT(FACE_Y)
@@ -1895,11 +1895,11 @@ void PrismMesh::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_subdivide_depth", "segments"), &PrismMesh::set_subdivide_depth);
 	ClassDB::bind_method(D_METHOD("get_subdivide_depth"), &PrismMesh::get_subdivide_depth);
 
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "left_to_right", PROPERTY_HINT_RANGE, "-2.0,2.0,0.1"), "set_left_to_right", "get_left_to_right");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "size", PROPERTY_HINT_NONE, "suffix:m"), "set_size", "get_size");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivide_width", PROPERTY_HINT_RANGE, "0,100,1,or_greater"), "set_subdivide_width", "get_subdivide_width");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivide_height", PROPERTY_HINT_RANGE, "0,100,1,or_greater"), "set_subdivide_height", "get_subdivide_height");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivide_depth", PROPERTY_HINT_RANGE, "0,100,1,or_greater"), "set_subdivide_depth", "get_subdivide_depth");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "left_to_right", PropertyHint::HINT_RANGE, "-2.0,2.0,0.1"), "set_left_to_right", "get_left_to_right");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "size", PropertyHint::HINT_NONE, "suffix:m"), "set_size", "get_size");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivide_width", PropertyHint::HINT_RANGE, "0,100,1,or_greater"), "set_subdivide_width", "get_subdivide_width");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivide_height", PropertyHint::HINT_RANGE, "0,100,1,or_greater"), "set_subdivide_height", "get_subdivide_height");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "subdivide_depth", PropertyHint::HINT_RANGE, "0,100,1,or_greater"), "set_subdivide_depth", "get_subdivide_depth");
 }
 
 void PrismMesh::set_left_to_right(const float p_left_to_right) {
@@ -2112,10 +2112,10 @@ void SphereMesh::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_is_hemisphere", "is_hemisphere"), &SphereMesh::set_is_hemisphere);
 	ClassDB::bind_method(D_METHOD("get_is_hemisphere"), &SphereMesh::get_is_hemisphere);
 
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "radius", PROPERTY_HINT_RANGE, "0.001,100.0,0.001,or_greater,suffix:m"), "set_radius", "get_radius");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "height", PROPERTY_HINT_RANGE, "0.001,100.0,0.001,or_greater,suffix:m"), "set_height", "get_height");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "radial_segments", PROPERTY_HINT_RANGE, "1,100,1,or_greater"), "set_radial_segments", "get_radial_segments");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "rings", PROPERTY_HINT_RANGE, "1,100,1,or_greater"), "set_rings", "get_rings");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "radius", PropertyHint::HINT_RANGE, "0.001,100.0,0.001,or_greater,suffix:m"), "set_radius", "get_radius");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "height", PropertyHint::HINT_RANGE, "0.001,100.0,0.001,or_greater,suffix:m"), "set_height", "get_height");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "radial_segments", PropertyHint::HINT_RANGE, "1,100,1,or_greater"), "set_radial_segments", "get_radial_segments");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "rings", PropertyHint::HINT_RANGE, "1,100,1,or_greater"), "set_rings", "get_rings");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_hemisphere"), "set_is_hemisphere", "get_is_hemisphere");
 }
 
@@ -2324,10 +2324,10 @@ void TorusMesh::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_ring_segments", "rings"), &TorusMesh::set_ring_segments);
 	ClassDB::bind_method(D_METHOD("get_ring_segments"), &TorusMesh::get_ring_segments);
 
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "inner_radius", PROPERTY_HINT_RANGE, "0.001,1000.0,0.001,or_greater,exp"), "set_inner_radius", "get_inner_radius");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "outer_radius", PROPERTY_HINT_RANGE, "0.001,1000.0,0.001,or_greater,exp"), "set_outer_radius", "get_outer_radius");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "rings", PROPERTY_HINT_RANGE, "3,128,1,or_greater"), "set_rings", "get_rings");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "ring_segments", PROPERTY_HINT_RANGE, "3,64,1,or_greater"), "set_ring_segments", "get_ring_segments");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "inner_radius", PropertyHint::HINT_RANGE, "0.001,1000.0,0.001,or_greater,exp"), "set_inner_radius", "get_inner_radius");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "outer_radius", PropertyHint::HINT_RANGE, "0.001,1000.0,0.001,or_greater,exp"), "set_outer_radius", "get_outer_radius");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "rings", PropertyHint::HINT_RANGE, "3,128,1,or_greater"), "set_rings", "get_rings");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "ring_segments", PropertyHint::HINT_RANGE, "3,64,1,or_greater"), "set_ring_segments", "get_ring_segments");
 }
 
 void TorusMesh::set_inner_radius(const float p_inner_radius) {
@@ -2780,19 +2780,19 @@ void TubeTrailMesh::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_curve", "curve"), &TubeTrailMesh::set_curve);
 	ClassDB::bind_method(D_METHOD("get_curve"), &TubeTrailMesh::get_curve);
 
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "radius", PROPERTY_HINT_RANGE, "0.001,100.0,0.001,or_greater,suffix:m"), "set_radius", "get_radius");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "radius", PropertyHint::HINT_RANGE, "0.001,100.0,0.001,or_greater,suffix:m"), "set_radius", "get_radius");
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "radial_steps", PROPERTY_HINT_RANGE, "3,128,1"), "set_radial_steps", "get_radial_steps");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "sections", PROPERTY_HINT_RANGE, "2,128,1"), "set_sections", "get_sections");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "radial_steps", PropertyHint::HINT_RANGE, "3,128,1"), "set_radial_steps", "get_radial_steps");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "sections", PropertyHint::HINT_RANGE, "2,128,1"), "set_sections", "get_sections");
 
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "section_length", PROPERTY_HINT_RANGE, "0.001,1024.0,0.001,or_greater,suffix:m"), "set_section_length", "get_section_length");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "section_length", PropertyHint::HINT_RANGE, "0.001,1024.0,0.001,or_greater,suffix:m"), "set_section_length", "get_section_length");
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "section_rings", PROPERTY_HINT_RANGE, "1,128,1"), "set_section_rings", "get_section_rings");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "section_rings", PropertyHint::HINT_RANGE, "1,128,1"), "set_section_rings", "get_section_rings");
 
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "cap_top"), "set_cap_top", "is_cap_top");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "cap_bottom"), "set_cap_bottom", "is_cap_bottom");
 
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "curve", PROPERTY_HINT_RESOURCE_TYPE, "Curve"), "set_curve", "get_curve");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "curve", PropertyHint::HINT_RESOURCE_TYPE, "Curve"), "set_curve", "get_curve");
 }
 
 TubeTrailMesh::TubeTrailMesh() {
@@ -3037,12 +3037,12 @@ void RibbonTrailMesh::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_shape", "shape"), &RibbonTrailMesh::set_shape);
 	ClassDB::bind_method(D_METHOD("get_shape"), &RibbonTrailMesh::get_shape);
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "shape", PROPERTY_HINT_ENUM, "Flat,Cross"), "set_shape", "get_shape");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "size", PROPERTY_HINT_RANGE, "0.001,100.0,0.001,or_greater,suffix:m"), "set_size", "get_size");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "sections", PROPERTY_HINT_RANGE, "2,128,1"), "set_sections", "get_sections");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "section_length", PROPERTY_HINT_RANGE, "0.001,1024.0,0.001,or_greater,suffix:m"), "set_section_length", "get_section_length");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "section_segments", PROPERTY_HINT_RANGE, "1,128,1"), "set_section_segments", "get_section_segments");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "curve", PROPERTY_HINT_RESOURCE_TYPE, "Curve"), "set_curve", "get_curve");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "shape", PropertyHint::HINT_ENUM, "Flat,Cross"), "set_shape", "get_shape");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "size", PropertyHint::HINT_RANGE, "0.001,100.0,0.001,or_greater,suffix:m"), "set_size", "get_size");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "sections", PropertyHint::HINT_RANGE, "2,128,1"), "set_sections", "get_sections");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "section_length", PropertyHint::HINT_RANGE, "0.001,1024.0,0.001,or_greater,suffix:m"), "set_section_length", "get_section_length");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "section_segments", PropertyHint::HINT_RANGE, "1,128,1"), "set_section_segments", "get_section_segments");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "curve", PropertyHint::HINT_RESOURCE_TYPE, "Curve"), "set_curve", "get_curve");
 
 	BIND_ENUM_CONSTANT(SHAPE_FLAT)
 	BIND_ENUM_CONSTANT(SHAPE_CROSS)
@@ -3674,27 +3674,27 @@ void TextMesh::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_uppercase"), &TextMesh::is_uppercase);
 
 	ADD_GROUP("Text", "");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text", PROPERTY_HINT_MULTILINE_TEXT, ""), "set_text", "get_text");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "font", PROPERTY_HINT_RESOURCE_TYPE, "Font"), "set_font", "get_font");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "font_size", PROPERTY_HINT_RANGE, "1,256,1,or_greater,suffix:px"), "set_font_size", "get_font_size");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "horizontal_alignment", PROPERTY_HINT_ENUM, "Left,Center,Right,Fill"), "set_horizontal_alignment", "get_horizontal_alignment");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "vertical_alignment", PROPERTY_HINT_ENUM, "Top,Center,Bottom"), "set_vertical_alignment", "get_vertical_alignment");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text", PropertyHint::HINT_MULTILINE_TEXT, ""), "set_text", "get_text");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "font", PropertyHint::HINT_RESOURCE_TYPE, "Font"), "set_font", "get_font");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "font_size", PropertyHint::HINT_RANGE, "1,256,1,or_greater,suffix:px"), "set_font_size", "get_font_size");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "horizontal_alignment", PropertyHint::HINT_ENUM, "Left,Center,Right,Fill"), "set_horizontal_alignment", "get_horizontal_alignment");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "vertical_alignment", PropertyHint::HINT_ENUM, "Top,Center,Bottom"), "set_vertical_alignment", "get_vertical_alignment");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "uppercase"), "set_uppercase", "is_uppercase");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "line_spacing", PROPERTY_HINT_NONE, "suffix:px"), "set_line_spacing", "get_line_spacing");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "autowrap_mode", PROPERTY_HINT_ENUM, "Off,Arbitrary,Word,Word (Smart)"), "set_autowrap_mode", "get_autowrap_mode");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "justification_flags", PROPERTY_HINT_FLAGS, "Kashida Justification:1,Word Justification:2,Justify Only After Last Tab:8,Skip Last Line:32,Skip Last Line With Visible Characters:64,Do Not Skip Single Line:128"), "set_justification_flags", "get_justification_flags");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "line_spacing", PropertyHint::HINT_NONE, "suffix:px"), "set_line_spacing", "get_line_spacing");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "autowrap_mode", PropertyHint::HINT_ENUM, "Off,Arbitrary,Word,Word (Smart)"), "set_autowrap_mode", "get_autowrap_mode");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "justification_flags", PropertyHint::HINT_FLAGS, "Kashida Justification:1,Word Justification:2,Justify Only After Last Tab:8,Skip Last Line:32,Skip Last Line With Visible Characters:64,Do Not Skip Single Line:128"), "set_justification_flags", "get_justification_flags");
 
 	ADD_GROUP("Mesh", "");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "pixel_size", PROPERTY_HINT_RANGE, "0.0001,128,0.0001,suffix:m"), "set_pixel_size", "get_pixel_size");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "curve_step", PROPERTY_HINT_RANGE, "0.1,10,0.1,suffix:px"), "set_curve_step", "get_curve_step");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "depth", PROPERTY_HINT_RANGE, "0.0,100.0,0.001,or_greater,suffix:m"), "set_depth", "get_depth");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "width", PROPERTY_HINT_NONE, "suffix:px"), "set_width", "get_width");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "offset", PROPERTY_HINT_NONE, "suffix:px"), "set_offset", "get_offset");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "pixel_size", PropertyHint::HINT_RANGE, "0.0001,128,0.0001,suffix:m"), "set_pixel_size", "get_pixel_size");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "curve_step", PropertyHint::HINT_RANGE, "0.1,10,0.1,suffix:px"), "set_curve_step", "get_curve_step");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "depth", PropertyHint::HINT_RANGE, "0.0,100.0,0.001,or_greater,suffix:m"), "set_depth", "get_depth");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "width", PropertyHint::HINT_NONE, "suffix:px"), "set_width", "get_width");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "offset", PropertyHint::HINT_NONE, "suffix:px"), "set_offset", "get_offset");
 
 	ADD_GROUP("BiDi", "");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "text_direction", PROPERTY_HINT_ENUM, "Auto,Left-to-Right,Right-to-Left"), "set_text_direction", "get_text_direction");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "language", PROPERTY_HINT_LOCALE_ID, ""), "set_language", "get_language");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "structured_text_bidi_override", PROPERTY_HINT_ENUM, "Default,URI,File,Email,List,None,Custom"), "set_structured_text_bidi_override", "get_structured_text_bidi_override");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "text_direction", PropertyHint::HINT_ENUM, "Auto,Left-to-Right,Right-to-Left"), "set_text_direction", "get_text_direction");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "language", PropertyHint::HINT_LOCALE_ID, ""), "set_language", "get_language");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "structured_text_bidi_override", PropertyHint::HINT_ENUM, "Default,URI,File,Email,List,None,Custom"), "set_structured_text_bidi_override", "get_structured_text_bidi_override");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "structured_text_bidi_override_options"), "set_structured_text_bidi_override_options", "get_structured_text_bidi_override_options");
 }
 

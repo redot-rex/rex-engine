@@ -55,7 +55,7 @@ void EditorObjectSelector::_add_children_to_popup(Object *p_obj, int p_depth) {
 		if (!(E.usage & PROPERTY_USAGE_EDITOR)) {
 			continue;
 		}
-		if (E.hint != PROPERTY_HINT_RESOURCE_TYPE) {
+		if (E.hint != PropertyHint::HINT_RESOURCE_TYPE) {
 			continue;
 		}
 

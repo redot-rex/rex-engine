@@ -705,7 +705,7 @@ DependencyRemoveDialog::DependencyRemoveDialog() {
 	List<PropertyInfo> property_list;
 	ProjectSettings::get_singleton()->get_property_list(&property_list);
 	for (const PropertyInfo &pi : property_list) {
-		if (pi.type == Variant::STRING && pi.hint == PROPERTY_HINT_FILE) {
+		if (pi.type == Variant::STRING && pi.hint == PropertyHint::HINT_FILE) {
 			path_project_settings.push_back(pi.name);
 		}
 	}

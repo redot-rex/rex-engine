@@ -183,7 +183,7 @@ bool EditorInspector::_resource_properties_matches(const Ref<Resource> &p_resour
 		}
 
 		// Check if the sub-resource has any properties that match the filter.
-		if (p.hint && p.hint == PROPERTY_HINT_RESOURCE_TYPE) {
+		if (static_cast<int>(p.hint) && p.hint == PropertyHint::HINT_RESOURCE_TYPE) {
 			Ref<Resource> res = p_resource->get(p.name);
 			if (res.is_valid() && _resource_properties_matches(res, p_filter)) {
 				return true;
@@ -1392,16 +1392,16 @@ void EditorProperty::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "use_folding"), "set_use_folding", "is_using_folding");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "name_split_ratio"), "set_name_split_ratio", "get_name_split_ratio");
 
-	ADD_SIGNAL(MethodInfo("property_changed", PropertyInfo(Variant::STRING_NAME, "property"), PropertyInfo(Variant::NIL, "value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), PropertyInfo(Variant::STRING_NAME, "field"), PropertyInfo(Variant::BOOL, "changing")));
+	ADD_SIGNAL(MethodInfo("property_changed", PropertyInfo(Variant::STRING_NAME, "property"), PropertyInfo(Variant::NIL, "value", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), PropertyInfo(Variant::STRING_NAME, "field"), PropertyInfo(Variant::BOOL, "changing")));
 	ADD_SIGNAL(MethodInfo("multiple_properties_changed", PropertyInfo(Variant::PACKED_STRING_ARRAY, "properties"), PropertyInfo(Variant::ARRAY, "value")));
 	ADD_SIGNAL(MethodInfo("property_keyed", PropertyInfo(Variant::STRING_NAME, "property")));
 	ADD_SIGNAL(MethodInfo("property_deleted", PropertyInfo(Variant::STRING_NAME, "property")));
-	ADD_SIGNAL(MethodInfo("property_keyed_with_value", PropertyInfo(Variant::STRING_NAME, "property"), PropertyInfo(Variant::NIL, "value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT)));
+	ADD_SIGNAL(MethodInfo("property_keyed_with_value", PropertyInfo(Variant::STRING_NAME, "property"), PropertyInfo(Variant::NIL, "value", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT)));
 	ADD_SIGNAL(MethodInfo("property_checked", PropertyInfo(Variant::STRING_NAME, "property"), PropertyInfo(Variant::BOOL, "checked")));
 	ADD_SIGNAL(MethodInfo("property_favorited", PropertyInfo(Variant::STRING_NAME, "property"), PropertyInfo(Variant::BOOL, "favorited")));
 	ADD_SIGNAL(MethodInfo("property_pinned", PropertyInfo(Variant::STRING_NAME, "property"), PropertyInfo(Variant::BOOL, "pinned")));
 	ADD_SIGNAL(MethodInfo("property_can_revert_changed", PropertyInfo(Variant::STRING_NAME, "property"), PropertyInfo(Variant::BOOL, "can_revert")));
-	ADD_SIGNAL(MethodInfo("resource_selected", PropertyInfo(Variant::STRING, "path"), PropertyInfo(Variant::OBJECT, "resource", PROPERTY_HINT_RESOURCE_TYPE, "Resource")));
+	ADD_SIGNAL(MethodInfo("resource_selected", PropertyInfo(Variant::STRING, "path"), PropertyInfo(Variant::OBJECT, "resource", PropertyHint::HINT_RESOURCE_TYPE, "Resource")));
 	ADD_SIGNAL(MethodInfo("object_id_selected", PropertyInfo(Variant::STRING_NAME, "property"), PropertyInfo(Variant::INT, "id")));
 	ADD_SIGNAL(MethodInfo("selected", PropertyInfo(Variant::STRING, "path"), PropertyInfo(Variant::INT, "focusable_idx")));
 
@@ -3770,7 +3770,7 @@ void EditorInspector::update_tree() {
 		if (use_filter && !filter.is_empty()) {
 			const String property_path = property_prefix + (path.is_empty() ? "" : path + "/") + name_override;
 			if (!_property_path_matches(property_path, filter, property_name_style)) {
-				if (!sub_inspectors_enabled || p.hint != PROPERTY_HINT_RESOURCE_TYPE) {
+				if (!sub_inspectors_enabled || p.hint != PropertyHint::HINT_RESOURCE_TYPE) {
 					continue;
 				}
 
@@ -4060,7 +4060,7 @@ void EditorInspector::update_tree() {
 		}
 
 		// Only used for boolean types. Makes the section header a checkable group and adds tooltips.
-		if (p.hint == PROPERTY_HINT_GROUP_ENABLE) {
+		if (p.hint == PropertyHint::HINT_GROUP_ENABLE) {
 			if (p.type == Variant::BOOL && (p.name.begins_with(group_base) || p.name.begins_with(subgroup_base))) {
 				EditorInspectorSection *last_created_section = Object::cast_to<EditorInspectorSection>(current_vbox->get_parent());
 				if (last_created_section) {
@@ -4078,7 +4078,7 @@ void EditorInspector::update_tree() {
 					}
 				}
 			} else {
-				ERR_PRINT("PROPERTY_HINT_GROUP_ENABLE can only be used on boolean types and must have the same prefix as the group.");
+				ERR_PRINT("PropertyHint::HINT_GROUP_ENABLE can only be used on boolean types and must have the same prefix as the group.");
 			}
 		}
 
@@ -5327,9 +5327,9 @@ void EditorInspector::_bind_methods() {
 	ClassDB::bind_static_method("EditorInspector", D_METHOD("instantiate_property_editor", "object", "type", "path", "hint", "hint_text", "usage", "wide"), &EditorInspector::instantiate_property_editor, DEFVAL(false));
 
 	ADD_SIGNAL(MethodInfo("property_selected", PropertyInfo(Variant::STRING, "property")));
-	ADD_SIGNAL(MethodInfo("property_keyed", PropertyInfo(Variant::STRING, "property"), PropertyInfo(Variant::NIL, "value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), PropertyInfo(Variant::BOOL, "advance")));
+	ADD_SIGNAL(MethodInfo("property_keyed", PropertyInfo(Variant::STRING, "property"), PropertyInfo(Variant::NIL, "value", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), PropertyInfo(Variant::BOOL, "advance")));
 	ADD_SIGNAL(MethodInfo("property_deleted", PropertyInfo(Variant::STRING, "property")));
-	ADD_SIGNAL(MethodInfo("resource_selected", PropertyInfo(Variant::OBJECT, "resource", PROPERTY_HINT_RESOURCE_TYPE, "Resource"), PropertyInfo(Variant::STRING, "path")));
+	ADD_SIGNAL(MethodInfo("resource_selected", PropertyInfo(Variant::OBJECT, "resource", PropertyHint::HINT_RESOURCE_TYPE, "Resource"), PropertyInfo(Variant::STRING, "path")));
 	ADD_SIGNAL(MethodInfo("object_id_selected", PropertyInfo(Variant::INT, "id")));
 	ADD_SIGNAL(MethodInfo("property_edited", PropertyInfo(Variant::STRING, "property")));
 	ADD_SIGNAL(MethodInfo("property_toggled", PropertyInfo(Variant::STRING, "property"), PropertyInfo(Variant::BOOL, "checked")));

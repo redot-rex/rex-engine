@@ -285,50 +285,50 @@ void SpringBoneSimulator3D::_get_property_list(List<PropertyInfo> *p_list) const
 
 	for (int i = 0; i < settings.size(); i++) {
 		String path = "settings/" + itos(i) + "/";
-		p_list->push_back(PropertyInfo(Variant::STRING, path + "root_bone_name", PROPERTY_HINT_ENUM_SUGGESTION, enum_hint));
-		p_list->push_back(PropertyInfo(Variant::INT, path + "root_bone", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR));
-		p_list->push_back(PropertyInfo(Variant::STRING, path + "end_bone_name", PROPERTY_HINT_ENUM_SUGGESTION, enum_hint));
-		p_list->push_back(PropertyInfo(Variant::INT, path + "end_bone", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR));
+		p_list->push_back(PropertyInfo(Variant::STRING, path + "root_bone_name", PropertyHint::HINT_ENUM_SUGGESTION, enum_hint));
+		p_list->push_back(PropertyInfo(Variant::INT, path + "root_bone", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR));
+		p_list->push_back(PropertyInfo(Variant::STRING, path + "end_bone_name", PropertyHint::HINT_ENUM_SUGGESTION, enum_hint));
+		p_list->push_back(PropertyInfo(Variant::INT, path + "end_bone", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR));
 		p_list->push_back(PropertyInfo(Variant::BOOL, path + "extend_end_bone"));
-		p_list->push_back(PropertyInfo(Variant::INT, path + "end_bone/direction", PROPERTY_HINT_ENUM, "+X,-X,+Y,-Y,+Z,-Z,FromParent"));
-		p_list->push_back(PropertyInfo(Variant::FLOAT, path + "end_bone/length", PROPERTY_HINT_RANGE, "0,1,0.001,or_greater,suffix:m"));
-		p_list->push_back(PropertyInfo(Variant::INT, path + "center_from", PROPERTY_HINT_ENUM, "WorldOrigin,Node,Bone"));
+		p_list->push_back(PropertyInfo(Variant::INT, path + "end_bone/direction", PropertyHint::HINT_ENUM, "+X,-X,+Y,-Y,+Z,-Z,FromParent"));
+		p_list->push_back(PropertyInfo(Variant::FLOAT, path + "end_bone/length", PropertyHint::HINT_RANGE, "0,1,0.001,or_greater,suffix:m"));
+		p_list->push_back(PropertyInfo(Variant::INT, path + "center_from", PropertyHint::HINT_ENUM, "WorldOrigin,Node,Bone"));
 		p_list->push_back(PropertyInfo(Variant::NODE_PATH, path + "center_node"));
-		p_list->push_back(PropertyInfo(Variant::STRING, path + "center_bone_name", PROPERTY_HINT_ENUM_SUGGESTION, enum_hint));
-		p_list->push_back(PropertyInfo(Variant::INT, path + "center_bone", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR));
+		p_list->push_back(PropertyInfo(Variant::STRING, path + "center_bone_name", PropertyHint::HINT_ENUM_SUGGESTION, enum_hint));
+		p_list->push_back(PropertyInfo(Variant::INT, path + "center_bone", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR));
 		p_list->push_back(PropertyInfo(Variant::BOOL, path + "individual_config"));
-		p_list->push_back(PropertyInfo(Variant::INT, path + "rotation_axis", PROPERTY_HINT_ENUM, "X,Y,Z,All"));
-		p_list->push_back(PropertyInfo(Variant::FLOAT, path + "radius/value", PROPERTY_HINT_RANGE, "0,1,0.001,or_greater,suffix:m"));
-		p_list->push_back(PropertyInfo(Variant::OBJECT, path + "radius/damping_curve", PROPERTY_HINT_RESOURCE_TYPE, "Curve"));
-		p_list->push_back(PropertyInfo(Variant::FLOAT, path + "stiffness/value", PROPERTY_HINT_RANGE, "0,4,0.01,or_greater"));
-		p_list->push_back(PropertyInfo(Variant::OBJECT, path + "stiffness/damping_curve", PROPERTY_HINT_RESOURCE_TYPE, "Curve"));
-		p_list->push_back(PropertyInfo(Variant::FLOAT, path + "drag/value", PROPERTY_HINT_RANGE, "0,1,0.01,or_greater"));
-		p_list->push_back(PropertyInfo(Variant::OBJECT, path + "drag/damping_curve", PROPERTY_HINT_RESOURCE_TYPE, "Curve"));
-		p_list->push_back(PropertyInfo(Variant::FLOAT, path + "gravity/value", PROPERTY_HINT_RANGE, "0,1,0.01,or_greater,or_less,suffix:m/s"));
-		p_list->push_back(PropertyInfo(Variant::OBJECT, path + "gravity/damping_curve", PROPERTY_HINT_RESOURCE_TYPE, "Curve"));
+		p_list->push_back(PropertyInfo(Variant::INT, path + "rotation_axis", PropertyHint::HINT_ENUM, "X,Y,Z,All"));
+		p_list->push_back(PropertyInfo(Variant::FLOAT, path + "radius/value", PropertyHint::HINT_RANGE, "0,1,0.001,or_greater,suffix:m"));
+		p_list->push_back(PropertyInfo(Variant::OBJECT, path + "radius/damping_curve", PropertyHint::HINT_RESOURCE_TYPE, "Curve"));
+		p_list->push_back(PropertyInfo(Variant::FLOAT, path + "stiffness/value", PropertyHint::HINT_RANGE, "0,4,0.01,or_greater"));
+		p_list->push_back(PropertyInfo(Variant::OBJECT, path + "stiffness/damping_curve", PropertyHint::HINT_RESOURCE_TYPE, "Curve"));
+		p_list->push_back(PropertyInfo(Variant::FLOAT, path + "drag/value", PropertyHint::HINT_RANGE, "0,1,0.01,or_greater"));
+		p_list->push_back(PropertyInfo(Variant::OBJECT, path + "drag/damping_curve", PropertyHint::HINT_RESOURCE_TYPE, "Curve"));
+		p_list->push_back(PropertyInfo(Variant::FLOAT, path + "gravity/value", PropertyHint::HINT_RANGE, "0,1,0.01,or_greater,or_less,suffix:m/s"));
+		p_list->push_back(PropertyInfo(Variant::OBJECT, path + "gravity/damping_curve", PropertyHint::HINT_RESOURCE_TYPE, "Curve"));
 		p_list->push_back(PropertyInfo(Variant::VECTOR3, path + "gravity/direction"));
-		p_list->push_back(PropertyInfo(Variant::INT, path + "joint_count", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_ARRAY, "Joints," + path + "joints/,static,const"));
+		p_list->push_back(PropertyInfo(Variant::INT, path + "joint_count", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_ARRAY, "Joints," + path + "joints/,static,const"));
 		for (int j = 0; j < settings[i]->joints.size(); j++) {
 			String joint_path = path + "joints/" + itos(j) + "/";
-			p_list->push_back(PropertyInfo(Variant::STRING, joint_path + "bone_name", PROPERTY_HINT_ENUM_SUGGESTION, enum_hint, PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY | PROPERTY_USAGE_STORAGE));
-			p_list->push_back(PropertyInfo(Variant::INT, joint_path + "bone", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_READ_ONLY));
-			p_list->push_back(PropertyInfo(Variant::INT, joint_path + "rotation_axis", PROPERTY_HINT_ENUM, "X,Y,Z,All"));
-			p_list->push_back(PropertyInfo(Variant::FLOAT, joint_path + "radius", PROPERTY_HINT_RANGE, "0,1,0.001,or_greater,suffix:m"));
-			p_list->push_back(PropertyInfo(Variant::FLOAT, joint_path + "stiffness", PROPERTY_HINT_RANGE, "0,4,0.01,or_greater"));
-			p_list->push_back(PropertyInfo(Variant::FLOAT, joint_path + "drag", PROPERTY_HINT_RANGE, "0,1,0.01,or_greater"));
-			p_list->push_back(PropertyInfo(Variant::FLOAT, joint_path + "gravity", PROPERTY_HINT_RANGE, "0,1,0.01,or_greater,or_less,suffix:m/s"));
+			p_list->push_back(PropertyInfo(Variant::STRING, joint_path + "bone_name", PropertyHint::HINT_ENUM_SUGGESTION, enum_hint, PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY | PROPERTY_USAGE_STORAGE));
+			p_list->push_back(PropertyInfo(Variant::INT, joint_path + "bone", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_READ_ONLY));
+			p_list->push_back(PropertyInfo(Variant::INT, joint_path + "rotation_axis", PropertyHint::HINT_ENUM, "X,Y,Z,All"));
+			p_list->push_back(PropertyInfo(Variant::FLOAT, joint_path + "radius", PropertyHint::HINT_RANGE, "0,1,0.001,or_greater,suffix:m"));
+			p_list->push_back(PropertyInfo(Variant::FLOAT, joint_path + "stiffness", PropertyHint::HINT_RANGE, "0,4,0.01,or_greater"));
+			p_list->push_back(PropertyInfo(Variant::FLOAT, joint_path + "drag", PropertyHint::HINT_RANGE, "0,1,0.01,or_greater"));
+			p_list->push_back(PropertyInfo(Variant::FLOAT, joint_path + "gravity", PropertyHint::HINT_RANGE, "0,1,0.01,or_greater,or_less,suffix:m/s"));
 			p_list->push_back(PropertyInfo(Variant::VECTOR3, joint_path + "gravity_direction"));
 		}
 		p_list->push_back(PropertyInfo(Variant::BOOL, path + "enable_all_child_collisions"));
-		p_list->push_back(PropertyInfo(Variant::INT, path + "exclude_collision_count", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_ARRAY, "Exclude Collisions," + path + "exclude_collisions/"));
+		p_list->push_back(PropertyInfo(Variant::INT, path + "exclude_collision_count", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_ARRAY, "Exclude Collisions," + path + "exclude_collisions/"));
 		for (int j = 0; j < settings[i]->exclude_collisions.size(); j++) {
 			String collision_path = path + "exclude_collisions/" + itos(j);
-			p_list->push_back(PropertyInfo(Variant::NODE_PATH, collision_path, PROPERTY_HINT_NODE_PATH_VALID_TYPES, "SpringBoneCollision3D"));
+			p_list->push_back(PropertyInfo(Variant::NODE_PATH, collision_path, PropertyHint::HINT_NODE_PATH_VALID_TYPES, "SpringBoneCollision3D"));
 		}
-		p_list->push_back(PropertyInfo(Variant::INT, path + "collision_count", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_ARRAY, "Collisions," + path + "collisions/"));
+		p_list->push_back(PropertyInfo(Variant::INT, path + "collision_count", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_ARRAY, "Collisions," + path + "collisions/"));
 		for (int j = 0; j < settings[i]->collisions.size(); j++) {
 			String collision_path = path + "collisions/" + itos(j);
-			p_list->push_back(PropertyInfo(Variant::NODE_PATH, collision_path, PROPERTY_HINT_NODE_PATH_VALID_TYPES, "SpringBoneCollision3D"));
+			p_list->push_back(PropertyInfo(Variant::NODE_PATH, collision_path, PropertyHint::HINT_NODE_PATH_VALID_TYPES, "SpringBoneCollision3D"));
 		}
 	}
 
@@ -1221,7 +1221,7 @@ void SpringBoneSimulator3D::_bind_methods() {
 	// To process manually.
 	ClassDB::bind_method(D_METHOD("reset"), &SpringBoneSimulator3D::reset);
 
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "external_force", PROPERTY_HINT_RANGE, "-99999,99999,or_greater,or_less,hide_slider,suffix:m/s"), "set_external_force", "get_external_force");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "external_force", PropertyHint::HINT_RANGE, "-99999,99999,or_greater,or_less,hide_slider,suffix:m/s"), "set_external_force", "get_external_force");
 	ADD_ARRAY_COUNT("Settings", "setting_count", "set_setting_count", "get_setting_count", "settings/");
 
 	BIND_ENUM_CONSTANT(BONE_DIRECTION_PLUS_X);

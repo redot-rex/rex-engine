@@ -277,7 +277,7 @@ protected:
 		ADD_PROPERTYI(PropertyInfo(Variant::STRING, "source_tesselation_evaluation"), "set_stage_source", "get_stage_source", RD::SHADER_STAGE_TESSELATION_EVALUATION);
 		ADD_PROPERTYI(PropertyInfo(Variant::STRING, "source_compute"), "set_stage_source", "get_stage_source", RD::SHADER_STAGE_COMPUTE);
 		ADD_GROUP("Syntax", "source_");
-		ADD_PROPERTY(PropertyInfo(Variant::INT, "language", PROPERTY_HINT_RANGE, "GLSL,HLSL"), "set_language", "get_language");
+		ADD_PROPERTY(PropertyInfo(Variant::INT, "language", PropertyHint::HINT_RANGE, "GLSL,HLSL"), "set_language", "get_language");
 	}
 };
 
@@ -448,7 +448,7 @@ protected:
 		ClassDB::bind_method(D_METHOD("_set_versions", "versions"), &RDShaderFile::_set_versions);
 		ClassDB::bind_method(D_METHOD("_get_versions"), &RDShaderFile::_get_versions);
 
-		ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "_versions", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_versions", "_get_versions");
+		ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "_versions", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_versions", "_get_versions");
 		ADD_PROPERTY(PropertyInfo(Variant::STRING, "base_error"), "set_base_error", "get_base_error");
 	}
 };
@@ -489,7 +489,7 @@ protected:
 		ClassDB::bind_method(D_METHOD("clear_ids"), &RDUniform::clear_ids);
 		ClassDB::bind_method(D_METHOD("_set_ids", "ids"), &RDUniform::_set_ids);
 		ClassDB::bind_method(D_METHOD("get_ids"), &RDUniform::get_ids);
-		ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "_ids", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_INTERNAL), "_set_ids", "get_ids");
+		ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "_ids", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_INTERNAL), "_set_ids", "get_ids");
 	}
 };
 
@@ -522,8 +522,8 @@ protected:
 		ClassDB::bind_method(D_METHOD("set_constant_id", "constant_id"), &RDPipelineSpecializationConstant::set_constant_id);
 		ClassDB::bind_method(D_METHOD("get_constant_id"), &RDPipelineSpecializationConstant::get_constant_id);
 
-		ADD_PROPERTY(PropertyInfo(Variant::NIL, "value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), "set_value", "get_value");
-		ADD_PROPERTY(PropertyInfo(Variant::INT, "constant_id", PROPERTY_HINT_RANGE, "0,65535,0"), "set_constant_id", "get_constant_id");
+		ADD_PROPERTY(PropertyInfo(Variant::NIL, "value", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NIL_IS_VARIANT), "set_value", "get_value");
+		ADD_PROPERTY(PropertyInfo(Variant::INT, "constant_id", PropertyHint::HINT_RANGE, "0,65535,0"), "set_constant_id", "get_constant_id");
 	}
 };
 
@@ -589,7 +589,7 @@ protected:
 
 		ClassDB::bind_method(D_METHOD("set_sample_masks", "masks"), &RDPipelineMultisampleState::set_sample_masks);
 		ClassDB::bind_method(D_METHOD("get_sample_masks"), &RDPipelineMultisampleState::get_sample_masks);
-		ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "sample_masks", PROPERTY_HINT_ARRAY_TYPE, "int"), "set_sample_masks", "get_sample_masks");
+		ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "sample_masks", PropertyHint::HINT_ARRAY_TYPE, "int"), "set_sample_masks", "get_sample_masks");
 	}
 };
 
@@ -725,6 +725,6 @@ protected:
 
 		ClassDB::bind_method(D_METHOD("set_attachments", "attachments"), &RDPipelineColorBlendState::set_attachments);
 		ClassDB::bind_method(D_METHOD("get_attachments"), &RDPipelineColorBlendState::get_attachments);
-		ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "attachments", PROPERTY_HINT_ARRAY_TYPE, "RDPipelineColorBlendStateAttachment"), "set_attachments", "get_attachments");
+		ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "attachments", PropertyHint::HINT_ARRAY_TYPE, "RDPipelineColorBlendStateAttachment"), "set_attachments", "get_attachments");
 	}
 };

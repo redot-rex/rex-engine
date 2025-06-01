@@ -508,7 +508,7 @@ void GDScriptLanguage::get_public_functions(List<MethodInfo> *p_functions) const
 		MethodInfo mi;
 		mi.name = "preload";
 		mi.arguments.push_back(PropertyInfo(Variant::STRING, "path"));
-		mi.return_val = PropertyInfo(Variant::OBJECT, "", PROPERTY_HINT_RESOURCE_TYPE, "Resource");
+		mi.return_val = PropertyInfo(Variant::OBJECT, "", PropertyHint::HINT_RESOURCE_TYPE, "Resource");
 		p_functions->push_back(mi);
 	}
 	{
@@ -756,9 +756,9 @@ static String _get_visual_datatype(const PropertyInfo &p_info, bool p_is_arg, co
 			return class_name;
 		}
 		return _trim_parent_class(class_name, p_base_class);
-	} else if (p_info.type == Variant::ARRAY && p_info.hint == PROPERTY_HINT_ARRAY_TYPE && !p_info.hint_string.is_empty()) {
+	} else if (p_info.type == Variant::ARRAY && p_info.hint == PropertyHint::HINT_ARRAY_TYPE && !p_info.hint_string.is_empty()) {
 		return "Array[" + _trim_parent_class(p_info.hint_string, p_base_class) + "]";
-	} else if (p_info.type == Variant::DICTIONARY && p_info.hint == PROPERTY_HINT_DICTIONARY_TYPE && !p_info.hint_string.is_empty()) {
+	} else if (p_info.type == Variant::DICTIONARY && p_info.hint == PropertyHint::HINT_DICTIONARY_TYPE && !p_info.hint_string.is_empty()) {
 		const String key = p_info.hint_string.get_slicec(';', 0);
 		const String value = p_info.hint_string.get_slicec(';', 1);
 		return "Dictionary[" + _trim_parent_class(key, p_base_class) + ", " + _trim_parent_class(value, p_base_class) + "]";
@@ -3240,7 +3240,7 @@ static void _find_call_arguments(GDScriptParser::CompletionContext &p_context, c
 			_get_directory_contents(EditorFileSystem::get_singleton()->get_filesystem(), r_result);
 		}
 
-		MethodInfo mi(PropertyInfo(Variant::OBJECT, "resource", PROPERTY_HINT_RESOURCE_TYPE, "Resource"), "preload", PropertyInfo(Variant::STRING, "path"));
+		MethodInfo mi(PropertyInfo(Variant::OBJECT, "resource", PropertyHint::HINT_RESOURCE_TYPE, "Resource"), "preload", PropertyInfo(Variant::STRING, "path"));
 		r_arghint = _make_arguments_hint(mi, p_argidx);
 		return;
 	} else if (p_call->type != GDScriptParser::Node::CALL) {

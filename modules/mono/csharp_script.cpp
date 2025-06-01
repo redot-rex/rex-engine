@@ -118,7 +118,7 @@ void CSharpLanguage::init() {
 	GLOBAL_DEF("dotnet/project/assembly_name", "");
 #ifdef TOOLS_ENABLED
 	GLOBAL_DEF("dotnet/project/solution_directory", "");
-	GLOBAL_DEF(PropertyInfo(Variant::INT, "dotnet/project/assembly_reload_attempts", PROPERTY_HINT_RANGE, "1,16,1,or_greater"), 3);
+	GLOBAL_DEF(PropertyInfo(Variant::INT, "dotnet/project/assembly_reload_attempts", PropertyHint::HINT_RANGE, "1,16,1,or_greater"), 3);
 #endif
 
 #ifdef TOOLS_ENABLED
@@ -2057,7 +2057,7 @@ void GD_CLR_STDCALL CSharpScript::_add_property_info_list_callback(CSharpScript 
 
 #ifdef TOOLS_ENABLED
 	p_script->exported_members_cache.push_back(PropertyInfo(
-			Variant::NIL, p_script->type_info.class_name, PROPERTY_HINT_NONE,
+			Variant::NIL, p_script->type_info.class_name, PropertyHint::HINT_NONE,
 			p_script->get_path(), PROPERTY_USAGE_CATEGORY));
 #endif
 
@@ -2192,7 +2192,7 @@ bool CSharpScript::_set(const StringName &p_name, const Variant &p_value) {
 }
 
 void CSharpScript::_get_property_list(List<PropertyInfo> *p_properties) const {
-	p_properties->push_back(PropertyInfo(Variant::STRING, SNAME("script/source"), PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
+	p_properties->push_back(PropertyInfo(Variant::STRING, SNAME("script/source"), PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
 }
 
 void CSharpScript::_bind_methods() {

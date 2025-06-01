@@ -4828,8 +4828,8 @@ PropertyInfo ShaderLanguage::uniform_to_property_info(const ShaderNode::Uniform 
 		case ShaderLanguage::TYPE_BOOL:
 			if (p_uniform.array_size > 0) {
 				pi.type = Variant::PACKED_INT32_ARRAY;
-				pi.hint = PROPERTY_HINT_TYPE_STRING;
-				pi.hint_string = itos(Variant::INT) + "/" + itos(PROPERTY_HINT_FLAGS) + ":" + RTR("On");
+				pi.hint = PropertyHint::HINT_TYPE_STRING;
+				pi.hint_string = itos(Variant::INT) + "/" + itos(static_cast<int>(PropertyHint::HINT_FLAGS)) + ":" + RTR("On");
 			} else {
 				pi.type = Variant::BOOL;
 			}
@@ -4837,33 +4837,33 @@ PropertyInfo ShaderLanguage::uniform_to_property_info(const ShaderNode::Uniform 
 		case ShaderLanguage::TYPE_BVEC2:
 			if (p_uniform.array_size > 0) {
 				pi.type = Variant::PACKED_INT32_ARRAY;
-				pi.hint = PROPERTY_HINT_TYPE_STRING;
-				pi.hint_string = itos(Variant::INT) + "/" + itos(PROPERTY_HINT_FLAGS) + ":x,y";
+				pi.hint = PropertyHint::HINT_TYPE_STRING;
+				pi.hint_string = itos(Variant::INT) + "/" + itos(static_cast<int>(PropertyHint::HINT_FLAGS)) + ":x,y";
 			} else {
 				pi.type = Variant::INT;
-				pi.hint = PROPERTY_HINT_FLAGS;
+				pi.hint = PropertyHint::HINT_FLAGS;
 				pi.hint_string = "x,y";
 			}
 			break;
 		case ShaderLanguage::TYPE_BVEC3:
 			if (p_uniform.array_size > 0) {
 				pi.type = Variant::PACKED_INT32_ARRAY;
-				pi.hint = PROPERTY_HINT_TYPE_STRING;
-				pi.hint_string = itos(Variant::INT) + "/" + itos(PROPERTY_HINT_FLAGS) + ":x,y,z";
+				pi.hint = PropertyHint::HINT_TYPE_STRING;
+				pi.hint_string = itos(Variant::INT) + "/" + itos(static_cast<int>(PropertyHint::HINT_FLAGS)) + ":x,y,z";
 			} else {
 				pi.type = Variant::INT;
-				pi.hint = PROPERTY_HINT_FLAGS;
+				pi.hint = PropertyHint::HINT_FLAGS;
 				pi.hint_string = "x,y,z";
 			}
 			break;
 		case ShaderLanguage::TYPE_BVEC4:
 			if (p_uniform.array_size > 0) {
 				pi.type = Variant::PACKED_INT32_ARRAY;
-				pi.hint = PROPERTY_HINT_TYPE_STRING;
-				pi.hint_string = itos(Variant::INT) + "/" + itos(PROPERTY_HINT_FLAGS) + ":x,y,z,w";
+				pi.hint = PropertyHint::HINT_TYPE_STRING;
+				pi.hint_string = itos(Variant::INT) + "/" + itos(static_cast<int>(PropertyHint::HINT_FLAGS)) + ":x,y,z,w";
 			} else {
 				pi.type = Variant::INT;
-				pi.hint = PROPERTY_HINT_FLAGS;
+				pi.hint = PropertyHint::HINT_FLAGS;
 				pi.hint_string = "x,y,z,w";
 			}
 			break;
@@ -4874,12 +4874,12 @@ PropertyInfo ShaderLanguage::uniform_to_property_info(const ShaderNode::Uniform 
 				// TODO: Handle range and encoding for for unsigned values.
 			} else if (p_uniform.hint == ShaderLanguage::ShaderNode::Uniform::HINT_ENUM) {
 				pi.type = Variant::INT;
-				pi.hint = PROPERTY_HINT_ENUM;
+				pi.hint = PropertyHint::HINT_ENUM;
 				String hint_string;
 				pi.hint_string = String(",").join(p_uniform.hint_enum_names);
 			} else {
 				pi.type = Variant::INT;
-				pi.hint = PROPERTY_HINT_RANGE;
+				pi.hint = PropertyHint::HINT_RANGE;
 				if (p_uniform.hint == ShaderLanguage::ShaderNode::Uniform::HINT_RANGE) {
 					pi.hint_string = rtos(p_uniform.hint_range[0]) + "," + rtos(p_uniform.hint_range[1]) + "," + rtos(p_uniform.hint_range[2]);
 				} else if (p_uniform.type == ShaderLanguage::TYPE_UINT) {
@@ -4922,7 +4922,7 @@ PropertyInfo ShaderLanguage::uniform_to_property_info(const ShaderNode::Uniform 
 			} else {
 				pi.type = Variant::FLOAT;
 				if (p_uniform.hint == ShaderLanguage::ShaderNode::Uniform::HINT_RANGE) {
-					pi.hint = PROPERTY_HINT_RANGE;
+					pi.hint = PropertyHint::HINT_RANGE;
 					pi.hint_string = rtos(p_uniform.hint_range[0]) + "," + rtos(p_uniform.hint_range[1]) + "," + rtos(p_uniform.hint_range[2]);
 				}
 			}
@@ -4937,14 +4937,14 @@ PropertyInfo ShaderLanguage::uniform_to_property_info(const ShaderNode::Uniform 
 		case ShaderLanguage::TYPE_VEC3:
 			if (p_uniform.array_size > 0) {
 				if (ShaderLanguage::is_hint_color(p_uniform.hint)) {
-					pi.hint = PROPERTY_HINT_COLOR_NO_ALPHA;
+					pi.hint = PropertyHint::HINT_COLOR_NO_ALPHA;
 					pi.type = Variant::PACKED_COLOR_ARRAY;
 				} else {
 					pi.type = Variant::PACKED_VECTOR3_ARRAY;
 				}
 			} else {
 				if (ShaderLanguage::is_hint_color(p_uniform.hint)) {
-					pi.hint = PROPERTY_HINT_COLOR_NO_ALPHA;
+					pi.hint = PropertyHint::HINT_COLOR_NO_ALPHA;
 					pi.type = Variant::COLOR;
 				} else {
 					pi.type = Variant::VECTOR3;
@@ -4992,11 +4992,11 @@ PropertyInfo ShaderLanguage::uniform_to_property_info(const ShaderNode::Uniform 
 		case ShaderLanguage::TYPE_USAMPLER2D: {
 			if (p_uniform.array_size > 0) {
 				pi.type = Variant::ARRAY;
-				pi.hint = PROPERTY_HINT_ARRAY_TYPE;
+				pi.hint = PropertyHint::HINT_ARRAY_TYPE;
 				pi.hint_string = MAKE_RESOURCE_TYPE_HINT("Texture2D");
 			} else {
 				pi.type = Variant::OBJECT;
-				pi.hint = PROPERTY_HINT_RESOURCE_TYPE;
+				pi.hint = PropertyHint::HINT_RESOURCE_TYPE;
 				pi.hint_string = "Texture2D";
 			}
 		} break;
@@ -5007,11 +5007,11 @@ PropertyInfo ShaderLanguage::uniform_to_property_info(const ShaderNode::Uniform 
 		case ShaderLanguage::TYPE_SAMPLERCUBEARRAY: {
 			if (p_uniform.array_size > 0) {
 				pi.type = Variant::ARRAY;
-				pi.hint = PROPERTY_HINT_ARRAY_TYPE;
+				pi.hint = PropertyHint::HINT_ARRAY_TYPE;
 				pi.hint_string = MAKE_RESOURCE_TYPE_HINT("TextureLayered");
 			} else {
 				pi.type = Variant::OBJECT;
-				pi.hint = PROPERTY_HINT_RESOURCE_TYPE;
+				pi.hint = PropertyHint::HINT_RESOURCE_TYPE;
 				pi.hint_string = "TextureLayered";
 			}
 		} break;
@@ -5020,22 +5020,22 @@ PropertyInfo ShaderLanguage::uniform_to_property_info(const ShaderNode::Uniform 
 		case ShaderLanguage::TYPE_USAMPLER3D: {
 			if (p_uniform.array_size > 0) {
 				pi.type = Variant::ARRAY;
-				pi.hint = PROPERTY_HINT_ARRAY_TYPE;
+				pi.hint = PropertyHint::HINT_ARRAY_TYPE;
 				pi.hint_string = MAKE_RESOURCE_TYPE_HINT("Texture3D");
 			} else {
 				pi.type = Variant::OBJECT;
-				pi.hint = PROPERTY_HINT_RESOURCE_TYPE;
+				pi.hint = PropertyHint::HINT_RESOURCE_TYPE;
 				pi.hint_string = "Texture3D";
 			}
 		} break;
 		case ShaderLanguage::TYPE_SAMPLEREXT: {
 			if (p_uniform.array_size > 0) {
 				pi.type = Variant::ARRAY;
-				pi.hint = PROPERTY_HINT_ARRAY_TYPE;
+				pi.hint = PropertyHint::HINT_ARRAY_TYPE;
 				pi.hint_string = MAKE_RESOURCE_TYPE_HINT("ExternalTexture");
 			} else {
 				pi.type = Variant::OBJECT;
-				pi.hint = PROPERTY_HINT_RESOURCE_TYPE;
+				pi.hint = PropertyHint::HINT_RESOURCE_TYPE;
 				pi.hint_string = "ExternalTexture";
 			}
 		} break;

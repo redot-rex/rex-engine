@@ -70,7 +70,7 @@ bool MultiplayerSpawner::_get(const StringName &p_name, Variant &r_ret) const {
 }
 
 void MultiplayerSpawner::_get_property_list(List<PropertyInfo> *p_list) const {
-	p_list->push_back(PropertyInfo(Variant::INT, "_spawnable_scene_count", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_ARRAY, "Auto Spawn List,scenes/"));
+	p_list->push_back(PropertyInfo(Variant::INT, "_spawnable_scene_count", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_ARRAY, "Auto Spawn List,scenes/"));
 	List<String> exts;
 	ResourceLoader::get_recognized_extensions_for_type("PackedScene", &exts);
 	String ext_hint;
@@ -81,7 +81,7 @@ void MultiplayerSpawner::_get_property_list(List<PropertyInfo> *p_list) const {
 		ext_hint += "*." + E;
 	}
 	for (uint32_t i = 0; i < spawnable_scenes.size(); i++) {
-		p_list->push_back(PropertyInfo(Variant::STRING, "scenes/" + itos(i), PROPERTY_HINT_FILE, ext_hint, PROPERTY_USAGE_EDITOR));
+		p_list->push_back(PropertyInfo(Variant::STRING, "scenes/" + itos(i), PropertyHint::HINT_FILE, ext_hint, PROPERTY_USAGE_EDITOR));
 	}
 }
 #endif
@@ -160,24 +160,24 @@ void MultiplayerSpawner::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_get_spawnable_scenes"), &MultiplayerSpawner::_get_spawnable_scenes);
 	ClassDB::bind_method(D_METHOD("_set_spawnable_scenes", "scenes"), &MultiplayerSpawner::_set_spawnable_scenes);
 
-	ADD_PROPERTY(PropertyInfo(Variant::PACKED_STRING_ARRAY, "_spawnable_scenes", PROPERTY_HINT_NONE, "", (PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_INTERNAL)), "_set_spawnable_scenes", "_get_spawnable_scenes");
+	ADD_PROPERTY(PropertyInfo(Variant::PACKED_STRING_ARRAY, "_spawnable_scenes", PropertyHint::HINT_NONE, "", (PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_INTERNAL)), "_set_spawnable_scenes", "_get_spawnable_scenes");
 
 	ClassDB::bind_method(D_METHOD("spawn", "data"), &MultiplayerSpawner::spawn, DEFVAL(Variant()));
 
 	ClassDB::bind_method(D_METHOD("get_spawn_path"), &MultiplayerSpawner::get_spawn_path);
 	ClassDB::bind_method(D_METHOD("set_spawn_path", "path"), &MultiplayerSpawner::set_spawn_path);
-	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "spawn_path", PROPERTY_HINT_NONE, ""), "set_spawn_path", "get_spawn_path");
+	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "spawn_path", PropertyHint::HINT_NONE, ""), "set_spawn_path", "get_spawn_path");
 
 	ClassDB::bind_method(D_METHOD("get_spawn_limit"), &MultiplayerSpawner::get_spawn_limit);
 	ClassDB::bind_method(D_METHOD("set_spawn_limit", "limit"), &MultiplayerSpawner::set_spawn_limit);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "spawn_limit", PROPERTY_HINT_RANGE, "0,1024,1,or_greater"), "set_spawn_limit", "get_spawn_limit");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "spawn_limit", PropertyHint::HINT_RANGE, "0,1024,1,or_greater"), "set_spawn_limit", "get_spawn_limit");
 
 	ClassDB::bind_method(D_METHOD("get_spawn_function"), &MultiplayerSpawner::get_spawn_function);
 	ClassDB::bind_method(D_METHOD("set_spawn_function", "spawn_function"), &MultiplayerSpawner::set_spawn_function);
-	ADD_PROPERTY(PropertyInfo(Variant::CALLABLE, "spawn_function", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_spawn_function", "get_spawn_function");
+	ADD_PROPERTY(PropertyInfo(Variant::CALLABLE, "spawn_function", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NONE), "set_spawn_function", "get_spawn_function");
 
-	ADD_SIGNAL(MethodInfo("despawned", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Node")));
-	ADD_SIGNAL(MethodInfo("spawned", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Node")));
+	ADD_SIGNAL(MethodInfo("despawned", PropertyInfo(Variant::OBJECT, "node", PropertyHint::HINT_RESOURCE_TYPE, "Node")));
+	ADD_SIGNAL(MethodInfo("spawned", PropertyInfo(Variant::OBJECT, "node", PropertyHint::HINT_RESOURCE_TYPE, "Node")));
 }
 
 void MultiplayerSpawner::_update_spawn_node() {

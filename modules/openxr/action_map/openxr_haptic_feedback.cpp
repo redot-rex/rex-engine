@@ -52,7 +52,7 @@ void OpenXRHapticVibration::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_amplitude", "amplitude"), &OpenXRHapticVibration::set_amplitude);
 	ClassDB::bind_method(D_METHOD("get_amplitude"), &OpenXRHapticVibration::get_amplitude);
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "amplitude", PROPERTY_HINT_RANGE, "0.0,1.0,0.01"), "set_amplitude", "get_amplitude");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "amplitude", PropertyHint::HINT_RANGE, "0.0,1.0,0.01"), "set_amplitude", "get_amplitude");
 }
 
 void OpenXRHapticVibration::set_duration(int64_t p_duration) {

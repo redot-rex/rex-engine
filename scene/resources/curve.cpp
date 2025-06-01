@@ -644,7 +644,7 @@ void Curve::_get_property_list(List<PropertyInfo> *p_list) const {
 			pi.usage &= ~PROPERTY_USAGE_STORAGE;
 			p_list->push_back(pi);
 
-			pi = PropertyInfo(Variant::INT, vformat("point_%d/left_mode", i), PROPERTY_HINT_ENUM, "Free,Linear");
+			pi = PropertyInfo(Variant::INT, vformat("point_%d/left_mode", i), PropertyHint::HINT_ENUM, "Free,Linear");
 			pi.usage &= ~PROPERTY_USAGE_STORAGE;
 			p_list->push_back(pi);
 		}
@@ -654,7 +654,7 @@ void Curve::_get_property_list(List<PropertyInfo> *p_list) const {
 			pi.usage &= ~PROPERTY_USAGE_STORAGE;
 			p_list->push_back(pi);
 
-			pi = PropertyInfo(Variant::INT, vformat("point_%d/right_mode", i), PROPERTY_HINT_ENUM, "Free,Linear");
+			pi = PropertyInfo(Variant::INT, vformat("point_%d/right_mode", i), PropertyHint::HINT_ENUM, "Free,Linear");
 			pi.usage &= ~PROPERTY_USAGE_STORAGE;
 			p_list->push_back(pi);
 		}
@@ -699,13 +699,13 @@ void Curve::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_get_data"), &Curve::get_data);
 	ClassDB::bind_method(D_METHOD("_set_data", "data"), &Curve::set_data);
 
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "min_domain", PROPERTY_HINT_RANGE, "-1024,1024,0.01,or_greater,or_less", PROPERTY_USAGE_EDITOR), "set_min_domain", "get_min_domain");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "max_domain", PROPERTY_HINT_RANGE, "-1024,1024,0.01,or_greater,or_less", PROPERTY_USAGE_EDITOR), "set_max_domain", "get_max_domain");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "min_value", PROPERTY_HINT_RANGE, "-1024,1024,0.01,or_greater,or_less", PROPERTY_USAGE_EDITOR), "set_min_value", "get_min_value");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "max_value", PROPERTY_HINT_RANGE, "-1024,1024,0.01,or_greater,or_less", PROPERTY_USAGE_EDITOR), "set_max_value", "get_max_value");
-	ADD_PROPERTY(PropertyInfo(Variant::NIL, "_limits", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_limits", "_get_limits");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "bake_resolution", PROPERTY_HINT_RANGE, "1,1000,1"), "set_bake_resolution", "get_bake_resolution");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "_data", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_data", "_get_data");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "min_domain", PropertyHint::HINT_RANGE, "-1024,1024,0.01,or_greater,or_less", PROPERTY_USAGE_EDITOR), "set_min_domain", "get_min_domain");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "max_domain", PropertyHint::HINT_RANGE, "-1024,1024,0.01,or_greater,or_less", PROPERTY_USAGE_EDITOR), "set_max_domain", "get_max_domain");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "min_value", PropertyHint::HINT_RANGE, "-1024,1024,0.01,or_greater,or_less", PROPERTY_USAGE_EDITOR), "set_min_value", "get_min_value");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "max_value", PropertyHint::HINT_RANGE, "-1024,1024,0.01,or_greater,or_less", PROPERTY_USAGE_EDITOR), "set_max_value", "get_max_value");
+	ADD_PROPERTY(PropertyInfo(Variant::NIL, "_limits", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_limits", "_get_limits");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "bake_resolution", PropertyHint::HINT_RANGE, "1,1000,1"), "set_bake_resolution", "get_bake_resolution");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "_data", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_data", "_get_data");
 	ADD_ARRAY_COUNT("Points", "point_count", "set_point_count", "get_point_count", "point_");
 
 	ADD_SIGNAL(MethodInfo(SIGNAL_RANGE_CHANGED));
@@ -1427,8 +1427,8 @@ void Curve2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_get_data"), &Curve2D::_get_data);
 	ClassDB::bind_method(D_METHOD("_set_data", "data"), &Curve2D::_set_data);
 
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "bake_interval", PROPERTY_HINT_RANGE, "0.01,512,0.01"), "set_bake_interval", "get_bake_interval");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "_data", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_data", "_get_data");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "bake_interval", PropertyHint::HINT_RANGE, "0.01,512,0.01"), "set_bake_interval", "get_bake_interval");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "_data", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_data", "_get_data");
 	ADD_ARRAY_COUNT("Points", "point_count", "set_point_count", "get_point_count", "point_");
 }
 
@@ -2501,8 +2501,8 @@ void Curve3D::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "closed"), "set_closed", "is_closed");
 
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "bake_interval", PROPERTY_HINT_RANGE, "0.01,512,0.01"), "set_bake_interval", "get_bake_interval");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "_data", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_data", "_get_data");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "bake_interval", PropertyHint::HINT_RANGE, "0.01,512,0.01"), "set_bake_interval", "get_bake_interval");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "_data", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_data", "_get_data");
 	ADD_ARRAY_COUNT("Points", "point_count", "set_point_count", "get_point_count", "point_");
 
 	ADD_GROUP("Up Vector", "up_vector_");

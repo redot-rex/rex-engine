@@ -52,17 +52,17 @@ static String get_builtin_or_variant_type_name(const Variant::Type p_type) {
 }
 
 static String get_property_info_type_name(const PropertyInfo &p_info) {
-	if (p_info.type == Variant::INT && (p_info.hint == PROPERTY_HINT_INT_IS_POINTER)) {
+	if (p_info.type == Variant::INT && (p_info.hint == PropertyHint::HINT_INT_IS_POINTER)) {
 		if (p_info.hint_string.is_empty()) {
 			return "void*";
 		} else {
 			return p_info.hint_string + "*";
 		}
 	}
-	if (p_info.type == Variant::ARRAY && (p_info.hint == PROPERTY_HINT_ARRAY_TYPE)) {
+	if (p_info.type == Variant::ARRAY && (p_info.hint == PropertyHint::HINT_ARRAY_TYPE)) {
 		return String("typedarray::") + p_info.hint_string;
 	}
-	if (p_info.type == Variant::DICTIONARY && (p_info.hint == PROPERTY_HINT_DICTIONARY_TYPE)) {
+	if (p_info.type == Variant::DICTIONARY && (p_info.hint == PropertyHint::HINT_DICTIONARY_TYPE)) {
 		return String("typeddictionary::") + p_info.hint_string;
 	}
 	if (p_info.type == Variant::INT && (p_info.usage & (PROPERTY_USAGE_CLASS_IS_ENUM))) {
@@ -77,7 +77,7 @@ static String get_property_info_type_name(const PropertyInfo &p_info) {
 	if (p_info.class_name != StringName()) {
 		return p_info.class_name;
 	}
-	if (p_info.hint == PROPERTY_HINT_RESOURCE_TYPE) {
+	if (p_info.hint == PropertyHint::HINT_RESOURCE_TYPE) {
 		return p_info.hint_string;
 	}
 	if (p_info.type == Variant::NIL && (p_info.usage & PROPERTY_USAGE_NIL_IS_VARIANT)) {

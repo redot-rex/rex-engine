@@ -598,7 +598,7 @@ void JSON::_bind_methods() {
 	ClassDB::bind_static_method("JSON", D_METHOD("from_native", "variant", "full_objects"), &JSON::from_native, DEFVAL(false));
 	ClassDB::bind_static_method("JSON", D_METHOD("to_native", "json", "allow_objects"), &JSON::to_native, DEFVAL(false));
 
-	ADD_PROPERTY(PropertyInfo(Variant::NIL, "data", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT), "set_data", "get_data"); // Ensures that it can be serialized as binary.
+	ADD_PROPERTY(PropertyInfo(Variant::NIL, "data", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT), "set_data", "get_data"); // Ensures that it can be serialized as binary.
 }
 
 #define TYPE "type"

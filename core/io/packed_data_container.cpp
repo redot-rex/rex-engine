@@ -365,7 +365,7 @@ void PackedDataContainer::_bind_methods() {
 
 	BIND_METHOD_ERR_RETURN_DOC("pack", ERR_INVALID_DATA);
 
-	ADD_PROPERTY(PropertyInfo(Variant::PACKED_BYTE_ARRAY, "__data__", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_INTERNAL), "_set_data", "_get_data");
+	ADD_PROPERTY(PropertyInfo(Variant::PACKED_BYTE_ARRAY, "__data__", PropertyHint::HINT_NONE, "", PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_INTERNAL), "_set_data", "_get_data");
 }
 
 //////////////////

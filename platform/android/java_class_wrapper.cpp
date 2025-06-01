@@ -796,7 +796,7 @@ TypedArray<Dictionary> JavaClass::get_java_method_list() const {
 					_convert_to_variant_type(argtype, t, likelihood);
 					d["type"] = t;
 					if (t == Variant::OBJECT) {
-						d["hint"] = PROPERTY_HINT_RESOURCE_TYPE;
+						d["hint"] = PropertyHint::HINT_RESOURCE_TYPE;
 						d["hint_string"] = "JavaObject";
 					} else {
 						d["hint"] = 0;
@@ -814,7 +814,7 @@ TypedArray<Dictionary> JavaClass::get_java_method_list() const {
 
 				if (mi._constructor) {
 					d["type"] = Variant::OBJECT;
-					d["hint"] = PROPERTY_HINT_RESOURCE_TYPE;
+					d["hint"] = PropertyHint::HINT_RESOURCE_TYPE;
 					d["hint_string"] = "JavaObject";
 				} else {
 					Variant::Type t = Variant::NIL;
@@ -822,7 +822,7 @@ TypedArray<Dictionary> JavaClass::get_java_method_list() const {
 					_convert_to_variant_type(mi.return_type, t, likelihood);
 					d["type"] = t;
 					if (t == Variant::OBJECT) {
-						d["hint"] = PROPERTY_HINT_RESOURCE_TYPE;
+						d["hint"] = PropertyHint::HINT_RESOURCE_TYPE;
 						d["hint_string"] = "JavaObject";
 					} else {
 						d["hint"] = 0;
