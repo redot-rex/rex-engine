@@ -1,6 +1,6 @@
 add_custom_command(
 	OUTPUT ${CMAKE_SOURCE_DIR}/scene/theme/default_font.gen.h
-	COMMAND ${_Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/rex_default_theme_builders.py make_fonts_header ${CMAKE_SOURCE_DIR}/scene/theme/default_font.gen.h ${CMAKE_SOURCE_DIR}/thirdparty/fonts/OpenSans_SemiBold.woff2
+	COMMAND ${_Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/generators/rex_default_theme_builders.py make_fonts_header ${CMAKE_SOURCE_DIR}/scene/theme/default_font.gen.h ${CMAKE_SOURCE_DIR}/thirdparty/fonts/OpenSans_SemiBold.woff2
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 	COMMENT "Generating default fonts header..."
 )
