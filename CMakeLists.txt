@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.26 FATAL_ERROR)
-
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
 # C++ Standard
 set(CMAKE_CXX_STANDARD 17)
@@ -7,7 +7,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(methods.cmake)
-generate_copyright_header("test.cpp")
 
 # TODO: Only checking for desktop platforms for now.
 # NOTE: Using strings that make the Scons build system.

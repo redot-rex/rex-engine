@@ -1,5 +1,5 @@
 
-# TODO: The shaders folder needs to be compiled.
+add_subdirectory(shaders)
 
 file(GLOB SERVERS_RENDERING_RENDERER_RD_SOURCES
 	*.cpp
