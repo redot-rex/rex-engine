@@ -202,6 +202,10 @@ if (STRICT_CHECKS)
 	)
 endif()
 
+
+# TODO: Missing SCU Build here
+
+
 if (EDITOR_BUILD)
 	if (DISABLE_3D
 	 OR DISABLE_ADVANCED_GUI
@@ -401,15 +405,39 @@ if (OPTIMIZE STREQUAL "size_extra")
 	)
 endif()
 
+if (ARCH STREQUAL "x86_32")
+	if (MSVC)
+		target_compile_options(rex_engine PUBLIC
+			/arch:SSE2
+		)
+	else()
+		target_compile_options(rex_engine PUBLIC
+			-msse2
+			-mfpmath=sse
+			-mstackrealign
+		)
+	endif()
+endif()
 # Compiler flags
 if (MSVC)
 	if (DEBUG_SYMBOLS)
 		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Zi /FS")
+		target_link_options(rex_engine PUBLIC /DEBUG:FULL)
+	else()
+		target_link_options(rex_engine PUBLIC /DEBUG:NONE)
 	endif()
 	if (OPTIMIZE MATCHES "speed")
 		target_compile_options(rex_engine PUBLIC -O2)
+		target_link_options(rex_engine PUBLIC /OPT:REF)
+		if (OPTIMIZE STREQUAL "speed_trace")
+			target_link_options(rex_engine PUBLIC /OPT:NOICF)
+		endif()
 	elseif (OPTIMIZE MATCHES "size")
 		target_compile_options(rex_engine PUBLIC -O1)
+		target_link_options(rex_engine PUBLIC /OPT:REF)
+		if (OPTIMIZE STREQUAL "speed_trace")
+			target_compile_definitions(rex_engine PUBLIC SIZE_EXTRA)
+		endif()
 	else()
 		target_compile_options(rex_engine PUBLIC -Od)
 	endif()

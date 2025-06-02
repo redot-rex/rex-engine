@@ -1,4 +1,182 @@
 # TODO: Scons runs a python script here
+find_program(WAYLAND_SCANNER NAME wayland-scanner PATHS /usr/bin /usr/local/bin)
+
+function (add_wayland_header outfile src)
+	if (USE_SOWRAP)
+		add_custom_command(
+			OUTPUT ${outfile}
+			COMMAND ${WAYLAND_SCANNER} client-header < ${src} |
+			sed 's:wayland-client-core.h:../dynwrappers/wayland-client-core-so_wrap.h:' > ${outfile}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+			COMMENT "Generating ${outfile}"
+			DEPENDS ${src} VERBATIM
+		)
+	else()
+		add_custom_command(
+			OUTPUT ${outfile}
+			COMMAND ${WAYLAND_SCANNER} client-header < ${src} > ${outfile}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+			COMMENT "Generating ${outfile}"
+			DEPENDS ${src} VERBATIM
+		)
+	endif()
+endfunction()
+
+function (add_wayland_code outfile src)
+	if (USE_SOWRAP)
+		add_custom_command(
+			OUTPUT ${outfile}
+			COMMAND ${WAYLAND_SCANNER} -c private-code < ${src} |
+			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+			sed 's:wayland-util.h:../dynwrappers/wayland-client-core-so_wrap.h:' > ${outfile}
+			COMMENT "Generating ${outfile}"
+			DEPENDS ${src} VERBATIM
+		)
+	else()
+		add_custom_command(
+			OUTPUT ${outfile}
+			COMMAND ${WAYLAND_SCANNER} -c private-code < ${src} > ${outfile}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+			COMMENT "Generating ${outfile}"
+			DEPENDS ${src} VERBATIM
+		)
+	endif()
+endfunction()
+
+if (WAYLAND_SCANNER STREQUAL "WAYLAND_SCANNER-NOTFOUND")
+	message(FATAL_ERROR "Required wayland-scanner not found.")
+endif()
+
+
+add_wayland_header(
+	protocol/wayland.gen.h
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland/protocol/wayland.xml
+)
+add_wayland_code(
+	protocol/wayland.gen.c
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland/protocol/wayland.xml
+)
+add_wayland_header(
+	protocol/viewporter.gen.h
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/stable/viewporter/viewporter.xml
+)
+add_wayland_code(
+	protocol/viewporter.gen.c
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/stable/viewporter/viewporter.xml
+)
+add_wayland_header(
+	protocol/fractional_scale.gen.h
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/staging/fractional-scale/fractional-scale-v1.xml
+)
+add_wayland_code(
+	protocol/fractional_scale.gen.c
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/staging/fractional-scale/fractional-scale-v1.xml
+)
+add_wayland_header(
+	protocol/xdg_shell.gen.h
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/stable/xdg-shell/xdg-shell.xml
+)
+add_wayland_code(
+	protocol/xdg_shell.gen.c
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/stable/xdg-shell/xdg-shell.xml
+)
+add_wayland_header(
+	protocol/xdg_decoration.gen.h
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/xdg-decoration/xdg-decoration-unstable-v1.xml
+)
+add_wayland_code(
+	protocol/xdg_decoration.gen.c
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/xdg-decoration/xdg-decoration-unstable-v1.xml
+)
+add_wayland_header(
+	protocol/xdg_activation.gen.h
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/staging/xdg-activation/xdg-activation-v1.xml
+)
+add_wayland_code(
+	protocol/xdg_activation.gen.c
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/staging/xdg-activation/xdg-activation-v1.xml
+)
+add_wayland_header(
+	protocol/relative_pointer.gen.h
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/relative-pointer/relative-pointer-unstable-v1.xml
+)
+add_wayland_code(
+	protocol/relative_pointer.gen.c
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/relative-pointer/relative-pointer-unstable-v1.xml
+)
+add_wayland_header(
+	protocol/pointer_constraints.gen.h
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/pointer-constraints/pointer-constraints-unstable-v1.xml
+)
+add_wayland_code(
+	protocol/pointer_constraints.gen.c
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/pointer-constraints/pointer-constraints-unstable-v1.xml
+)
+add_wayland_header(
+	protocol/pointer_gestures.gen.h
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/pointer-gestures/pointer-gestures-unstable-v1.xml
+)
+add_wayland_code(
+	protocol/pointer_gestures.gen.c
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/pointer-gestures/pointer-gestures-unstable-v1.xml
+)
+add_wayland_header(
+	protocol/primary_selection.gen.h
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/primary-selection/primary-selection-unstable-v1.xml
+)
+add_wayland_code(
+	protocol/primary_selection.gen.c
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/primary-selection/primary-selection-unstable-v1.xml
+)
+add_wayland_header(
+	protocol/idle_inhibit.gen.h
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/idle-inhibit/idle-inhibit-unstable-v1.xml
+)
+add_wayland_code(
+	protocol/idle_inhibit.gen.c
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/idle-inhibit/idle-inhibit-unstable-v1.xml
+)
+add_wayland_header(
+	protocol/tablet.gen.h
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/tablet/tablet-unstable-v2.xml
+)
+add_wayland_code(
+	protocol/tablet.gen.c
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/tablet/tablet-unstable-v2.xml
+)
+add_wayland_header(
+	protocol/text_input.gen.h
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/text-input/text-input-unstable-v3.xml
+)
+add_wayland_code(
+	protocol/text_input.gen.c
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/text-input/text-input-unstable-v3.xml
+)
+add_wayland_header(
+	protocol/xdg_foreign_v1.gen.h
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/xdg-foreign/xdg-foreign-unstable-v1.xml
+)
+add_wayland_code(
+	protocol/xdg_foreign_v1.gen.c
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/xdg-foreign/xdg-foreign-unstable-v1.xml
+)
+add_wayland_header(
+	protocol/xdg_foreign_v2.gen.h
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/xdg-foreign/xdg-foreign-unstable-v2.xml
+)
+add_wayland_code(
+	protocol/xdg_foreign_v2.gen.c
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/unstable/xdg-foreign/xdg-foreign-unstable-v2.xml
+)
+add_wayland_header(
+	protocol/xdg_system_bell.gen.h
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/staging/xdg-system-bell/xdg-system-bell-v1.xml
+)
+add_wayland_code(
+	protocol/xdg_system_bell.gen.c
+	${CMAKE_SOURCE_DIR}/thirdparty/wayland-protocols/staging/xdg-system-bell/xdg-system-bell-v1.xml
+)
+
 target_sources(rex_engine PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/protocol/wayland.gen.c
 	${CMAKE_CURRENT_SOURCE_DIR}/protocol/viewporter.gen.c
@@ -22,9 +200,9 @@ target_sources(rex_engine PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/detect_prime_egl.cpp
 )
 
-		target_include_directories(rex_engine PUBLIC
-			${CMAKE_SOURCE_DIR}/thirdparty/linuxbsd_headers/wayland/
-		)
+target_include_directories(rex_engine PUBLIC
+	${CMAKE_SOURCE_DIR}/thirdparty/linuxbsd_headers/wayland/
+)
 
 if (USE_SOWRAP)
 	target_sources(rex_engine PRIVATE
