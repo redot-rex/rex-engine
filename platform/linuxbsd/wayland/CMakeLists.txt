@@ -33,6 +33,7 @@ if (WAYLAND_SCANNER STREQUAL "WAYLAND_SCANNER-NOTFOUND")
 	message(FATAL_ERROR "Required wayland-scanner not found.")
 endif()
 
+file(MAKE_DIRECTORY protocol)
 
 add_wayland_header(
 	protocol/wayland.gen.h
