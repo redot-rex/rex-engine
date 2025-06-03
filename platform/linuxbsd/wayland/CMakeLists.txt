@@ -3,42 +3,28 @@ find_program(WAYLAND_SCANNER NAME wayland-scanner PATHS /usr/bin /usr/local/bin)
 
 function (add_wayland_header outfile src)
 	if (USE_SOWRAP)
-		add_custom_command(
-			OUTPUT ${outfile}
-			COMMAND ${WAYLAND_SCANNER} client-header < ${src} |
-			sed 's:wayland-client-core.h:../dynwrappers/wayland-client-core-so_wrap.h:' > ${outfile}
+		execute_process(
+			COMMAND /bin/sh -c "${WAYLAND_SCANNER} -c client-header < ${src} | sed 's:wayland-client-core.h:../dynwrappers/wayland-client-core-so_wrap.h:' > ${outfile}"
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-			COMMENT "Generating ${outfile}"
-			DEPENDS ${src} VERBATIM
 		)
 	else()
-		add_custom_command(
-			OUTPUT ${outfile}
-			COMMAND ${WAYLAND_SCANNER} client-header < ${src} > ${outfile}
+		execute_process(
+			COMMAND /bin/sh -c "${WAYLAND_SCANNER} -c client-header < ${src} > ${outfile}"
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-			COMMENT "Generating ${outfile}"
-			DEPENDS ${src} VERBATIM
 		)
 	endif()
 endfunction()
 
 function (add_wayland_code outfile src)
 	if (USE_SOWRAP)
-		add_custom_command(
-			OUTPUT ${outfile}
-			COMMAND ${WAYLAND_SCANNER} -c private-code < ${src} |
+		execute_process(
+			COMMAND /bin/sh -c "${WAYLAND_SCANNER} -c private-code < ${src} | sed 's:wayland-util.h:../dynwrappers/wayland-client-core-so_wrap.h:' > ${outfile}"
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-			sed 's:wayland-util.h:../dynwrappers/wayland-client-core-so_wrap.h:' > ${outfile}
-			COMMENT "Generating ${outfile}"
-			DEPENDS ${src} VERBATIM
 		)
 	else()
-		add_custom_command(
-			OUTPUT ${outfile}
-			COMMAND ${WAYLAND_SCANNER} -c private-code < ${src} > ${outfile}
+		execute_process(
+			COMMAND /bin/sh -c "${WAYLAND_SCANNER} -c private-code < ${src} > ${outfile}"
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-			COMMENT "Generating ${outfile}"
-			DEPENDS ${src} VERBATIM
 		)
 	endif()
 endfunction()
