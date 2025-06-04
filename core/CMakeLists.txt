@@ -163,6 +163,67 @@ if (BUILTIN_ZSTD)
 	target_link_libraries(rex_core PUBLIC zstd)
 endif()
 
+# NOTE: This is used with build profiles, which isn't implemented yet.
+generate_copyright_header("disabled_classes.gen.h")
+set(DISABLED_CLASSES_FILE_CONTENT ${COPYRIGHT_HEADER})
+string(APPEND DISABLED_CLASSES_FILE_CONTENT "#pragma once\n\n")
+if (DISABLED_CLASSES)
+	foreach (DISABLED_CLASS DISABLED_CLASSES)
+		string(APPEND DISABLED_CLASSES_FILE_CONTENT "#define ClassDB_Disable_${DISABLED_CLASS} 1\n")
+	endforeach()
+else()
+	string(APPEND DISABLED_CLASSES_FILE_CONTENT "/* NO CONTENT */")
+endif()
+file(WRITE ${CMAKE_CURRENT_SOURCE_DIR}/disabled_classes.gen.h ${DISABLED_CLASSES_FILE_CONTENT})
+
+generate_copyright_header("version_generated.gen.h")
+set(VERSION_GEN_FILE_CONTENT ${COPYRIGHT_HEADER})
+string(APPEND VERSION_GEN_FILE_CONTENT "#pragma once\n\n")
+string(APPEND VERSION_GEN_FILE_CONTENT "\
+#define REDOT_VERSION_SHORT_NAME \"${VERSION_SHORT_NAME}\"
+#define REDOT_VERSION_NAME \"${VERSION_NAME}\"
+#define REDOT_VERSION_MAJOR ${VERSION_MAJOR}
+#define REDOT_VERSION_MINOR ${VERSION_MINOR}
+#define REDOT_VERSION_PATCH ${VERSION_PATCH}
+#define REDOT_VERSION_STATUS \"${VERSION_STATUS}\"
+#define REDOT_VERSION_STATUS_VERSION ${VERSION_STATUS_VERSION}
+#define REDOT_VERSION_BUILD \"${VERSION_BUILD}\"
+#define REDOT_VERSION_MODULE_CONFIG \"${VERSION_MODULE_CONFIG}\"
+#define REDOT_VERSION_WEBSITE \"${VERSION_WEBSITE}\"
+#define REDOT_VERSION_DOCS_BRANCH \"${VERSION_DOCS_BRANCH}\"
+#define REDOT_VERSION_DOCS_URL \"https://docs.redotengine.org/en/\" REDOT_VERSION_DOCS_BRANCH
+#define GODOT_VERSION_MAJOR ${VERSION_GODOT_MAJOR}
+#define GODOT_VERSION_MINOR ${VERSION_GODOT_MINOR}
+#define GODOT_VERSION_PATCH ${VERSION_GODOT_PATCH}
+#define GODOT_VERSION_STATUS \"${VERSION_GODOT_STATUS}\"")
+file(WRITE ${CMAKE_CURRENT_SOURCE_DIR}/version_generated.gen.h ${VERSION_GEN_FILE_CONTENT})
+
+execute_process(
+	COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_core_builders.py" version_hash_builder
+	"${CMAKE_CURRENT_SOURCE_DIR}/version_hash.gen.cpp"
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+target_sources(rex_core PRIVATE version_hash.gen.cpp)
+
+execute_process(
+	COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_core_builders.py" encryption_key_builder
+	"${CMAKE_CURRENT_SOURCE_DIR}/script_encryption_key.gen.cpp"
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+target_sources(rex_core PRIVATE script_encryption_key.gen.cpp)
+
+add_custom_command(
+	OUTPUT ${CMAKE_SOURCE_DIR}/core/io/certs_compressed.gen.h
+	COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_core_builders.py" make_certs_header
+	"${CMAKE_SOURCE_DIR}/core/io/certs_compressed.gen.h" "${CMAKE_SOURCE_DIR}/thirdparty/certs/ca-certificates.crt" ${BUILTIN_CERTS} "${SYSTEM_CERTS_PATH}"
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	COMMENT "Generating certs_compressed.gen.h ..."
+)
+add_custom_target(certs_compressed DEPENDS
+	${CMAKE_SOURCE_DIR}/core/io/certs_compressed.gen.h
+)
+add_dependencies(rex_core certs_compressed)
+
 add_subdirectory(os)
 add_subdirectory(math)
 add_subdirectory(crypto)
@@ -176,6 +237,3 @@ add_subdirectory(templates)
 add_subdirectory(string)
 add_subdirectory(config)
 add_subdirectory(error)
-
-
-#target_link_libraries(rex_engine PUBLIC rex_core)
