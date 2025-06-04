@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(methods.cmake)
+include(version.cmake)
 
 # TODO: Only checking for desktop platforms for now.
 # NOTE: Using strings that make the Scons build system.
