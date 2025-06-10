@@ -47,6 +47,7 @@ foreach(MODULE_NAME ${ENABLED_MODULES})
 			GODOT_MODULE
 			${MODULE_COMPILE_DEFINES}
 		)
+		add_dependencies(rex_module_${MODULE_NAME} rex_core)
 		target_link_libraries(rex_engine PUBLIC rex_module_${MODULE_NAME})
 		string(APPEND MODULE_ENABLED_FILE_CONTENT "#define MODULE_${MODULE_UPPER}_ENABLED\n")
 		string(APPEND REGISTER_MODULE_FILE_CONTENT "#include \"modules/${MODULE_NAME}/register_types.h\"\n")
