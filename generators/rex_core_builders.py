@@ -74,17 +74,17 @@ inline constexpr unsigned char _certs_compressed[] = {{
 """)
 
 
-def make_redot_authors_header(target, source, env):
+def make_redot_authors_header(args):
     SECTIONS = {
         "Project Founders": "REDOT_AUTHORS_FOUNDERS",
         "Lead Developer": "REDOT_AUTHORS_LEAD_DEVELOPERS",
         "Project Manager": "REDOT_AUTHORS_PROJECT_MANAGERS",
         "Developers": "REDOT_AUTHORS_DEVELOPERS",
     }
-    buffer = methods.get_buffer(str(source[0]))
+    buffer = methods.get_buffer(str(args[1]))
     reading = False
 
-    with methods.generated_wrapper(str(target[0])) as file:
+    with methods.generated_wrapper(str(args[0])) as file:
 
         def close_section():
             file.write("\tnullptr,\n};\n\n")
@@ -105,17 +105,17 @@ def make_redot_authors_header(target, source, env):
             close_section()
 
 
-def make_authors_header(target, source, env):
+def make_authors_header(args):
     SECTIONS = {
         "Project Founders": "AUTHORS_FOUNDERS",
         "Lead Developer": "AUTHORS_LEAD_DEVELOPERS",
         "Project Manager": "AUTHORS_PROJECT_MANAGERS",
         "Developers": "AUTHORS_DEVELOPERS",
     }
-    buffer = methods.get_buffer(str(source[0]))
+    buffer = methods.get_buffer(str(args[1]))
     reading = False
 
-    with methods.generated_wrapper(str(target[0])) as file:
+    with methods.generated_wrapper(str(args[0])) as file:
 
         def close_section():
             file.write("\tnullptr,\n};\n\n")
@@ -136,7 +136,7 @@ def make_authors_header(target, source, env):
             close_section()
 
 
-def make_donors_header(target, source, env):
+def make_donors_header(args):
     SECTIONS = {
         "Patrons": "DONORS_PATRONS",
         "Platinum sponsors": "DONORS_SPONSORS_PLATINUM",
@@ -147,10 +147,10 @@ def make_donors_header(target, source, env):
         "Platinum members": "DONORS_MEMBERS_PLATINUM",
         "Gold members": "DONORS_MEMBERS_GOLD",
     }
-    buffer = methods.get_buffer(str(source[0]))
+    buffer = methods.get_buffer(str(args[1]))
     reading = False
 
-    with methods.generated_wrapper(str(target[0])) as file:
+    with methods.generated_wrapper(str(args[0])) as file:
 
         def close_section():
             file.write("\tnullptr,\n};\n\n")
@@ -171,9 +171,9 @@ def make_donors_header(target, source, env):
             close_section()
 
 
-def make_license_header(target, source, env):
-    src_copyright = str(source[0])
-    src_license = str(source[1])
+def make_license_header(args):
+    src_copyright = str(args[1])
+    src_license = str(args[2])
 
     class LicenseReader:
         def __init__(self, license_file: TextIOWrapper):
@@ -232,7 +232,7 @@ def make_license_header(target, source, env):
     with open(src_license, "r", encoding="utf-8") as file:
         license_text = file.read()
 
-    with methods.generated_wrapper(str(target[0])) as file:
+    with methods.generated_wrapper(str(args[0])) as file:
         file.write(f"""\
 inline constexpr const char *GODOT_LICENSE_TEXT = {{
 {methods.to_raw_cstring(license_text)}
@@ -317,5 +317,16 @@ if __name__ == "__main__":
     if args[0] == "make_certs_header":
         args.pop(0)
         make_certs_header(args)
-
+    if args[0] == "make_redot_authors_header":
+        args.pop(0)
+        make_redot_authors_header(args)
+    if args[0] == "make_authors_header":
+        args.pop(0)
+        make_authors_header(args)
+    if args[0] == "make_donors_header":
+        args.pop(0)
+        make_donors_header(args)
+    if args[0] == "make_license_header":
+        args.pop(0)
+        make_license_header(args)
 
