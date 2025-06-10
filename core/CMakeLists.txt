@@ -274,7 +274,7 @@ add_custom_target(license DEPENDS
 
 add_dependencies(rex_core license)
 
-
+add_subdirectory(object)
 add_subdirectory(os)
 add_subdirectory(math)
 add_subdirectory(crypto)
@@ -283,7 +283,6 @@ add_subdirectory(debugger)
 add_subdirectory(input)
 add_subdirectory(variant)
 add_subdirectory(extension)
-add_subdirectory(object)
 add_subdirectory(templates)
 add_subdirectory(string)
 add_subdirectory(config)
