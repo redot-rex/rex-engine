@@ -224,6 +224,57 @@ add_custom_target(certs_compressed DEPENDS
 )
 add_dependencies(rex_core certs_compressed)
 
+add_custom_command(
+	OUTPUT ${CMAKE_SOURCE_DIR}/core/redot_authors.gen.h
+	COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_core_builders.py" make_redot_authors_header
+	"${CMAKE_SOURCE_DIR}/core/redot_authors.gen.h" "${CMAKE_SOURCE_DIR}/REDOT_AUTHORS.md"
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	COMMENT "Generating redot_authors.gen.h ..."
+)
+add_custom_target(redot_authors DEPENDS
+	${CMAKE_SOURCE_DIR}/core/redot_authors.gen.h
+)
+add_dependencies(rex_core redot_authors)
+
+add_custom_command(
+	OUTPUT ${CMAKE_SOURCE_DIR}/core/authors.gen.h
+	COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_core_builders.py" make_authors_header
+	"${CMAKE_SOURCE_DIR}/core/authors.gen.h" "${CMAKE_SOURCE_DIR}/AUTHORS.md"
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	COMMENT "Generating authors.gen.h ..."
+)
+add_custom_target(authors DEPENDS
+	${CMAKE_SOURCE_DIR}/core/authors.gen.h
+)
+add_dependencies(rex_core authors)
+
+add_custom_command(
+	OUTPUT ${CMAKE_SOURCE_DIR}/core/donors.gen.h
+	COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_core_builders.py" make_donors_header
+	"${CMAKE_SOURCE_DIR}/core/donors.gen.h" "${CMAKE_SOURCE_DIR}/DONORS.md"
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	COMMENT "Generating donors.gen.h ..."
+)
+add_custom_target(donors DEPENDS
+	${CMAKE_SOURCE_DIR}/core/donors.gen.h
+)
+
+add_dependencies(rex_core donors)
+
+add_custom_command(
+	OUTPUT ${CMAKE_SOURCE_DIR}/core/license.gen.h
+	COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_core_builders.py" make_license_header
+	"${CMAKE_SOURCE_DIR}/core/license.gen.h" "${CMAKE_SOURCE_DIR}/COPYRIGHT.txt" "${CMAKE_SOURCE_DIR}/LICENSE.txt"
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	COMMENT "Generating license.gen.h ..."
+)
+add_custom_target(license DEPENDS
+	${CMAKE_SOURCE_DIR}/core/license.gen.h
+)
+
+add_dependencies(rex_core license)
+
+
 add_subdirectory(os)
 add_subdirectory(math)
 add_subdirectory(crypto)
