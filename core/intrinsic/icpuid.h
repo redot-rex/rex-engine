@@ -35,7 +35,7 @@
 
 #include <cstdint>
 
-#include "intrin_util.h"
+#include "core/typedefs.h"
 
 // just a fair warning, this code is extremely architectually, compiler, and
 // operating system dependent
