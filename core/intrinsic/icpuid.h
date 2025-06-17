@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  icpuid.cpp                                                            */
+/*  icpuid.h                                                              */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -193,9 +193,9 @@ _FORCE_INLINE_ uint32_t intrin_support() {
   cpuid(1, &a, &b, &c, &d);
 
   // sse check
-  intrin_support |= check_mask(d, 23);      // sse1
-  intrin_support |= check_mask(d, 25) << 1; // ssse2
-  intrin_support |= check_mask(d, 26) << 2; // nnx
+  intrin_support |= check_mask(d, 23) << 1;      // sse1
+  intrin_support |= check_mask(d, 25) << 2; // ssse2
+  intrin_support |= check_mask(d, 26) << 0; // nnx
 
   intrin_support |= check_mask(c, 0) << 3;  // sse3
   intrin_support |= check_mask(c, 9) << 4;  // ssse3
