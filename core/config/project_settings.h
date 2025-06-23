@@ -89,6 +89,15 @@ protected:
 		}
 	};
 
+	struct _VCSort {
+		String name;
+		Variant::Type type = Variant::VARIANT_MAX;
+		int order = 0;
+		uint32_t flags = 0;
+
+		bool operator<(const _VCSort &p_vcs) const { return order == p_vcs.order ? name < p_vcs.name : order < p_vcs.order; }
+	};
+
 	int last_order = NO_BUILTIN_ORDER_BASE;
 	int last_builtin_order = 0;
 	uint64_t last_save_time = 0;
@@ -98,7 +107,7 @@ protected:
 	HashMap<StringName, PropertyInfo> custom_prop_info;
 	bool using_datapack = false;
 	bool project_loaded = false;
-	List<String> input_presets;
+	Vector<String> input_presets;
 
 	HashSet<String> custom_features;
 	HashMap<StringName, LocalVector<Pair<StringName, StringName>>> feature_overrides;
@@ -196,7 +205,7 @@ public:
 	const HashMap<StringName, PropertyInfo> &get_custom_property_info() const;
 	uint64_t get_last_saved_time() { return last_save_time; }
 
-	List<String> get_input_presets() const { return input_presets; }
+	Vector<String> get_input_presets() const { return input_presets; }
 
 	Variant get_setting_with_override(const StringName &p_name) const;
 	Variant get_setting_with_override_and_custom_features(const StringName &p_name, const Vector<String> &p_features) const;
