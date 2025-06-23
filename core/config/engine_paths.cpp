@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  engine.cpp                                                            */
+/*  engine_paths.cpp                                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -32,21 +32,38 @@
 
 #include "engine.h"
 
-// required definition.
-constinit Engine *Engine::singleton = nullptr;
-
 /*
- * Engine constructor.
+ * Sets path where gameplay recordings are stored.
+ *
+ * @param p_path - The file system path to store recordings.
  */
-Engine::Engine() {
-	singleton = this;
+void Engine::set_write_movie_path(const String &p_path) {
+	write_movie_path = p_path;
 }
 
 /*
- * Engine destructor.
+ * Returns the path where gameplay recordings are stored.
+ *
+ * @return - The file system path to store recordings.
  */
-Engine::~Engine() {
-	if (singleton == this) {
-		singleton = nullptr;
-	}
+[[nodiscard]] String Engine::get_write_movie_path() const {
+	return write_movie_path;
+}
+
+/*
+ * Sets directory used to store compiled shader cache files.
+ *
+ * @param p_path - The file system path to store shader cache files.
+ */
+void Engine::set_shader_cache_path(const String &p_path) {
+	shader_cache_path = p_path;
+}
+
+/*
+ * Returns the directory used to store compiled shader cache files.
+ *
+ * return - The file system path used to store shader cache files.
+ */
+[[nodiscard]] String Engine::get_shader_cache_path() const {
+	return shader_cache_path;
 }

@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  engine.cpp                                                            */
+/*  engine_debug.cpp                                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -32,21 +32,62 @@
 
 #include "engine.h"
 
-// required definition.
-constinit Engine *Engine::singleton = nullptr;
-
 /*
- * Engine constructor.
+ * Toggles whether logs are printed to stdout.
+ *
+ * @param p_enabled - If true, enables printing logs to stdout.
  */
-Engine::Engine() {
-	singleton = this;
+void Engine::set_print_to_stdout(bool p_enabled) {
+	CoreGlobals::print_line_enabled = p_enabled;
 }
 
 /*
- * Engine destructor.
+ * Checks if logs are printing to stdout.
+ *
+ * @return - True if printing to stdout is enabled.
+ *           False if otherwise.
  */
-Engine::~Engine() {
-	if (singleton == this) {
-		singleton = nullptr;
+[[nodiscard]] bool Engine::is_printing_to_stdout() const {
+	return CoreGlobals::print_line_enabled;
+}
+
+/*
+ * Toggles printing error messages to stdout.
+ *
+ * @param p_enabled - If true, enables printing errors to stdout.
+ */
+void Engine::set_print_error_messages(bool p_enabled) {
+	CoreGlobals::print_error_enabled = p_enabled;
+}
+
+/*
+ * Checks if err are printing to stdout.
+ *
+ * @return - True if printing to stdout is enabled.
+ *           False if otherwise.
+ */
+[[nodiscard]] bool Engine::is_printing_error_messages() const {
+	return CoreGlobals::print_error_enabled;
+}
+
+/*
+ * Prints given header string.
+ *
+ * @param p_string - The header string to print.
+ */
+void Engine::print_header(const String &p_string) const {
+	if (_print_header) {
+		print_line(p_string);
+	}
+}
+
+/*
+ * Prints formatted header lines with styling or context.
+ *
+ * @param p_string - The styled header String to print.
+ */
+void Engine::print_header_rich(const String &p_string) const {
+	if (_print_header) {
+		print_line_rich(p_string);
 	}
 }

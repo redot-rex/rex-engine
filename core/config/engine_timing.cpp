@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  engine.cpp                                                            */
+/*  engine_timing.cpp                                                     */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -32,21 +32,40 @@
 
 #include "engine.h"
 
-// required definition.
-constinit Engine *Engine::singleton = nullptr;
-
 /*
- * Engine constructor.
+ * Sets the time scale for the engine.
+ *
+ * @param p_scale - The time scale factor to apply. (1.0 is normal speed.)
  */
-Engine::Engine() {
-	singleton = this;
+void Engine::set_time_scale(double p_scale) {
+	_time_scale = p_scale;
 }
 
 /*
- * Engine destructor.
+ * Sets whether the engine's time scale should be frozen.
+ *
+ * @param p_frozen - True to freeze time scale.
  */
-Engine::~Engine() {
-	if (singleton == this) {
-		singleton = nullptr;
-	}
+void Engine::set_freeze_time_scale(bool p_frozen) {
+	freeze_time_scale = p_frozen;
+}
+
+/*
+ * Retrieves the current time scale of the engine.
+ *
+ * @return - The time scale.
+ *           0.0, if time scale is frozen.
+ */
+[[nodiscard]] double Engine::get_time_scale() const {
+	// Returns 0 if frozen.
+	return freeze_time_scale ? 0.0 : _time_scale;
+}
+
+/*
+ * Returns the internal time scale of the engine, independent of freezing.
+ *
+ * @return - The configured time scale value.
+ */
+[[nodiscard]] double Engine::get_unfrozen_time_scale() const {
+	return _time_scale;
 }

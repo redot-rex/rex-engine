@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  engine.cpp                                                            */
+/*  engine_runtime.cpp                                                    */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -32,21 +32,34 @@
 
 #include "engine.h"
 
-// required definition.
-constinit Engine *Engine::singleton = nullptr;
-
 /*
- * Engine constructor.
+ * Returns whether or not the engine is embedded inside an editor.
+ *
+ * @return - True, if the engine is running embedded in an editor.
+ *           False, otherwise.
  */
-Engine::Engine() {
-	singleton = this;
+[[nodiscard]] bool Engine::is_embedded_in_editor() const {
+	return embedded_in_editor;
 }
 
 /*
- * Engine destructor.
+ * Toggles whether the engine is embedded inside an editor.
+ *
+ * @param p_enabled - Mark the engine as embedded in an editor or not.
  */
-Engine::~Engine() {
-	if (singleton == this) {
-		singleton = nullptr;
-	}
+void Engine::set_embedded_in_editor(bool p_enabled) {
+	embedded_in_editor = p_enabled;
+}
+
+/*
+ * Informs the frame server that a synchronization point was reached.
+ *
+ * @return - True, if the number of server syncs exceeds warning threshold.
+ *           False, otherwise.
+ */
+[[nodiscard]] bool Engine::notify_frame_server_synced() {
+	frame_server_synced = true;
+
+	// Checks if number of server syncs crosses warning threshold.
+	return server_syncs > SERVER_SYNC_FRAME_COUNT_WARNING;
 }

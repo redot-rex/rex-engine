@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  engine.cpp                                                            */
+/*  engine_gpu.cpp                                                        */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -32,21 +32,64 @@
 
 #include "engine.h"
 
-// required definition.
-constinit Engine *Engine::singleton = nullptr;
-
 /*
- * Engine constructor.
+ * Indicates whether GPU errors should abort the program.
+ *
+ * @ return - True, if program will abort on GPU errors.
+ *            False, otherwise.
  */
-Engine::Engine() {
-	singleton = this;
+[[nodiscard]] bool Engine::is_abort_on_gpu_errors_enabled() const {
+	return abort_on_gpu_errors;
 }
 
 /*
- * Engine destructor.
+ * Indicates whether Vulkan validation layers are enabled for debugging.
+ *
+ * @return - True, if validation layers are enabled.
+ *           False, otherwise.
  */
-Engine::~Engine() {
-	if (singleton == this) {
-		singleton = nullptr;
-	}
+[[nodiscard]] bool Engine::is_validation_layers_enabled() const {
+	return use_validation_layers;
 }
+
+/*
+ * Indicates whether SPIR-V debug info is enabled.
+ *
+ * @return - True, if SPIR-V debug info generation is enabled.
+ *           False, otherwise.
+ */
+[[nodiscard]] bool Engine::is_generate_spirv_debug_info_enabled() const {
+	return generate_spirv_debug_info;
+}
+
+/*
+ * Returns the index of the selected GPU for rendering.
+ *
+ * @return - The GPU index currently selected for rendering.
+ */
+[[nodiscard]] int32_t Engine::get_gpu_index() const {
+	return gpu_idx;
+}
+
+/*
+ * Indicates whether detailed GPU memory usage tracking is enabled.
+ *
+ * @return - True, if extra GPU memory tracking is enabled.
+ *           False, otherwise.
+ */
+[[nodiscard]] bool Engine::is_extra_gpu_memory_tracking_enabled() const {
+	return extra_gpu_memory_tracking;
+}
+
+#if defined(DEBUG_ENABLED) || defined(DEV_ENABLED)
+/*
+ * Indicates whether GPU breadcrumb tracking is enabled.
+ * Assists with crash diagnostics.
+ *
+ * @return - True, if accurate breadcrumbs tracking is enabled.
+ *           False, otherwise.
+ */
+[[nodiscard]] bool Engine::is_accurate_breadcrumbs_enabled() const {
+	return accurate_breadcrumbs;
+}
+#endif

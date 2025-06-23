@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  engine.cpp                                                            */
+/*  engine_audio.cpp                                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -32,21 +32,21 @@
 
 #include "engine.h"
 
-// required definition.
-constinit Engine *Engine::singleton = nullptr;
-
 /*
- * Engine constructor.
+ * Sets audio output latency, which can impact synchronization.
+ *
+ * @param p_msec - Desired latency in milliseconds. The minimum allowed is 1.
  */
-Engine::Engine() {
-	singleton = this;
+void Engine::set_audio_output_latency(int p_msec) {
+	// Latency cannot be under 1ms
+	_audio_output_latency = p_msec > 1 ? p_msec : 1;
 }
 
 /*
- * Engine destructor.
+ * Gets audio output latency, which can impact synchronization.
+ *
+ * @return -  The configured output latency.
  */
-Engine::~Engine() {
-	if (singleton == this) {
-		singleton = nullptr;
-	}
+[[nodiscard]] int Engine::get_audio_output_latency() const {
+	return _audio_output_latency;
 }

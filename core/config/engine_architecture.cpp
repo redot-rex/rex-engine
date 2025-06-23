@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  engine.cpp                                                            */
+/*  engine_architecture.cpp                                               */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -32,21 +32,46 @@
 
 #include "engine.h"
 
-// required definition.
-constinit Engine *Engine::singleton = nullptr;
-
 /*
- * Engine constructor.
+ * Returns the CPU architecture name for this engine build.
  */
-Engine::Engine() {
-	singleton = this;
-}
+[[nodiscard]] String Engine::get_architecture_name() const {
+#if defined(__x86_64) || defined(__x86_64__) || defined(__amd64__) || defined(_M_X64)
+	return "x86_64";
 
-/*
- * Engine destructor.
- */
-Engine::~Engine() {
-	if (singleton == this) {
-		singleton = nullptr;
-	}
+#elif defined(__i386) || defined(__i386__) || defined(_M_IX86)
+	return "x86_32";
+
+#elif defined(__aarch64__) || defined(_M_ARM64) || defined(_M_ARM64EC)
+	return "arm64";
+
+#elif defined(__arm__) || defined(_M_ARM)
+	return "arm32";
+
+#elif defined(__riscv)
+#if __riscv_xlen == 64
+	return "rv64";
+#else
+	return "riscv";
+#endif
+
+#elif defined(__powerpc__)
+#if defined(__powerpc64__)
+	return "ppc64";
+#else
+	return "ppc";
+#endif
+
+#elif defined(__loongarch64)
+	return "loongarch64";
+
+#elif defined(__wasm__)
+#if defined(__wasm64__)
+	return "wasm64";
+#elif defined(__wasm32__)
+	return "wasm32";
+#endif
+#endif
+
+	return "unknown";
 }

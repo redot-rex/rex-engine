@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  engine.cpp                                                            */
+/*  engine_misc.cpp                                                       */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -32,21 +32,26 @@
 
 #include "engine.h"
 
-// required definition.
-constinit Engine *Engine::singleton = nullptr;
-
 /*
- * Engine constructor.
+ * Returns total number of frames drawn since Redot started.
+ *
+ * @return - The number of frames drawn since startup.
  */
-Engine::Engine() {
-	singleton = this;
+[[nodiscard]] uint64_t Engine::get_frames_drawn() {
+	return frames_drawn;
 }
 
 /*
- * Engine destructor.
+ * Increments count of frames drawn.
  */
-Engine::~Engine() {
-	if (singleton == this) {
-		singleton = nullptr;
+void Engine::increment_frames_drawn() {
+	if (frame_server_synced) {
+		server_syncs++;
+	} else {
+		server_syncs = 0;
 	}
+
+	frame_server_synced = false;
+
+	frames_drawn++;
 }

@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  engine.cpp                                                            */
+/*  engine_license.cpp                                                    */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -32,21 +32,37 @@
 
 #include "engine.h"
 
-// required definition.
-constinit Engine *Engine::singleton = nullptr;
+#include "core/license.gen.h"
 
 /*
- * Engine constructor.
+ * Returns license name, type, and optionally the license text.
+ *
+ * @return - A dictionary mapping license names to their corresponding text.
  */
-Engine::Engine() {
-	singleton = this;
+[[nodiscard]] Dictionary Engine::get_license_info() const {
+	Dictionary licenses;
+
+	// TODO: This would be nicer, but it would require reworking core/license.gen.h
+	/*
+	for (const auto &license : LICENSES) {
+		licenses[license.name] = license.body;
+	}
+	*/
+
+	for (int i = 0; i < LICENSE_COUNT; i++) {
+		const auto &name = LICENSE_NAMES[i];
+		const auto &body = LICENSE_BODIES[i];
+		licenses[name] = body;
+	}
+
+	return licenses;
 }
 
 /*
- * Engine destructor.
+ * Returns license text.
+ *
+ * @return - The full license text as a String.
  */
-Engine::~Engine() {
-	if (singleton == this) {
-		singleton = nullptr;
-	}
+[[nodiscard]] String Engine::get_license_text() const {
+	return String(GODOT_LICENSE_TEXT);
 }

@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  engine.cpp                                                            */
+/*  engine_fps.cpp                                                        */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -32,21 +32,48 @@
 
 #include "engine.h"
 
-// required definition.
-constinit Engine *Engine::singleton = nullptr;
+#include "servers/rendering/rendering_device.h"
 
 /*
- * Engine constructor.
+ * Sets the engine's maximum frame rate limit.
+ *
+ * @param p_fps - The desired maximum frames per second. A value of 0 or less
+ * disables the limit.
  */
-Engine::Engine() {
-	singleton = this;
+void Engine::set_max_fps(uint32_t p_fps) {
+	// limit is disabled if given FPS is <= 0
+	_max_fps = p_fps > 0 ? p_fps : 0;
+
+	RenderingDevice *rd = RenderingDevice::get_singleton();
+
+	if (rd) {
+		rd->_set_max_fps(_max_fps);
+	}
 }
 
 /*
- * Engine destructor.
+ * Gets the engine's maximum frame rate limit.
+ *
+ * @return - The current maximum frames per second. Zero indicates no limit.
  */
-Engine::~Engine() {
-	if (singleton == this) {
-		singleton = nullptr;
-	}
+[[nodiscard]] uint32_t Engine::get_max_fps() const {
+	return _max_fps;
+}
+
+/*
+ * Sets delays for the engine's frame loop for framerate control or throttling.
+ *
+ * @param p_msec - The delay in milliseconds to apply between frames.
+ */
+void Engine::set_frame_delay(uint32_t p_msec) {
+	_frame_delay = p_msec;
+}
+
+/*
+ * Gets delays for the engine's frame loop for framerate control or throttling.
+ *
+ * @return - The delay in milliseconds between frames.
+ */
+[[nodiscard]] uint32_t Engine::get_frame_delay() const {
+	return _frame_delay;
 }

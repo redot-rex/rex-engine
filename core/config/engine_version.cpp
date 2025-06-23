@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  engine.cpp                                                            */
+/*  engine_version.cpp                                                    */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -32,21 +32,72 @@
 
 #include "engine.h"
 
-// required definition.
-constinit Engine *Engine::singleton = nullptr;
+#include "core/version.h"
 
 /*
- * Engine constructor.
+ * Provides version metadata about the compatibility details.
+ *
+ * @return - A dictionary containing version metadata.
  */
-Engine::Engine() {
-	singleton = this;
+[[nodiscard]] Dictionary Engine::get_godot_compatible_version_info() const {
+	Dictionary dict;
+
+	dict["major"] = GODOT_VERSION_MAJOR;
+	dict["minor"] = GODOT_VERSION_MINOR;
+	dict["patch"] = GODOT_VERSION_PATCH;
+	dict["hex"] = GODOT_VERSION_HEX;
+	dict["status"] = GODOT_VERSION_STATUS;
+
+	String stringver = String(dict["major"]) + "." + String(dict["minor"]);
+
+	if ((int)dict["patch"] != 0) {
+		stringver += "." + String(dict["patch"]);
+	}
+
+	// TODO: add godot automated build identification?
+	// stringver += "-" + String(dict["status"]) + " (" + String(dict["build"]) + ")";
+
+	stringver += "-" + String(dict["status"]);
+
+	dict["string"] = stringver;
+
+	return dict;
 }
 
 /*
- * Engine destructor.
+ * Provides version metadata about the engine.
+ *
+ * @return - A dictionary containing version fields (major, minor, patch, hex,
+ *           status, build, status_version, hash, timestamp, and a formatted
+ *           version string.)
  */
-Engine::~Engine() {
-	if (singleton == this) {
-		singleton = nullptr;
+[[nodiscard]] Dictionary Engine::get_version_info() const {
+	Dictionary dict;
+	dict["major"] = REDOT_VERSION_MAJOR;
+	dict["minor"] = REDOT_VERSION_MINOR;
+	dict["patch"] = REDOT_VERSION_PATCH;
+	dict["hex"] = REDOT_VERSION_HEX;
+	dict["status"] = REDOT_VERSION_STATUS;
+	dict["build"] = REDOT_VERSION_BUILD;
+	dict["status_version"] = REDOT_VERSION_STATUS_VERSION;
+
+	String hash = String(REDOT_VERSION_HASH);
+	dict["hash"] = hash.is_empty() ? String("unknown") : hash;
+
+	dict["timestamp"] = REDOT_VERSION_TIMESTAMP;
+
+	String stringver = String(dict["major"]) + "." + String(dict["minor"]);
+	if ((int)dict["patch"] != 0) {
+		stringver += "." + String(dict["patch"]);
 	}
+	stringver += "-" + String(dict["status"]);
+
+	if ((int)dict["status_version"] != 0) {
+		stringver += "." + String(dict["status_version"]);
+	}
+
+	stringver += " (" + String(dict["build"]) + ")";
+	dict["string"] = stringver;
+
+	return dict;
 }

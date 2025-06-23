@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  engine.cpp                                                            */
+/*  engine_physics.cpp                                                    */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -32,21 +32,67 @@
 
 #include "engine.h"
 
-// required definition.
-constinit Engine *Engine::singleton = nullptr;
-
 /*
- * Engine constructor.
+ * Sets the physics ticks per second used for fixed-step simulation.
+ *
+ * @param p_ips - The number of physics ticks per second. Must be greater than
+ * 0.
  */
-Engine::Engine() {
-	singleton = this;
+void Engine::set_physics_ticks_per_second(int p_ips) {
+	ERR_FAIL_COND_MSG(p_ips <= 0, "Engine iterations per second must be greater than 0.");
+	ips = p_ips;
 }
 
 /*
- * Engine destructor.
+ * Returns the jitter fix threshold for smoother physics interpolation.
+ *
+ * @return - The jitter fix threshold value.
  */
-Engine::~Engine() {
-	if (singleton == this) {
-		singleton = nullptr;
+[[nodiscard]] double Engine::get_physics_jitter_fix() const {
+	return physics_jitter_fix;
+}
+
+/*
+ * Returns the physics ticks per second used for fixed-step simulation.
+ *
+ * @return - The number of physics ticks per second.
+ */
+[[nodiscard]] int Engine::get_physics_ticks_per_second() const {
+	return ips;
+}
+
+/*
+ * Sets max number of physics steps that can run in a single frame
+ * to prevent spiral of death.
+ *
+ * @param p_max_physics_steps - The maximum allowed physics steps per frame.
+ *                              Must be greater than 0.
+ */
+void Engine::set_max_physics_steps_per_frame(int p_max_physics_steps) {
+	ERR_FAIL_COND_MSG(p_max_physics_steps <= 0, "Maximum number of physics steps per frame must be greater than 0.");
+	max_physics_steps_per_frame = p_max_physics_steps;
+}
+
+/*
+ * Returns physics steps that can be ran in a single frame.
+ *
+ * @return - The maximum allowed physics steps per frame.
+ */
+[[nodiscard]] int Engine::get_max_physics_steps_per_frame() const {
+	return max_physics_steps_per_frame;
+}
+
+/*
+ * Set the jitter fix threshold for smoother physics interpolation.
+ * A threshold of 0 disables jitter fixing.
+ *
+ * @param p_threshold - The jitter fix threshold value. Values less than zero
+ *                      will be clamped to zero.
+ */
+void Engine::set_physics_jitter_fix(double p_threshold) {
+	if (p_threshold < 0) {
+		p_threshold = 0;
 	}
+
+	physics_jitter_fix = p_threshold;
 }
