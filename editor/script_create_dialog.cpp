@@ -273,7 +273,7 @@ bool ScriptCreateDialog::_validate_parent(const String &p_string) {
 
 String ScriptCreateDialog::_validate_path(const String &p_path, bool p_file_must_exist, bool p_try_match) {
 	String p = p_path.strip_edges();
-
+	is_path_valid = false;
 	if (p.is_empty()) {
 		return TTR("Path is empty.");
 	}
@@ -333,7 +333,7 @@ String ScriptCreateDialog::_validate_path(const String &p_path, bool p_file_must
 	if (language->get_extensions()[selected_script] != extension && p_try_match && _extension_update_selected_language(p.get_extension()) != OK) {
 		return TTR("Extension doesn't match chosen language.");
 	}
-
+	is_path_valid = true;
 	// Let ScriptLanguage do custom validation.
 	return language->validate_path(p);
 }
