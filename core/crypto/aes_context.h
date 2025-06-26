@@ -51,6 +51,8 @@ private:
 	Mode mode = MODE_MAX;
 	CryptoCore::AESContext ctx;
 	PackedByteArray iv;
+	bool is_initialized() const;
+	const int AES_BLOCK_SIZE = 16;
 
 protected:
 	static void _bind_methods();
@@ -62,6 +64,7 @@ public:
 	void finish();
 
 	AESContext();
+	~AESContext();
 };
 
 VARIANT_ENUM_CAST(AESContext::Mode);

@@ -76,6 +76,9 @@ Ref<TLSOptions> TLSOptions::client(Ref<X509Certificate> p_trusted_chain, const S
 	return opts;
 }
 
+/*
+ * Allows use of optional CA verification.
+ */
 Ref<TLSOptions> TLSOptions::client_unsafe(Ref<X509Certificate> p_trusted_chain) {
 	Ref<TLSOptions> opts;
 	opts.instantiate();
