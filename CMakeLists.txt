@@ -492,7 +492,7 @@ add_subdirectory(modules)
 if (EDITOR_BUILD)
 	execute_process(
 		COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" doc_data_class_path_builder
-		"${CMAKE_CURRENT_SOURCE_DIR}/editor/doc_data_class_path.gen.h" "${DOC_CLASS_PATHS}"
+		"${CMAKE_SOURCE_DIR}/editor/doc_data_class_path.gen.h" "${DOC_CLASS_PATHS}"
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
 endif()
