@@ -20,6 +20,23 @@ add_library(rex_editor STATIC
 
 clone_library(rex_engine rex_editor)
 
+file(GLOB DOC_PATHS ${CMAKE_SOURCE_DIR}/doc/classes/*)
+
+list(JOIN DOC_PATHS " " DOC_FILES_ARGS)
+
+add_custom_command(
+	OUTPUT ${CMAKE_SOURCE_DIR}/editor/doc_data_class_path.gen.h
+	COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" doc_data_class_path_builder
+	"${CMAKE_SOURCE_DIR}/editor/doc_data_class_path.gen.h" ${DOC_FILES_ARGS}
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	COMMENT "Generating doc_data_class_path.gen.h ..."
+)
+add_custom_target(doc_data_class_path DEPENDS
+	${CMAKE_SOURCE_DIR}/editor/doc_data_class_path.gen.h
+)
+add_dependencies(rex_editor doc_data_class_path)
+
+
 add_subdirectory(debugger)
 add_subdirectory(export)
 add_subdirectory(gui)

@@ -487,6 +487,16 @@ if (REX_TESTS)
 endif()
 add_subdirectory(modules)
 
+
+# This is placed here so the gathering of doc paths can be part of CMake iterating through the sub directories
+if (EDITOR_BUILD)
+	execute_process(
+		COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" doc_data_class_path_builder
+		"${CMAKE_CURRENT_SOURCE_DIR}/editor/doc_data_class_path.gen.h" "${DOC_CLASS_PATHS}"
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	)
+endif()
+
 target_link_libraries(rex_engine PUBLIC
 	rex_platform
 	rex_drivers

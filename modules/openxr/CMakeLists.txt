@@ -1,3 +1,43 @@
+file(RELATIVE_PATH CURRENT_RELATIVE_PATH "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+
+set(MODULE_DOC_CLASSES
+	OpenXRInterface
+	OpenXRAction
+	OpenXRActionSet
+	OpenXRActionMap
+	OpenXRAPIExtension
+	OpenXRExtensionWrapper
+	OpenXRExtensionWrapperExtension
+	OpenXRFutureResult
+	OpenXRFutureExtension
+	OpenXRInteractionProfile
+	OpenXRInteractionProfileMetadata
+	OpenXRIPBinding
+	OpenXRHand
+	OpenXRVisibilityMask
+	OpenXRCompositionLayer
+	OpenXRCompositionLayerQuad
+	OpenXRCompositionLayerCylinder
+	OpenXRCompositionLayerEquirect
+	OpenXRBindingModifier
+	OpenXRIPBindingModifier
+	OpenXRActionBindingModifier
+	OpenXRAnalogThresholdModifier
+	OpenXRDpadBindingModifier
+	OpenXRInteractionProfileEditorBase
+	OpenXRInteractionProfileEditor
+	OpenXRBindingModifierEditor
+	OpenXRHapticBase
+	OpenXRHapticVibration
+)
+set(MODULE_DOC_CLASS_PATH "${CURRENT_RELATIVE_PATH}/doc_classes")
+
+foreach(DOC_CLASS ${MODULE_DOC_CLASSES})
+	list(APPEND DOC_CLASS_PATHS "${DOC_CLASS},${MODULE_DOC_CLASS_PATH}")
+endforeach()
+
+set(DOC_CLASS_PATHS ${DOC_CLASS_PATHS} PARENT_SCOPE)
+
 if (REX_PLATFORM MATCHES "linuxbsd|android|macos|windows" AND NOT DISABLE_XR)
 	add_library(rex_module_${MODULE_NAME} STATIC)
 	set(MODULE_IS_ENABLED ON PARENT_SCOPE)

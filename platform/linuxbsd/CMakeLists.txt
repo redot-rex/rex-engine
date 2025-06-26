@@ -21,6 +21,17 @@ option(TOUCHEVENTS "Enable touch events" ON)
 option(EXECINFO "Use libexecinfo on systems where glibc is not available" OFF)
 option(USE_LLVM "Use the LLVM compiler" OFF)
 
+file(RELATIVE_PATH CURRENT_RELATIVE_PATH "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+
+set(PLATFORM_DOC_CLASSES "EditorExportPlatformLinuxBSD")
+set(PLATFORM_DOC_CLASS_PATH "${CURRENT_RELATIVE_PATH}/doc_classes")
+
+foreach(DOC_CLASS ${PLATFORM_DOC_CLASSES})
+	list(APPEND DOC_CLASS_PATHS "${DOC_CLASS},${PLATFORM_DOC_CLASS_PATH}")
+endforeach()
+
+set(DOC_CLASS_PATHS ${DOC_CLASS_PATHS} PARENT_SCOPE)
+
 add_executable(rex_engine
 	${CMAKE_CURRENT_SOURCE_DIR}/godot_linuxbsd.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/crash_handler_linuxbsd.cpp
