@@ -495,6 +495,25 @@ if (EDITOR_BUILD)
 		"${CMAKE_SOURCE_DIR}/editor/doc_data_class_path.gen.h" "${DOC_CLASS_PATHS}"
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
+
+	file(GLOB DOCS ${CMAKE_SOURCE_DIR}/doc/classes/*.xml)
+	set(MODULE_DIRS)
+	foreach(DOC_PATH ${DOC_CLASS_PATHS})
+		list(FIND MODULE_DIRS ${DOC_PATH} DIR_INDEX)
+		if (DIR_INDEX EQUAL -1)
+			list(APPEND MODULE_DIRS ${DOC_PATH})
+		endif()
+	endforeach()
+	foreach(DIR ${MODULE_DIRS})
+		file(GLOB MODULE_DOCS ${DIR}/*.xml)
+		list(APPEND DOCS ${MODULE_DOCS})
+	endforeach()
+
+	execute_process(
+		COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" make_doc_header
+		"${CMAKE_SOURCE_DIR}/editor/doc_data_compressed.gen.h" "${DOCS}"
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	)
 endif()
 
 target_link_libraries(rex_engine PUBLIC

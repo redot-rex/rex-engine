@@ -41,21 +41,5 @@ add_library(rex_platform STATIC
 	${PLATFORM_SOURCES}
 )
 
-# This was in the root SConstruct file, but here seemed more appropriate.
-if (EDITOR_BUILD)
-	set(PLATFORM_EXPORTERS
-		android
-		ios
-		linuxbsd
-		macos
-		web
-		windows
-	)
-	execute_process(
-		COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" register_exporters_builder
-		"${CMAKE_SOURCE_DIR}/editor/register_exporters.gen.cpp" "${PLATFORM_EXPORTERS}"
-		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	)
-endif()
 
 clone_library(rex_engine rex_platform)

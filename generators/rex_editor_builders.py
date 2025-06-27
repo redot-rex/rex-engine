@@ -58,7 +58,7 @@ void register_exporter_types() {{
 
 
 def make_doc_header(args):
-    buffer = b"".join([methods.get_buffer(src) for src in map(str, args[1])])
+    buffer = b"".join([methods.get_buffer(src) for src in map(str, args[1].split(";"))])
     decomp_size = len(buffer)
     buffer = methods.compress_buffer(buffer)
 

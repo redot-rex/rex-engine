@@ -1,3 +1,4 @@
+
 file(GLOB EDITOR_SOURCES *.cpp)
 
 file(GLOB EDITOR_PLATFORM_ANDROID_SOURCES ${CMAKE_SOURCE_DIR}/platform/android/export/*.cpp)
@@ -20,22 +21,24 @@ add_library(rex_editor STATIC
 
 clone_library(rex_engine rex_editor)
 
-file(GLOB DOC_PATHS ${CMAKE_SOURCE_DIR}/doc/classes/*)
-
-list(JOIN DOC_PATHS " " DOC_FILES_ARGS)
-
-add_custom_command(
-	OUTPUT ${CMAKE_SOURCE_DIR}/editor/doc_data_class_path.gen.h
-	COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" doc_data_class_path_builder
-	"${CMAKE_SOURCE_DIR}/editor/doc_data_class_path.gen.h" ${DOC_FILES_ARGS}
-	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-	COMMENT "Generating doc_data_class_path.gen.h ..."
+set(PLATFORM_EXPORTERS
+	android
+	ios
+	linuxbsd
+	macos
+	web
+	windows
 )
-add_custom_target(doc_data_class_path DEPENDS
-	${CMAKE_SOURCE_DIR}/editor/doc_data_class_path.gen.h
+execute_process(
+	COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" register_exporters_builder
+	"${CMAKE_SOURCE_DIR}/editor/register_exporters.gen.cpp" "${PLATFORM_EXPORTERS}"
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
-add_dependencies(rex_editor doc_data_class_path)
 
+foreach(EXPORTER ${PLATFORM_EXPORTERS})
+	file(GLOB EXPORTER_SOURCES ${CMAKE_SOURCE_DIR}/platform/${EXPORTER}/export/*.cpp)
+	target_sources(rex_editor PRIVATE ${EXPORTER_SOURCES})
+endforeach()
 
 add_subdirectory(debugger)
 add_subdirectory(export)
