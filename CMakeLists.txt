@@ -568,6 +568,24 @@ if (EDITOR_BUILD)
 	)
 	add_custom_target(extractable_translations DEPENDS ${CMAKE_SOURCE_DIR}/editor/extractable_translations.gen.h)
 	add_dependencies(rex_editor extractable_translations)
+
+	# Editor Icons
+	file(GLOB EDITOR_ICONS ${CMAKE_SOURCE_DIR}/editor/icons/*.svg)
+	foreach(MODULE_ICON_PATH ${ICON_PATHS})
+		file(GLOB MODULE_ICONS ${MODULE_ICON_PATH}/*.svg)
+		list(APPEND EDITOR_ICONS ${MODULE_ICONS})
+	endforeach()
+	add_custom_command(
+		OUTPUT ${CMAKE_SOURCE_DIR}/editor/themes/editor_icons.gen.h
+		COMMAND ${_Python3_EXECUTABLE}
+		ARGS ${CMAKE_SOURCE_DIR}/generators/rex_editor_icons_builders.py make_editor_icons_action
+		${CMAKE_SOURCE_DIR}/editor/themes/editor_icons.gen.h ${EDITOR_ICONS}
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		COMMENT "Generating Editor Icons Header..."
+	)
+	add_custom_target(editor_icons DEPENDS ${CMAKE_SOURCE_DIR}/editor/themes/editor_icons.gen.h)
+	add_dependencies(rex_editor editor_icons)
+
 endif()
 
 target_link_libraries(rex_engine PUBLIC
