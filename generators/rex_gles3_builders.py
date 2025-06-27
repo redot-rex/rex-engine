@@ -527,4 +527,4 @@ if __name__ == "__main__":
     args.pop(0)
     if args[0] == "build_gles3_headers":
         args.pop(0)
-        build_raw_headers(args)
+        build_gles3_headers(args)

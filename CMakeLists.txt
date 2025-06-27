@@ -131,7 +131,6 @@ if (REX_PLATFORM STREQUAL "linuxbsd")
 	#add_subdirectory(platform/windows)
 endif()
 
-#add_executable(rex_engine main/main.cpp)
 target_include_directories(rex_engine PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
@@ -490,11 +489,16 @@ add_subdirectory(modules)
 
 # This is placed here so the gathering of doc paths can be part of CMake iterating through the sub directories
 if (EDITOR_BUILD)
-	execute_process(
-		COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" doc_data_class_path_builder
-		"${CMAKE_SOURCE_DIR}/editor/doc_data_class_path.gen.h" "${DOC_CLASS_PATHS}"
+	add_custom_command(
+		OUTPUT ${CMAKE_SOURCE_DIR}/editor/doc_data_class_path.gen.h
+		COMMAND ${_Python3_EXECUTABLE}
+		ARGS ${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py doc_data_class_path_builder
+		${CMAKE_SOURCE_DIR}/editor/doc_data_class_path.gen.h ${DOC_CLASS_PATHS}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		COMMENT "Generating Doc Data Class Path Header..."
 	)
+	add_custom_target(doc_data_class_path DEPENDS ${CMAKE_SOURCE_DIR}/editor/doc_data_class_path.gen.h)
+	add_dependencies(rex_editor doc_data_class_path)
 
 	file(GLOB DOCS ${CMAKE_SOURCE_DIR}/doc/classes/*.xml)
 	set(MODULE_DIRS)
@@ -509,35 +513,61 @@ if (EDITOR_BUILD)
 		list(APPEND DOCS ${MODULE_DOCS})
 	endforeach()
 
-	execute_process(
-		COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" make_doc_header
-		"${CMAKE_SOURCE_DIR}/editor/doc_data_compressed.gen.h" "${DOCS}"
+	add_custom_command(
+		OUTPUT ${CMAKE_SOURCE_DIR}/editor/doc_data_compressed.gen.h
+		COMMAND ${_Python3_EXECUTABLE}
+		ARGS ${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py make_doc_header
+		${CMAKE_SOURCE_DIR}/editor/doc_data_compressed.gen.h ${DOCS}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		COMMENT "Generating Doc Data Compressed Header..."
 	)
+	add_custom_target(doc_data_compressed DEPENDS ${CMAKE_SOURCE_DIR}/editor/doc_data_compressed.gen.h)
+	add_dependencies(rex_editor doc_data_compressed)
+
 	file(GLOB EDITOR_TRANSLATIONS ${CMAKE_SOURCE_DIR}/editor/translations/editor/*)
-	execute_process(
-		COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" make_translations_header
-		"${CMAKE_SOURCE_DIR}/editor/editor_translations.gen.h" "${EDITOR_TRANSLATIONS}"
+	add_custom_command(
+		OUTPUT ${CMAKE_SOURCE_DIR}/editor/editor_translations.gen.h
+		COMMAND ${_Python3_EXECUTABLE}
+		ARGS ${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py make_translations_header
+		${CMAKE_SOURCE_DIR}/editor/editor_translations.gen.h ${EDITOR_TRANSLATIONS}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		COMMENT "Generating Editor Translations Header..."
 	)
+	add_custom_target(editor_translations DEPENDS ${CMAKE_SOURCE_DIR}/editor/editor_translations.gen.h)
+	add_dependencies(rex_editor editor_translations)
 	file(GLOB PROPERTIES_TRANSLATIONS ${CMAKE_SOURCE_DIR}/editor/translations/properties/*)
-	execute_process(
-		COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" make_translations_header
-		"${CMAKE_SOURCE_DIR}/editor/property_translations.gen.h" "${PROPERTIES_TRANSLATIONS}"
+	add_custom_command(
+		OUTPUT ${CMAKE_SOURCE_DIR}/editor/property_translations.gen.h
+		COMMAND ${_Python3_EXECUTABLE}
+		ARGS ${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py make_translations_header
+		${CMAKE_SOURCE_DIR}/editor/property_translations.gen.h ${PROPERTIES_TRANSLATIONS}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		COMMENT "Generating Properties Translations Header..."
 	)
+	add_custom_target(properties_translations DEPENDS ${CMAKE_SOURCE_DIR}/editor/property_translations.gen.h)
+	add_dependencies(rex_editor properties_translations)
 	file(GLOB DOC_TRANSLATIONS ${CMAKE_SOURCE_DIR}/doc/translations/*)
-	execute_process(
-		COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" make_translations_header
-		"${CMAKE_SOURCE_DIR}/editor/doc_translations.gen.h" "${DOC_TRANSLATIONS}"
+	add_custom_command(
+		OUTPUT ${CMAKE_SOURCE_DIR}/editor/doc_translations.gen.h
+		COMMAND ${_Python3_EXECUTABLE}
+		ARGS ${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py make_translations_header
+		${CMAKE_SOURCE_DIR}/editor/doc_translations.gen.h ${DOC_TRANSLATIONS}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		COMMENT "Generating Doc Translations Header..."
 	)
+	add_custom_target(doc_translations DEPENDS ${CMAKE_SOURCE_DIR}/editor/doc_translations.gen.h)
+	add_dependencies(rex_editor doc_translations)
 	file(GLOB EXTRACTABLE_TRANSLATIONS ${CMAKE_SOURCE_DIR}/editor/translations/extractable/*)
-	execute_process(
-		COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" make_translations_header
-		"${CMAKE_SOURCE_DIR}/editor/extractable_translations.gen.h" "${EXTRACTABLE_TRANSLATIONS}"
+	add_custom_command(
+		OUTPUT ${CMAKE_SOURCE_DIR}/editor/extractable_translations.gen.h
+		COMMAND ${_Python3_EXECUTABLE}
+		ARGS ${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py make_translations_header
+		${CMAKE_SOURCE_DIR}/editor/extractable_translations.gen.h ${EXTRACTABLE_TRANSLATIONS}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		COMMENT "Generating Extractable Translations Header..."
 	)
+	add_custom_target(extractable_translations DEPENDS ${CMAKE_SOURCE_DIR}/editor/extractable_translations.gen.h)
+	add_dependencies(rex_editor extractable_translations)
 endif()
 
 target_link_libraries(rex_engine PUBLIC

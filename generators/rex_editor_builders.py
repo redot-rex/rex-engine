@@ -10,14 +10,14 @@ import methods
 import shutil
 
 def doc_data_class_path_builder(args):
-    path_pairs = sorted(args[1].split(";"))
+    target = args.pop(0)
     paths = {}
-    for pair in path_pairs:
+    for pair in args:
         values = pair.split(",")
         paths[values[0]] = values[1]
     #paths = dict(sorted(args[1].split(" ")))
     data = "\n".join([f'\t{{"{key}", "{value}"}},' for key, value in paths.items()])
-    with methods.generated_wrapper(str(args[0])) as file:
+    with methods.generated_wrapper(str(target)) as file:
         file.write(
             f"""\
 struct _DocDataClassPath {{
@@ -35,11 +35,12 @@ inline constexpr _DocDataClassPath _doc_data_class_paths[{len(paths) + 1}] = {{
 
 
 def register_exporters_builder(args):
-    platforms = args[1].split(";")
+    target = args.pop(0)
+    platforms = args[0].split(";")
     exp_inc = "\n".join([f'#include "platform/{p}/export/export.h"' for p in platforms])
     exp_reg = "\n\t".join([f"register_{p}_exporter();" for p in platforms])
     exp_type = "\n\t".join([f"register_{p}_exporter_types();" for p in platforms])
-    with methods.generated_wrapper(str(args[0])) as file:
+    with methods.generated_wrapper(str(target)) as file:
         file.write(
             f"""\
 #include "register_exporters.h"
@@ -58,11 +59,12 @@ void register_exporter_types() {{
 
 
 def make_doc_header(args):
-    buffer = b"".join([methods.get_buffer(src) for src in map(str, args[1].split(";"))])
+    target = args.pop(0)
+    buffer = b"".join([methods.get_buffer(src) for src in map(str, args)])
     decomp_size = len(buffer)
     buffer = methods.compress_buffer(buffer)
 
-    with methods.generated_wrapper(str(args[0])) as file:
+    with methods.generated_wrapper(str(target)) as file:
         file.write(f"""\
 inline constexpr const char *_doc_data_hash = "{hash(buffer)}";
 inline constexpr int _doc_data_compressed_size = {len(buffer)};
@@ -76,7 +78,7 @@ inline constexpr const unsigned char _doc_data_compressed[] = {{
 def make_translations_header(args):
     target = args.pop(0)
     category = os.path.basename(str(target)).split("_")[0]
-    sorted_paths = sorted([src for src in args[0].split(";")], key=lambda path: os.path.splitext(os.path.basename(path))[0])
+    sorted_paths = sorted([src for src in args], key=lambda path: os.path.splitext(os.path.basename(path))[0])
 
     xl_names = []
     msgfmt = shutil.which("msgfmt")
