@@ -7,7 +7,7 @@ import tempfile
 import uuid
 import sys
 import methods
-
+import shutil
 
 def doc_data_class_path_builder(args):
     path_pairs = sorted(args[1].split(";"))
@@ -76,10 +76,11 @@ inline constexpr const unsigned char _doc_data_compressed[] = {{
 def make_translations_header(args):
     target = args.pop(0)
     category = os.path.basename(str(target)).split("_")[0]
-    sorted_paths = sorted([src.abspath for src in args], key=lambda path: os.path.splitext(os.path.basename(path))[0])
+    sorted_paths = sorted([src for src in args[0].split(";")], key=lambda path: os.path.splitext(os.path.basename(path))[0])
 
     xl_names = []
-    msgfmt = env.Detect("msgfmt")
+    msgfmt = shutil.which("msgfmt")
+    print(msgfmt)
     if not msgfmt:
         methods.print_warning("msgfmt not found, using .po files instead of .mo")
 

@@ -514,6 +514,30 @@ if (EDITOR_BUILD)
 		"${CMAKE_SOURCE_DIR}/editor/doc_data_compressed.gen.h" "${DOCS}"
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
+	file(GLOB EDITOR_TRANSLATIONS ${CMAKE_SOURCE_DIR}/editor/translations/editor/*)
+	execute_process(
+		COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" make_translations_header
+		"${CMAKE_SOURCE_DIR}/editor/editor_translations.gen.h" "${EDITOR_TRANSLATIONS}"
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	)
+	file(GLOB PROPERTIES_TRANSLATIONS ${CMAKE_SOURCE_DIR}/editor/translations/properties/*)
+	execute_process(
+		COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" make_translations_header
+		"${CMAKE_SOURCE_DIR}/editor/property_translations.gen.h" "${PROPERTIES_TRANSLATIONS}"
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	)
+	file(GLOB DOC_TRANSLATIONS ${CMAKE_SOURCE_DIR}/doc/translations/*)
+	execute_process(
+		COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" make_translations_header
+		"${CMAKE_SOURCE_DIR}/editor/doc_translations.gen.h" "${DOC_TRANSLATIONS}"
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	)
+	file(GLOB EXTRACTABLE_TRANSLATIONS ${CMAKE_SOURCE_DIR}/editor/translations/extractable/*)
+	execute_process(
+		COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" make_translations_header
+		"${CMAKE_SOURCE_DIR}/editor/extractable_translations.gen.h" "${EXTRACTABLE_TRANSLATIONS}"
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	)
 endif()
 
 target_link_libraries(rex_engine PUBLIC
