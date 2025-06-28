@@ -492,8 +492,23 @@ if (BUILTIN_GRAPHITE AND GRAPHITE AND "freetype" IN_LIST ENABLED_MODULES)
 	)
 endif()
 
+
+
+
 file(GLOB TEXT_SERVER_ADV_SOURCES *.cpp)
 target_sources(rex_module_${MODULE_NAME} PRIVATE
 	${TEXT_SERVER_ADV_SOURCES}
 )
+
+add_custom_command(
+	OUTPUT ${CMAKE_SOURCE_DIR}/thirdparty/icu4c/icudata.gen.h
+	COMMAND ${_Python3_EXECUTABLE}
+	ARGS ${CMAKE_SOURCE_DIR}/generators/rex_text_server_adv_builders.py make_icu_data
+	${CMAKE_SOURCE_DIR}/thirdparty/icu4c/icudata.gen.h ${CMAKE_SOURCE_DIR}/thirdparty/icu4c/icudt_godot.dat
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	COMMENT "Generating icu4data Header..."
+)
+add_custom_target(icu4_data DEPENDS ${CMAKE_SOURCE_DIR}/thirdparty/icu4c/icudata.gen.h)
+add_dependencies(rex_module_${MODULE_NAME} icu4_data)
+
 set(BUILTIN_LIBRARIES ${BUILTIN_LIBRARIES} PARENT_SCOPE)
