@@ -36,7 +36,7 @@ inline constexpr _DocDataClassPath _doc_data_class_paths[{len(paths) + 1}] = {{
 
 def register_exporters_builder(args):
     target = args.pop(0)
-    platforms = args[0].split(";")
+    platforms = args
     exp_inc = "\n".join([f'#include "platform/{p}/export/export.h"' for p in platforms])
     exp_reg = "\n\t".join([f"register_{p}_exporter();" for p in platforms])
     exp_type = "\n\t".join([f"register_{p}_exporter_types();" for p in platforms])

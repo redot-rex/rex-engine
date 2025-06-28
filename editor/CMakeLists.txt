@@ -29,11 +29,17 @@ set(PLATFORM_EXPORTERS
 	web
 	windows
 )
-execute_process(
-	COMMAND "${_Python3_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py" register_exporters_builder
-	"${CMAKE_SOURCE_DIR}/editor/register_exporters.gen.cpp" "${PLATFORM_EXPORTERS}"
+add_custom_command(
+	OUTPUT ${CMAKE_SOURCE_DIR}/editor/register_exporters.gen.cpp
+	COMMAND ${_Python3_EXECUTABLE}
+	ARGS ${CMAKE_SOURCE_DIR}/generators/rex_editor_builders.py register_exporters_builder
+	${CMAKE_SOURCE_DIR}/editor/register_exporters.gen.cpp ${PLATFORM_EXPORTERS}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	COMMENT "Generating register exporters..."
 )
+add_custom_target(editor_register_exporters DEPENDS ${CMAKE_SOURCE_DIR}/editor/register_exporters.gen.cpp)
+add_dependencies(rex_editor editor_register_exporters)
+target_sources(rex_editor PRIVATE ${CMAKE_SOURCE_DIR}/editor/register_exporters.gen.cpp)
 
 foreach(EXPORTER ${PLATFORM_EXPORTERS})
 	file(GLOB EXPORTER_SOURCES ${CMAKE_SOURCE_DIR}/platform/${EXPORTER}/export/*.cpp)
