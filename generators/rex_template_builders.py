@@ -45,22 +45,23 @@ def parse_template(inherits, source, delimiter):
 
 
 def make_templates(args):
+    target = args.pop(0)
     delimiter = "#"  # GDScript single line comment delimiter by default.
-    if source:
-        ext = os.path.splitext(str(args[1]))[1]
+    if args:
+        ext = os.path.splitext(str(args))[1]
         if ext == ".cs":
             delimiter = "//"
 
     parsed_templates = []
 
-    for filepath in source:
+    for filepath in args:
         filepath = str(filepath)
         node_name = os.path.basename(os.path.dirname(filepath))
         parsed_templates.append(parse_template(node_name, filepath, delimiter))
 
     parsed_template_string = "\n\t".join(parsed_templates)
 
-    with methods.generated_wrapper(str(args[0])) as file:
+    with methods.generated_wrapper(str(target)) as file:
         file.write(f"""\
 #include "core/object/object.h"
 #include "core/object/script_language.h"
@@ -79,3 +80,6 @@ if __name__ == "__main__":
     if args[0] == "parse_template":
         args.pop(0)
         parse_template(args)
+    if args[0] == "make_templates":
+        args.pop(0)
+        make_templates(args)

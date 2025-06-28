@@ -34,6 +34,18 @@ target_sources(rex_module_${MODULE_NAME} PRIVATE
 	${GDSCRIPT_SOURCES}
 )
 
+file(GLOB_RECURSE SCRIPT_TEMPLATES ${CMAKE_CURRENT_SOURCE_DIR}/editor/script_templates/*.gd)
+add_custom_command(
+	OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/editor/script_templates/templates.gen.h
+	COMMAND ${_Python3_EXECUTABLE}
+	ARGS ${CMAKE_SOURCE_DIR}/generators/rex_template_builders.py make_templates
+	${CMAKE_CURRENT_SOURCE_DIR}/editor/script_templates/templates.gen.h ${SCRIPT_TEMPLATES}
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	COMMENT "Generating GDScript Templates Header..."
+)
+add_custom_target(script_templates DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/editor/script_templates/templates.gen.h)
+add_dependencies(rex_module_${MODULE_NAME} script_templates)
+
 if (EDITOR_BUILD)
 	file(GLOB GDSCRIPT_EDITOR_SOURCES editor/*.cpp)
 	target_sources(rex_module_${MODULE_NAME} PRIVATE
