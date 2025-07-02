@@ -17,6 +17,6 @@ target_sources(rex_drivers PRIVATE
 )
 
 target_include_directories(rex_drivers PRIVATE
-	${THIRDPARTY_SPRIV_DIR}
+	${THIRDPARTY_SPIRV_DIR}
 	${THIRDPARTY_SPIRV_DIR}include/
 )

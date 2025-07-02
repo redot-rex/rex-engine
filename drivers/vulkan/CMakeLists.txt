@@ -6,7 +6,6 @@ set(THIRDPARTY_VULKAN_INCLUDE_DIR ${THIRDPARTY_DIR}vulkan/include/)
 set(THIRDPARTY_VOLK_DIR ${THIRDPARTY_DIR}volk/)
 
 target_include_directories(rex_engine PUBLIC ${THIRDPARTY_VULKAN_INCLUDE_DIR})
-target_include_directories(rex_engine PUBLIC ${THIRDPARTY_VULKAN_INCLUDE_DIR})
 target_include_directories(rex_engine PUBLIC ${THIRDPARTY_DIR}vulkan/)
 
 if (USE_VOLK)

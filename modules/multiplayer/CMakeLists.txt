@@ -30,15 +30,15 @@ if (EDITOR_BUILD)
 endif()
 
 if (REX_TESTS)
-	target_compile_definitions(rex_moudle_${MODULE_NAME} PRIVATE
+	target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
 		TESTS_ENABLED
 	)
 	file(GLOB MULTIPLAYER_TESTS_SOURCES test/*.cpp)
-	target_sources(rex_module_${MODULE_NAME}
+	target_sources(rex_module_${MODULE_NAME} PRIVATE
 		${MULTIPLAYER_TESTS_SOURCES}
 	)
 	if (DISABLE_EXCEPTIONS)
-		target_compile_definitions(rex_module_${MODULE_NAME}
+		target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
 			DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS
 		)
 	endif()

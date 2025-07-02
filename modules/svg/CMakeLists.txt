@@ -64,7 +64,7 @@ if ("webp" IN_LIST ENABLED_MODULES)
 	)
 	if (BUILTIN_LIBWEBP)
         target_include_directories(rex_module_${MODULE_NAME} INTERFACE
-			${CMAKE_SOURCE_DIR}thirdparty/libwebp/src/
+			${CMAKE_SOURCE_DIR}/thirdparty/libwebp/src/
 		)
 	endif()
 endif()

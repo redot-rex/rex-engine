@@ -7,6 +7,7 @@ add_custom_command(
 	COMMAND ${_Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/generators/rex_default_theme_icon_builders.py make_default_theme_icons_action ${CMAKE_SOURCE_DIR}/scene/theme/default_theme_icons.gen.h ${ICON_FILES_ARGS}
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 	COMMENT "Generating default theme icon actions files..."
+	DEPENDS ${ICON_SOURCES}
 )
 add_custom_target(default_theme_icon_action_header DEPENDS
 	${CMAKE_SOURCE_DIR}/scene/theme/default_theme_icons.gen.h

@@ -66,7 +66,7 @@ if (BUILTIN_PCRE2)
 			${PCRE2_FLAGS}
 			PCRE2_CODE_UNIT_WIDTH=${WIDTH}
 		)
-		target_link_libraries(rex_module_${MODULE_NAME} PUBLIC pcre2_${WIDTH})
+		target_link_libraries(rex_module_${MODULE_NAME} PRIVATE pcre2_${WIDTH})
 	endforeach()
 
 	target_include_directories(rex_module_${MODULE_NAME} PRIVATE

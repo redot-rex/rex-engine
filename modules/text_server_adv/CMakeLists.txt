@@ -463,7 +463,7 @@ if (BUILTIN_ICU4C)
 	endif()
 	target_include_directories(rex_module_${MODULE_NAME} PRIVATE
 		${THIRDPARTY_ICU4C_DIR}common/
-		${THIRDPARTY_GRAPHITE_DIR}i18n/
+		${THIRDPARTY_ICU4C_DIR}i18n/
 	)
 	list(APPEND BUILTIN_LIBRARIES icu_builtin)
 endif()

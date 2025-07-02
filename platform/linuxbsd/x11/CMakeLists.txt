@@ -21,7 +21,7 @@ if (VULKAN)
 endif()
 
 if (OPENGL3)
-	target_compile_definitions(rex_engine PUBLIC
+	target_compile_definitions(rex_engine PRIVATE
 		GLAD_GLX_NO_X11
 	)
 	target_sources(rex_engine PRIVATE

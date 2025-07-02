@@ -59,10 +59,10 @@ if (EDITOR_BUILD)
 	else()
 		message(WARNING "NO LSP")
 		target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
-			GDSCIPT_NO_LSP
+			GDSCRIPT_NO_LSP
 		)
 		target_compile_definitions(rex_engine PUBLIC
-			GDSCIPT_NO_LSP
+			GDSCRIPT_NO_LSP
 		)
 	endif()
 endif()

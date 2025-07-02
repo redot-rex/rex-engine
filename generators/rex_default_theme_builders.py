@@ -7,7 +7,6 @@ import methods
 
 def make_fonts_header(args):
     with methods.generated_wrapper(str(args.pop(0))) as file:
-        srcs = args[0].split(" ")
         for src in map(str, args):
             # Saving uncompressed, since FreeType will reference from memory pointer.
             buffer = methods.get_buffer(src)
