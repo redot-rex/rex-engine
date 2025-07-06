@@ -1,11 +1,11 @@
 # ![ReX Engine Cover](/.github/assets/cover.png)
 
-![Issues](https://img.shields.io/github/issues-raw/Redot-Experimental/ReX?color=FFA726&label=issues&style=for-the-badge)
-![Pull Requests](https://img.shields.io/github/issues-pr-raw/Redot-Experimental/ReX?color=FFA726&label=PRs&style=for-the-badge)
-![Contributors](https://img.shields.io/github/contributors/Redot-Experimental/ReX?color=FFA726&label=contributors&style=for-the-badge)
-![Lines](https://img.shields.io/endpoint?url=https://ghloc.vercel.app/api/Redot-Experimental/ReX/badge?style=flat&logoColor=white&color=FFA726&style=for-the-badge)
-![Commit Activity](https://img.shields.io/github/commit-activity/m/Redot-Experimental/ReX?color=FFA726&label=commits&style=for-the-badge)
-![Last Commit](https://img.shields.io/github/last-commit/Redot-Experimental/ReX?color=FFA726&label=last%20commit&style=for-the-badge)
+![Issues](https://img.shields.io/github/issues-raw/redot-rex/redot-engine?color=FFA726&label=issues&style=for-the-badge)
+![Pull Requests](https://img.shields.io/github/issues-pr-raw/redot-rex/rex-engine?color=FFA726&label=PRs&style=for-the-badge)
+![Contributors](https://img.shields.io/github/contributors/redot-rex/rex-engine?color=FFA726&label=contributors&style=for-the-badge)
+![Lines](https://img.shields.io/endpoint?url=https://ghloc.vercel.app/api/redot-rex/rex-engine/badge?style=flat&logoColor=white&color=FFA726&style=for-the-badge)
+![Commit Activity](https://img.shields.io/github/commit-activity/m/redot-rex/rex-engine?color=FFA726&label=commits&style=for-the-badge)
+![Last Commit](https://img.shields.io/github/last-commit/redot-rex/rex-engine?color=FFA726&label=last%20commit&style=for-the-badge)
 
 <div align="center">
 
@@ -20,7 +20,7 @@
 ### Binary downloads
 
 Official binaries for the ReX editor and the export templates will be found
-[on the Redot website](https://www.redotengine.org/download) once it's set up and on the [GitHub page](https://github.com/Redot-Experimental/ReX) until then.
+[on the Redot website](https://www.redotengine.org/download) once it's set up and on the [GitHub page](https://github.com/redot-rex/rex-engine) until then.
 
 ### Compiling from source
 
