@@ -14,7 +14,7 @@ First off, thanks for taking the time to contribute! ❤️
 This document summarizes the most important points for people interested in
 contributing to Redot, especially via bug reports or pull requests.
 
-The [Redot Documentation](https://docs.redotengine.org/en/stable/contributing/development/) has a dedicated Contributing section
+The [ReX Documentation](https://docs.redotengine.org/en/stable/contributing/development/) has a dedicated Contributing section
 which details these points and more, and is a recommended read. Additionally, there is more information about the ReX Engine in the [ReX Documentation](https://docs-experimental.redotengine.org/).
 
 ## Table of contents
@@ -27,7 +27,7 @@ which details these points and more, and is a recommended read. Additionally, th
 
 ## Reporting bugs
 
-Report bugs [here](https://github.com/Redot-Experimental/ReX/issues/new?assignees=&labels=&template=bug_report.yml).
+Report bugs [here](https://github.com/Redot-Experimental/rex-engine/issues/new?assignees=&labels=&template=bug_report.yml).
 Please follow the instructions in the template when you do.
 
 Notably, please include a Minimal Reproduction Project (MRP), which is a small ReX project which reproduces the issue, with no unnecessary files included. Be sure to not include the `.godot` folder in the archive to save space.
@@ -44,7 +44,7 @@ call a _regression_), please mention it and clarify which versions you tested
 
 **The main issue tracker is for bug reports and does not accept feature proposals.**
 
-Visit the [ReX Proposals Repo](https://github.com/Redot-Experimental/rex-proposals)
+Visit the [ReX Proposals Repo](https://github.com/redot-rex/rex-proposals)
 to suggest features or improvements to the engine.
 
 ## Contributing pull requests
@@ -179,7 +179,7 @@ existing tests as well.
 See [Unit testing](https://docs.redotengine.org/en/latest/contributing/development/core_and_modules/unit_testing.html)
 for information on writing tests in Redot's C++ codebase.
 
-## Contributing to Redot translations
+## Contributing to ReX translations
 
 You can contribute to Redot translations by leaving a volunteer application
 on the [Redot Discord](https://discord.gg/redot) for us to review.
@@ -195,14 +195,14 @@ To communicate with developers (e.g. to discuss a feature you want to implement
 or a bug you want to fix), the following channels can be used:
 
 - [Redot Discord](https://discord.gg/redot): General community chat and development can all be found here.
-- [Bug tracker](https://github.com/Redot-Experimental/ReX/issues): If there is an
+- [Bug tracker](https://github.com/redot-rex/rex-engine/issues): If there is an
   existing issue about a topic you want to discuss, you can participate directly.
   If not, you can open a new issue. Please mind the guidelines outlined above
   for bug reporting.
-- [ReX Proposals Repo](https://github.com/Redot-Experimental/rex-proposals): Feature
+- [ReX Proposals Repo](https://github.com/redot-rex/rex-proposals): Feature
 or improvement proposals.
 - [Redot](https://x.com/redotengine) on Twitter
 
 Thanks for your interest in contributing!
 
-—Redot Development Community
+—ReX Development Community

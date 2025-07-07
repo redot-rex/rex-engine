@@ -1,6 +1,6 @@
-# Redot Engine authors
+# ReX Engine authors
 
-Redot is a Fork of the Godot Engine that is developed by a community of
+ReX Engine is a Fork of the Redot Engine that is developed by a community of
 voluntary contributors who contribute code, bug reports, documentation,
 translations, support, etc., across multiple repositories.
 
