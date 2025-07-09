@@ -267,7 +267,7 @@ void Crypto::_bind_methods() {
  * Load a cryptographic resource.
  *
  * @param p_path - The path to the resource file.
- * 
+ *
  * @param p_original_path - The original path before remapped (unused.)
  *
  * @param r_error - Pointer to store resulting err code (optional.)
