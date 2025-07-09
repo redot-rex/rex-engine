@@ -103,7 +103,7 @@ Ref<TLSOptions> TLSOptions::client(Ref<X509Certificate> p_trusted_chain, const S
 
 /*
  * Creates TLSOptions instance for client mode, without strict cert
- * verification allowing for optional CA verification. 
+ * verification allowing for optional CA verification.
  *
  * @param p_trusted_chain - The X509 cert chain.
  *
@@ -274,7 +274,7 @@ void Crypto::_bind_methods() {
  *
  * @param p_use_sub_threads - (unused.)
  * 
- * @param r_progress - (unused pointer.) 
+ * @param r_progress - (unused pointer.)
  *
  * @param p_cache_mode - (unused.)
  *
