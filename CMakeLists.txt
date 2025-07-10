@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.26 FATAL_ERROR)
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
+project(rex_engine
+        VERSION 4.3
+        DESCRIPTION "Rex Game Engine"
+        LANGUAGES C CXX
+)
+
 # C++ Standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -45,11 +51,6 @@ else()
 	set(CMAKE_BUILD_TYPE Release)
 endif()
 
-project(rex_engine
-        VERSION 4.3
-        DESCRIPTION "Rex Game Engine"
-        LANGUAGES C CXX
-)
 
 # Executable is defined per platform
 

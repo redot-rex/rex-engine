@@ -37,6 +37,7 @@ if (BUILTIN_ENET)
 
 	clone_library(rex_module_${MODULE_NAME} enet)
 	disable_warnings_for_target(enet)
+	add_dependencies(enet rex_core)
 	target_link_libraries(rex_module_${MODULE_NAME} PUBLIC enet)
 endif()
 
