@@ -49,7 +49,7 @@ add_subdirectory(platform/linuxbsd)
 	#elseif(REX_PLATFORM STREQUAL "macos")
 	#add_subdirectory(platform/macos)
 	#elseif(REX_PLATFORM STREQUAL "windows")
-	#add_subdirectory(platform/windows)
+add_subdirectory(platform/windows)
 	#endif()
 
 target_include_directories(rex_engine PUBLIC
