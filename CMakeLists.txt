@@ -28,20 +28,19 @@ include(version.cmake)
 # NOTE: Using strings that make the Scons build system.
 if (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Linux|DragonFly|FreeBSD|NetBSD|OpenBSD")
 	set(REX_PLATFORM "linuxbsd")
-elseif (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
-	set(REX_PLATFORM "windows")
+	execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCH )
 elseif (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin")
 	set(REX_PLATFORM "macos")
+	execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCH )
+elseif (${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+	set(REX_PLATFORM "windows")
+	execute_process( COMMAND wmic os get osarchitecture COMMAND tr -d '\n' OUTPUT_VARIABLE ARCH )
 else()
 	message(FATAL_ERROR "${CMAKE_HOST_SYSTEM_NAME} not supported.")
 endif()
 
 message(STATUS "Detected build platform: ${REX_PLATFORM}")
-message(STATUS "Architecture: ${CMAKE_GENERATOR_PLATFORM}")
-
-# TODO: Need a way to detect the architecture.
-
-set(ARCH "x86_64")
+message(STATUS "Architecture: ${ARCH}")
 
 include(options.cmake)
 
