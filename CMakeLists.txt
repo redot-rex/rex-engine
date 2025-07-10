@@ -4,7 +4,16 @@ find_package(Python3 REQUIRED COMPONENTS Interpreter)
 # C++ Standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_EXTENSIONS ON)
+
+if (MSVC)
+	add_compile_options(/std:c17 /std:c++17 /permissive- /Zc:__cplusplus)
+else()
+	add_compile_options(
+		"$<$<COMPILE_LANGUAGE:C>:-std=gnu17>"
+		"$<$<COMPILE_LANGUAGE:CXX>:-std=gnu++17>"
+	)
+endif()
 
 include(methods.cmake)
 include(version.cmake)
