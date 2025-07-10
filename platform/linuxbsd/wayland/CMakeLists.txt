@@ -1,5 +1,4 @@
 # TODO: Scons runs a python script here
-find_program(WAYLAND_SCANNER NAME wayland-scanner PATHS /usr/bin /usr/local/bin)
 
 function (add_wayland_header outfile src)
 	if (USE_SOWRAP)
@@ -29,9 +28,6 @@ function (add_wayland_code outfile src)
 	endif()
 endfunction()
 
-if (WAYLAND_SCANNER STREQUAL "WAYLAND_SCANNER-NOTFOUND")
-	message(FATAL_ERROR "Required wayland-scanner not found.")
-endif()
 
 file(MAKE_DIRECTORY protocol)
 

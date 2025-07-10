@@ -360,6 +360,14 @@ if(REX_PLATFORM STREQUAL "linuxbsd")
 		)
 	endif()
 
+	find_program(WAYLAND_SCANNER NAME wayland-scanner PATHS /usr/bin /usr/local/bin)
+
+	if (WAYLAND_SCANNER STREQUAL "WAYLAND_SCANNER-NOTFOUND")
+		message(WARNING "Required wayland-scanner not found. Disabling wayland support.")
+		set(WAYLAND OFF PARENT_SCOPE)
+		set(WAYLAND OFF)
+	endif()
+
 	if (FONTCONFIG)
 		if (NOT USE_SOWRAP)
 			pkg_check_modules(FONTCONFIG_LIB QUIET fontconfig)
