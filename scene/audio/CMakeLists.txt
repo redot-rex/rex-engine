@@ -1,0 +1,2 @@
+file(GLOB_RECURSE SCENE_AUDIO_SOURCES *.cpp)
+target_sources(rex_scene PRIVATE ${SCENE_AUDIO_SOURCES})

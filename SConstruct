@@ -1163,6 +1163,15 @@ SConscript("main/SCsub")
 
 SConscript("platform/" + env["platform"] + "/SCsub")  # Build selected platform.
 
+for lib in env["LIBS"]:
+    if isinstance(lib, str):
+        print(f"  - {lib} (system library)")
+    else:
+        # Extract file name or path from SCons File object
+        lib_name = str(lib)  # Converts File object to path (e.g., build/libscene.a)
+        lib_basename = lib.name if hasattr(lib, 'name') else lib_name  # File name (e.g., libscene.a)
+        print(f"  - {lib_basename} (SCons library: {lib_name})")
+
 # Microsoft Visual Studio Project Generation
 if env["vsproj"]:
     methods.generate_cpp_hint_file("cpp.hint")

@@ -1,0 +1,2 @@
+file(GLOB_RECURSE SCENE_DEBUGGER_SOURCES *.cpp)
+target_sources(rex_scene PRIVATE ${SCENE_DEBUGGER_SOURCES})

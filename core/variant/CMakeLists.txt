@@ -1,0 +1,2 @@
+file(GLOB_RECURSE CORE_VARIANT_SOURCES *.cpp)
+target_sources(rex_core PRIVATE ${CORE_VARIANT_SOURCES})

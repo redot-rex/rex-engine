@@ -1,0 +1,34 @@
+file(RELATIVE_PATH CURRENT_RELATIVE_PATH "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+
+set(MODULE_DOC_CLASSES
+	AudioStreamMP3
+	ResourceImporterMP3
+)
+set(MODULE_DOC_CLASS_PATH "${CURRENT_RELATIVE_PATH}/doc_classes")
+
+foreach(DOC_CLASS ${MODULE_DOC_CLASSES})
+	list(APPEND DOC_CLASS_PATHS "${DOC_CLASS},${MODULE_DOC_CLASS_PATH}")
+endforeach()
+
+set(DOC_CLASS_PATHS ${DOC_CLASS_PATHS} PARENT_SCOPE)
+
+add_library(rex_module_${MODULE_NAME} STATIC)
+set(MODULE_IS_ENABLED ON PARENT_SCOPE)
+
+option(MINIMP3_EXTRA_FORMATS "Build minimp3 with MP1/MP2 decoding support" OFF)
+
+set(THIRDPARTY_MINIMP3_DIR ${CMAKE_SOURCE_DIR}/thirdparty/minimp3/)
+target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+	${THIRDPARTY_MINIMP3_DIR}
+)
+
+if (NOT MINIMP3_EXTRA_FORMATS)
+	target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+		MINIMP3_ONLY_MP3
+	)
+endif()
+
+file(GLOB MINIMP3_SOURCES *.cpp)
+target_sources(rex_module_${MODULE_NAME} PRIVATE
+	${MINIMP3_SOURCES}
+)

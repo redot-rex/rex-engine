@@ -1,0 +1,2 @@
+file(GLOB_RECURSE SERVERS_TEXT_SOURCES *.cpp)
+target_sources(rex_servers PRIVATE ${SERVERS_TEXT_SOURCES})

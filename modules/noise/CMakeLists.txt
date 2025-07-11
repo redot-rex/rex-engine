@@ -1,0 +1,35 @@
+file(RELATIVE_PATH CURRENT_RELATIVE_PATH "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+
+set(MODULE_DOC_CLASSES
+	FastNoiseLite
+	Noise
+	NoiseTexture2D
+	NoiseTexture3D
+)
+set(MODULE_DOC_CLASS_PATH "${CURRENT_RELATIVE_PATH}/doc_classes")
+
+foreach(DOC_CLASS ${MODULE_DOC_CLASSES})
+	list(APPEND DOC_CLASS_PATHS "${DOC_CLASS},${MODULE_DOC_CLASS_PATH}")
+endforeach()
+
+set(DOC_CLASS_PATHS ${DOC_CLASS_PATHS} PARENT_SCOPE)
+list(APPEND ICON_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/icons)
+set(ICON_PATHS ${ICON_PATHS} PARENT_SCOPE)
+
+add_library(rex_module_${MODULE_NAME} STATIC)
+set(MODULE_IS_ENABLED ON PARENT_SCOPE)
+
+target_include_directories(rex_module_${MODULE_NAME} PRIVATE
+	${CMAKE_SOURCE_DIR}/thirdparty/noise/
+)
+
+file(GLOB NOISE_SOURCES *.cpp)
+target_sources(rex_module_${MODULE_NAME} PRIVATE
+	${NOISE_SOURCES}
+)
+if (EDITOR_BUILD)
+	file(GLOB NOISE_EDITOR_SOURCES editor/*.cpp)
+	target_sources(rex_module_${MODULE_NAME} PRIVATE
+		${NOISE_EDITOR_SOURCES}
+	)
+endif()

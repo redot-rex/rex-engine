@@ -1,0 +1,79 @@
+file(RELATIVE_PATH CURRENT_RELATIVE_PATH "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+
+set(MODULE_DOC_CLASSES
+	@GDScript
+	GDScript
+	GDScriptTrait
+	GDScriptSyntaxHighlighter
+)
+set(MODULE_DOC_CLASS_PATH "${CURRENT_RELATIVE_PATH}/doc_classes")
+
+foreach(DOC_CLASS ${MODULE_DOC_CLASSES})
+	list(APPEND DOC_CLASS_PATHS "${DOC_CLASS},${MODULE_DOC_CLASS_PATH}")
+endforeach()
+
+set(DOC_CLASS_PATHS ${DOC_CLASS_PATHS} PARENT_SCOPE)
+list(APPEND ICON_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/icons)
+set(ICON_PATHS ${ICON_PATHS} PARENT_SCOPE)
+
+add_library(rex_module_${MODULE_NAME} STATIC)
+set(MODULE_IS_ENABLED ON PARENT_SCOPE)
+
+target_link_libraries(rex_module_${MODULE_NAME} PUBLIC
+	rex_module_jsonrpc
+	rex_module_websocket
+)
+
+add_dependencies(rex_module_${MODULE_NAME}
+	rex_module_jsonrpc
+	rex_module_websocket
+)
+
+file(GLOB GDSCRIPT_SOURCES *.cpp)
+target_sources(rex_module_${MODULE_NAME} PRIVATE
+	${GDSCRIPT_SOURCES}
+)
+
+file(GLOB_RECURSE SCRIPT_TEMPLATES ${CMAKE_CURRENT_SOURCE_DIR}/editor/script_templates/*.gd)
+add_custom_command(
+	OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/editor/script_templates/templates.gen.h
+	COMMAND ${_Python3_EXECUTABLE}
+	ARGS ${CMAKE_SOURCE_DIR}/generators/rex_template_builders.py make_templates
+	${CMAKE_CURRENT_SOURCE_DIR}/editor/script_templates/templates.gen.h ${SCRIPT_TEMPLATES}
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	COMMENT "Generating GDScript Templates Header..."
+)
+add_custom_target(script_templates DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/editor/script_templates/templates.gen.h)
+add_dependencies(rex_module_${MODULE_NAME} script_templates)
+
+if (EDITOR_BUILD)
+	file(GLOB GDSCRIPT_EDITOR_SOURCES editor/*.cpp)
+	target_sources(rex_module_${MODULE_NAME} PRIVATE
+		${GDSCRIPT_EDITOR_SOURCES}
+	)
+	if("jsonrpc" IN_LIST ENABLED_MODULES AND "websocket" IN_LIST ENABLED_MODULES)
+		file(GLOB GDSCRIPT_LANGUAGE_SERVER_SOURCES language_server/*.cpp)
+		target_sources(rex_module_${MODULE_NAME} PRIVATE
+			${GDSCRIPT_LANGUAGE_SERVER_SOURCES}
+		)
+	else()
+		message(WARNING "NO LSP")
+		target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+			GDSCRIPT_NO_LSP
+		)
+		target_compile_definitions(rex_engine PUBLIC
+			GDSCRIPT_NO_LSP
+		)
+	endif()
+endif()
+
+if (REX_TESTS)
+	target_compile_definitions(rex_module_${MODULE_NAME} PRIVATE
+		TESTS_ENABLED
+	)
+	file(GLOB GDSCRIPT_TESTS_SOURCES tests/*.cpp)
+	target_sources(rex_module_${MODULE_NAME} PRIVATE
+		${GDSCRIPT_TESTS_SOURCES}
+	)
+endif()
+

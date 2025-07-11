@@ -1,0 +1,2 @@
+file(GLOB_RECURSE SERVERS_DISPLAY_SOURCES *.cpp)
+target_sources(rex_servers PRIVATE ${SERVERS_DISPLAY_SOURCES})

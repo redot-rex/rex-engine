@@ -1,0 +1,10 @@
+file(GLOB GLTF_EXTENSIONS_SOURCES *.cpp)
+target_sources(rex_module_${MODULE_NAME} PRIVATE
+	${GLTF_EXTENSIONS_SOURCES}
+)
+if (NOT DISABLE_PHYSICS_3D)
+	file(GLOB GLTF_EXTENSIONS_PHYSICS_SOURCES physics/*.cpp)
+	target_sources(rex_module_${MODULE_NAME} PRIVATE
+		${GLTF_EXTENSIONS_PHYSICS_SOURCES}
+	)
+endif()
