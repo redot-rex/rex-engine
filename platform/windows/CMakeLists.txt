@@ -162,4 +162,6 @@ if(REX_PLATFORM STREQUAL "windows")
 
 
 	endif()
+
+	set(SYSTEM_LIBRARIES ${SYSTEM_LIBRARIES} PARENT_SCOPE)
 endif()
