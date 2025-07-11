@@ -1443,7 +1443,7 @@ void DisplayServerWayland::cursor_set_custom_image(const Ref<Resource> &p_cursor
 		HashMap<CursorShape, CustomCursor>::Iterator cursor_c = custom_cursors.find(p_shape);
 
 		if (cursor_c) {
-			if (cursor_c->value.resource == p_cursor && cursor_c->value.hotspot == p_hotspot) {
+			if (cursor_c->value.resource == p_cursor && cursor_c->value.hotspot == Vector2i(p_hotspot)) {
 				// We have a cached cursor. Nice.
 				wayland_thread.cursor_set_shape(p_shape);
 				return;

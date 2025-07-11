@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spin_lock.h                                                           */
+/*  engine_license.cpp                                                    */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -30,101 +30,39 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#include "engine.h"
 
-#include "core/os/thread.h"
-#include "core/typedefs.h"
+#include "core/license.gen.h"
 
-#ifdef THREADS_ENABLED
+/*
+ * Returns license name, type, and optionally the license text.
+ *
+ * @return - A dictionary mapping license names to their corresponding text.
+ */
+[[nodiscard]] Dictionary Engine::get_license_info() const {
+	Dictionary licenses;
 
-// Note the implementations below avoid false sharing by ensuring their
-// sizes match the assumed cache line. We can't use align attributes
-// because these objects may end up unaligned in semi-tightly packed arrays.
+	// TODO: This would be nicer, but it would require reworking core/license.gen.h
+	/*
+	for (const auto &license : LICENSES) {
+		licenses[license.name] = license.body;
+	}
+	*/
 
-#ifdef _MSC_VER
-#include <intrin.h>
-#endif
-
-#if defined(__APPLE__)
-
-#include <os/lock.h>
-
-class SpinLock {
-	union {
-		mutable os_unfair_lock _lock = OS_UNFAIR_LOCK_INIT;
-		char aligner[Thread::CACHE_LINE_BYTES];
-	};
-
-public:
-	_ALWAYS_INLINE_ void lock() const {
-		os_unfair_lock_lock(&_lock);
+	for (int i = 0; i < LICENSE_COUNT; i++) {
+		const auto &name = LICENSE_NAMES[i];
+		const auto &body = LICENSE_BODIES[i];
+		licenses[name] = body;
 	}
 
-	_ALWAYS_INLINE_ void unlock() const {
-		os_unfair_lock_unlock(&_lock);
-	}
-};
-
-#else // __APPLE__
-
-#include <atomic>
-
-_ALWAYS_INLINE_ static void _cpu_pause() {
-#if defined(_MSC_VER)
-// ----- MSVC.
-#if defined(_M_ARM) || defined(_M_ARM64) // ARM.
-	__yield();
-#elif defined(_M_IX86) || defined(_M_X64) // x86.
-	_mm_pause();
-#endif
-#elif defined(__GNUC__) || defined(__clang__)
-// ----- GCC/Clang.
-#if defined(__i386__) || defined(__x86_64__) // x86.
-	__builtin_ia32_pause();
-#elif defined(__arm__) || defined(__aarch64__) // ARM.
-	asm volatile("yield");
-#elif defined(__powerpc__) || defined(__ppc__) || defined(__PPC__) // PowerPC.
-	asm volatile("or 27,27,27");
-#elif defined(__riscv) // RISC-V.
-	asm volatile(".insn i 0x0F, 0, x0, x0, 0x010");
-#endif
-#endif
+	return licenses;
 }
 
-static_assert(std::atomic_bool::is_always_lock_free);
-
-class SpinLock {
-	union {
-		mutable std::atomic<bool> locked{ false };
-		char aligner[Thread::CACHE_LINE_BYTES];
-	};
-
-public:
-	_ALWAYS_INLINE_ void lock() const {
-		while (true) {
-			bool expected = false;
-			if (locked.compare_exchange_weak(expected, true, std::memory_order_acquire, std::memory_order_relaxed)) {
-				break;
-			}
-			do {
-				_cpu_pause();
-			} while (locked.load(std::memory_order_relaxed));
-		}
-	}
-
-	_ALWAYS_INLINE_ void unlock() const {
-		locked.store(false, std::memory_order_release);
-	}
-};
-
-#endif // __APPLE__
-
-#else // THREADS_ENABLED
-
-class SpinLock {
-public:
-	void lock() const {}
-	void unlock() const {}
-};
-
-#endif // THREADS_ENABLED
+/*
+ * Returns license text.
+ *
+ * @return - The full license text as a String.
+ */
+[[nodiscard]] String Engine::get_license_text() const {
+	return String(GODOT_LICENSE_TEXT);
+}

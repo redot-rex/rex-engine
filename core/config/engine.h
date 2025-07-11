@@ -92,7 +92,7 @@ private:
 
 	bool _print_header = true;
 
-	static inline Engine *singleton = nullptr;
+	static constinit Engine *singleton;
 
 	String write_movie_path;
 	String shader_cache_path;
@@ -115,8 +115,8 @@ public:
 	void set_physics_jitter_fix(double p_threshold);
 	double get_physics_jitter_fix() const;
 
-	virtual void set_max_fps(int p_fps);
-	virtual int get_max_fps() const;
+	virtual void set_max_fps(uint32_t p_fps);
+	virtual uint32_t get_max_fps() const;
 
 	virtual void set_audio_output_latency(int p_msec);
 	virtual int get_audio_output_latency() const;

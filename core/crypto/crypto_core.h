@@ -34,12 +34,19 @@
 
 #include "core/object/ref_counted.h"
 
+#include <mbedtls/aes.h>
+#include <mbedtls/ctr_drbg.h>
+#include <mbedtls/entropy.h>
+#include <mbedtls/md5.h>
+#include <mbedtls/sha1.h>
+#include <mbedtls/sha256.h>
+
 class CryptoCore {
 public:
 	class RandomGenerator {
 	private:
-		void *entropy = nullptr;
-		void *ctx = nullptr;
+		mbedtls_entropy_context entropy;
+		mbedtls_ctr_drbg_context ctx;
 
 		static int _entropy_poll(void *p_data, unsigned char *r_buffer, size_t p_len, size_t *r_len);
 
@@ -53,7 +60,7 @@ public:
 
 	class MD5Context {
 	private:
-		void *ctx = nullptr;
+		mbedtls_md5_context ctx;
 
 	public:
 		MD5Context();
@@ -66,7 +73,7 @@ public:
 
 	class SHA1Context {
 	private:
-		void *ctx = nullptr;
+		mbedtls_sha1_context ctx;
 
 	public:
 		SHA1Context();
@@ -79,7 +86,7 @@ public:
 
 	class SHA256Context {
 	private:
-		void *ctx = nullptr;
+		mbedtls_sha256_context ctx;
 
 	public:
 		SHA256Context();
@@ -92,7 +99,7 @@ public:
 
 	class AESContext {
 	private:
-		void *ctx = nullptr;
+		mbedtls_aes_context ctx;
 
 	public:
 		AESContext();

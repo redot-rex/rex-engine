@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spin_lock.h                                                           */
+/*  engine_architecture.cpp                                               */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -30,101 +30,48 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#include "engine.h"
 
-#include "core/os/thread.h"
-#include "core/typedefs.h"
+/*
+ * Returns the CPU architecture name for this engine build.
+ */
+[[nodiscard]] String Engine::get_architecture_name() const {
+#if defined(__x86_64) || defined(__x86_64__) || defined(__amd64__) || defined(_M_X64)
+	return "x86_64";
 
-#ifdef THREADS_ENABLED
+#elif defined(__i386) || defined(__i386__) || defined(_M_IX86)
+	return "x86_32";
 
-// Note the implementations below avoid false sharing by ensuring their
-// sizes match the assumed cache line. We can't use align attributes
-// because these objects may end up unaligned in semi-tightly packed arrays.
+#elif defined(__aarch64__) || defined(_M_ARM64) || defined(_M_ARM64EC)
+	return "arm64";
 
-#ifdef _MSC_VER
-#include <intrin.h>
+#elif defined(__arm__) || defined(_M_ARM)
+	return "arm32";
+
+#elif defined(__riscv)
+#if __riscv_xlen == 64
+	return "rv64";
+#else
+	return "riscv";
 #endif
 
-#if defined(__APPLE__)
-
-#include <os/lock.h>
-
-class SpinLock {
-	union {
-		mutable os_unfair_lock _lock = OS_UNFAIR_LOCK_INIT;
-		char aligner[Thread::CACHE_LINE_BYTES];
-	};
-
-public:
-	_ALWAYS_INLINE_ void lock() const {
-		os_unfair_lock_lock(&_lock);
-	}
-
-	_ALWAYS_INLINE_ void unlock() const {
-		os_unfair_lock_unlock(&_lock);
-	}
-};
-
-#else // __APPLE__
-
-#include <atomic>
-
-_ALWAYS_INLINE_ static void _cpu_pause() {
-#if defined(_MSC_VER)
-// ----- MSVC.
-#if defined(_M_ARM) || defined(_M_ARM64) // ARM.
-	__yield();
-#elif defined(_M_IX86) || defined(_M_X64) // x86.
-	_mm_pause();
+#elif defined(__powerpc__)
+#if defined(__powerpc64__)
+	return "ppc64";
+#else
+	return "ppc";
 #endif
-#elif defined(__GNUC__) || defined(__clang__)
-// ----- GCC/Clang.
-#if defined(__i386__) || defined(__x86_64__) // x86.
-	__builtin_ia32_pause();
-#elif defined(__arm__) || defined(__aarch64__) // ARM.
-	asm volatile("yield");
-#elif defined(__powerpc__) || defined(__ppc__) || defined(__PPC__) // PowerPC.
-	asm volatile("or 27,27,27");
-#elif defined(__riscv) // RISC-V.
-	asm volatile(".insn i 0x0F, 0, x0, x0, 0x010");
+
+#elif defined(__loongarch64)
+	return "loongarch64";
+
+#elif defined(__wasm__)
+#if defined(__wasm64__)
+	return "wasm64";
+#elif defined(__wasm32__)
+	return "wasm32";
 #endif
 #endif
+
+	return "unknown";
 }
-
-static_assert(std::atomic_bool::is_always_lock_free);
-
-class SpinLock {
-	union {
-		mutable std::atomic<bool> locked{ false };
-		char aligner[Thread::CACHE_LINE_BYTES];
-	};
-
-public:
-	_ALWAYS_INLINE_ void lock() const {
-		while (true) {
-			bool expected = false;
-			if (locked.compare_exchange_weak(expected, true, std::memory_order_acquire, std::memory_order_relaxed)) {
-				break;
-			}
-			do {
-				_cpu_pause();
-			} while (locked.load(std::memory_order_relaxed));
-		}
-	}
-
-	_ALWAYS_INLINE_ void unlock() const {
-		locked.store(false, std::memory_order_release);
-	}
-};
-
-#endif // __APPLE__
-
-#else // THREADS_ENABLED
-
-class SpinLock {
-public:
-	void lock() const {}
-	void unlock() const {}
-};
-
-#endif // THREADS_ENABLED

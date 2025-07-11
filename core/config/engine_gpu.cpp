@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spin_lock.h                                                           */
+/*  engine_gpu.cpp                                                        */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -30,101 +30,66 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#include "engine.h"
 
-#include "core/os/thread.h"
-#include "core/typedefs.h"
-
-#ifdef THREADS_ENABLED
-
-// Note the implementations below avoid false sharing by ensuring their
-// sizes match the assumed cache line. We can't use align attributes
-// because these objects may end up unaligned in semi-tightly packed arrays.
-
-#ifdef _MSC_VER
-#include <intrin.h>
-#endif
-
-#if defined(__APPLE__)
-
-#include <os/lock.h>
-
-class SpinLock {
-	union {
-		mutable os_unfair_lock _lock = OS_UNFAIR_LOCK_INIT;
-		char aligner[Thread::CACHE_LINE_BYTES];
-	};
-
-public:
-	_ALWAYS_INLINE_ void lock() const {
-		os_unfair_lock_lock(&_lock);
-	}
-
-	_ALWAYS_INLINE_ void unlock() const {
-		os_unfair_lock_unlock(&_lock);
-	}
-};
-
-#else // __APPLE__
-
-#include <atomic>
-
-_ALWAYS_INLINE_ static void _cpu_pause() {
-#if defined(_MSC_VER)
-// ----- MSVC.
-#if defined(_M_ARM) || defined(_M_ARM64) // ARM.
-	__yield();
-#elif defined(_M_IX86) || defined(_M_X64) // x86.
-	_mm_pause();
-#endif
-#elif defined(__GNUC__) || defined(__clang__)
-// ----- GCC/Clang.
-#if defined(__i386__) || defined(__x86_64__) // x86.
-	__builtin_ia32_pause();
-#elif defined(__arm__) || defined(__aarch64__) // ARM.
-	asm volatile("yield");
-#elif defined(__powerpc__) || defined(__ppc__) || defined(__PPC__) // PowerPC.
-	asm volatile("or 27,27,27");
-#elif defined(__riscv) // RISC-V.
-	asm volatile(".insn i 0x0F, 0, x0, x0, 0x010");
-#endif
-#endif
+/*
+ * Indicates whether GPU errors should abort the program.
+ *
+ * @ return - True, if program will abort on GPU errors.
+ *            False, otherwise.
+ */
+[[nodiscard]] bool Engine::is_abort_on_gpu_errors_enabled() const {
+	return abort_on_gpu_errors;
 }
 
-static_assert(std::atomic_bool::is_always_lock_free);
+/*
+ * Indicates whether Vulkan validation layers are enabled for debugging.
+ *
+ * @return - True, if validation layers are enabled.
+ *           False, otherwise.
+ */
+[[nodiscard]] bool Engine::is_validation_layers_enabled() const {
+	return use_validation_layers;
+}
 
-class SpinLock {
-	union {
-		mutable std::atomic<bool> locked{ false };
-		char aligner[Thread::CACHE_LINE_BYTES];
-	};
+/*
+ * Indicates whether SPIR-V debug info is enabled.
+ *
+ * @return - True, if SPIR-V debug info generation is enabled.
+ *           False, otherwise.
+ */
+[[nodiscard]] bool Engine::is_generate_spirv_debug_info_enabled() const {
+	return generate_spirv_debug_info;
+}
 
-public:
-	_ALWAYS_INLINE_ void lock() const {
-		while (true) {
-			bool expected = false;
-			if (locked.compare_exchange_weak(expected, true, std::memory_order_acquire, std::memory_order_relaxed)) {
-				break;
-			}
-			do {
-				_cpu_pause();
-			} while (locked.load(std::memory_order_relaxed));
-		}
-	}
+/*
+ * Returns the index of the selected GPU for rendering.
+ *
+ * @return - The GPU index currently selected for rendering.
+ */
+[[nodiscard]] int32_t Engine::get_gpu_index() const {
+	return gpu_idx;
+}
 
-	_ALWAYS_INLINE_ void unlock() const {
-		locked.store(false, std::memory_order_release);
-	}
-};
+/*
+ * Indicates whether detailed GPU memory usage tracking is enabled.
+ *
+ * @return - True, if extra GPU memory tracking is enabled.
+ *           False, otherwise.
+ */
+[[nodiscard]] bool Engine::is_extra_gpu_memory_tracking_enabled() const {
+	return extra_gpu_memory_tracking;
+}
 
-#endif // __APPLE__
-
-#else // THREADS_ENABLED
-
-class SpinLock {
-public:
-	void lock() const {}
-	void unlock() const {}
-};
-
-#endif // THREADS_ENABLED
+#if defined(DEBUG_ENABLED) || defined(DEV_ENABLED)
+/*
+ * Indicates whether GPU breadcrumb tracking is enabled.
+ * Assists with crash diagnostics.
+ *
+ * @return - True, if accurate breadcrumbs tracking is enabled.
+ *           False, otherwise.
+ */
+[[nodiscard]] bool Engine::is_accurate_breadcrumbs_enabled() const {
+	return accurate_breadcrumbs;
+}
+#endif

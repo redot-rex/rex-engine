@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spin_lock.h                                                           */
+/*  engine_fps.cpp                                                        */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -30,101 +30,50 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#include "engine.h"
 
-#include "core/os/thread.h"
-#include "core/typedefs.h"
+#include "servers/rendering/rendering_device.h"
 
-#ifdef THREADS_ENABLED
+/*
+ * Sets the engine's maximum frame rate limit.
+ *
+ * @param p_fps - The desired maximum frames per second. A value of 0 or less
+ * disables the limit.
+ */
+void Engine::set_max_fps(uint32_t p_fps) {
+	// limit is disabled if given FPS is <= 0
+	_max_fps = p_fps > 0 ? p_fps : 0;
 
-// Note the implementations below avoid false sharing by ensuring their
-// sizes match the assumed cache line. We can't use align attributes
-// because these objects may end up unaligned in semi-tightly packed arrays.
+	RenderingDevice *rd = RenderingDevice::get_singleton();
 
-#ifdef _MSC_VER
-#include <intrin.h>
-#endif
-
-#if defined(__APPLE__)
-
-#include <os/lock.h>
-
-class SpinLock {
-	union {
-		mutable os_unfair_lock _lock = OS_UNFAIR_LOCK_INIT;
-		char aligner[Thread::CACHE_LINE_BYTES];
-	};
-
-public:
-	_ALWAYS_INLINE_ void lock() const {
-		os_unfair_lock_lock(&_lock);
+	if (rd) {
+		rd->_set_max_fps(_max_fps);
 	}
-
-	_ALWAYS_INLINE_ void unlock() const {
-		os_unfair_lock_unlock(&_lock);
-	}
-};
-
-#else // __APPLE__
-
-#include <atomic>
-
-_ALWAYS_INLINE_ static void _cpu_pause() {
-#if defined(_MSC_VER)
-// ----- MSVC.
-#if defined(_M_ARM) || defined(_M_ARM64) // ARM.
-	__yield();
-#elif defined(_M_IX86) || defined(_M_X64) // x86.
-	_mm_pause();
-#endif
-#elif defined(__GNUC__) || defined(__clang__)
-// ----- GCC/Clang.
-#if defined(__i386__) || defined(__x86_64__) // x86.
-	__builtin_ia32_pause();
-#elif defined(__arm__) || defined(__aarch64__) // ARM.
-	asm volatile("yield");
-#elif defined(__powerpc__) || defined(__ppc__) || defined(__PPC__) // PowerPC.
-	asm volatile("or 27,27,27");
-#elif defined(__riscv) // RISC-V.
-	asm volatile(".insn i 0x0F, 0, x0, x0, 0x010");
-#endif
-#endif
 }
 
-static_assert(std::atomic_bool::is_always_lock_free);
+/*
+ * Gets the engine's maximum frame rate limit.
+ *
+ * @return - The current maximum frames per second. Zero indicates no limit.
+ */
+[[nodiscard]] uint32_t Engine::get_max_fps() const {
+	return _max_fps;
+}
 
-class SpinLock {
-	union {
-		mutable std::atomic<bool> locked{ false };
-		char aligner[Thread::CACHE_LINE_BYTES];
-	};
+/*
+ * Sets delays for the engine's frame loop for framerate control or throttling.
+ *
+ * @param p_msec - The delay in milliseconds to apply between frames.
+ */
+void Engine::set_frame_delay(uint32_t p_msec) {
+	_frame_delay = p_msec;
+}
 
-public:
-	_ALWAYS_INLINE_ void lock() const {
-		while (true) {
-			bool expected = false;
-			if (locked.compare_exchange_weak(expected, true, std::memory_order_acquire, std::memory_order_relaxed)) {
-				break;
-			}
-			do {
-				_cpu_pause();
-			} while (locked.load(std::memory_order_relaxed));
-		}
-	}
-
-	_ALWAYS_INLINE_ void unlock() const {
-		locked.store(false, std::memory_order_release);
-	}
-};
-
-#endif // __APPLE__
-
-#else // THREADS_ENABLED
-
-class SpinLock {
-public:
-	void lock() const {}
-	void unlock() const {}
-};
-
-#endif // THREADS_ENABLED
+/*
+ * Gets delays for the engine's frame loop for framerate control or throttling.
+ *
+ * @return - The delay in milliseconds between frames.
+ */
+[[nodiscard]] uint32_t Engine::get_frame_delay() const {
+	return _frame_delay;
+}

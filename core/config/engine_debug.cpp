@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spin_lock.h                                                           */
+/*  engine_debug.cpp                                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -30,101 +30,64 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#include "engine.h"
 
-#include "core/os/thread.h"
-#include "core/typedefs.h"
-
-#ifdef THREADS_ENABLED
-
-// Note the implementations below avoid false sharing by ensuring their
-// sizes match the assumed cache line. We can't use align attributes
-// because these objects may end up unaligned in semi-tightly packed arrays.
-
-#ifdef _MSC_VER
-#include <intrin.h>
-#endif
-
-#if defined(__APPLE__)
-
-#include <os/lock.h>
-
-class SpinLock {
-	union {
-		mutable os_unfair_lock _lock = OS_UNFAIR_LOCK_INIT;
-		char aligner[Thread::CACHE_LINE_BYTES];
-	};
-
-public:
-	_ALWAYS_INLINE_ void lock() const {
-		os_unfair_lock_lock(&_lock);
-	}
-
-	_ALWAYS_INLINE_ void unlock() const {
-		os_unfair_lock_unlock(&_lock);
-	}
-};
-
-#else // __APPLE__
-
-#include <atomic>
-
-_ALWAYS_INLINE_ static void _cpu_pause() {
-#if defined(_MSC_VER)
-// ----- MSVC.
-#if defined(_M_ARM) || defined(_M_ARM64) // ARM.
-	__yield();
-#elif defined(_M_IX86) || defined(_M_X64) // x86.
-	_mm_pause();
-#endif
-#elif defined(__GNUC__) || defined(__clang__)
-// ----- GCC/Clang.
-#if defined(__i386__) || defined(__x86_64__) // x86.
-	__builtin_ia32_pause();
-#elif defined(__arm__) || defined(__aarch64__) // ARM.
-	asm volatile("yield");
-#elif defined(__powerpc__) || defined(__ppc__) || defined(__PPC__) // PowerPC.
-	asm volatile("or 27,27,27");
-#elif defined(__riscv) // RISC-V.
-	asm volatile(".insn i 0x0F, 0, x0, x0, 0x010");
-#endif
-#endif
+/*
+ * Toggles whether logs are printed to stdout.
+ *
+ * @param p_enabled - If true, enables printing logs to stdout.
+ */
+void Engine::set_print_to_stdout(bool p_enabled) {
+	CoreGlobals::print_line_enabled = p_enabled;
 }
 
-static_assert(std::atomic_bool::is_always_lock_free);
+/*
+ * Checks if logs are printing to stdout.
+ *
+ * @return - True if printing to stdout is enabled.
+ *           False if otherwise.
+ */
+[[nodiscard]] bool Engine::is_printing_to_stdout() const {
+	return CoreGlobals::print_line_enabled;
+}
 
-class SpinLock {
-	union {
-		mutable std::atomic<bool> locked{ false };
-		char aligner[Thread::CACHE_LINE_BYTES];
-	};
+/*
+ * Toggles printing error messages to stdout.
+ *
+ * @param p_enabled - If true, enables printing errors to stdout.
+ */
+void Engine::set_print_error_messages(bool p_enabled) {
+	CoreGlobals::print_error_enabled = p_enabled;
+}
 
-public:
-	_ALWAYS_INLINE_ void lock() const {
-		while (true) {
-			bool expected = false;
-			if (locked.compare_exchange_weak(expected, true, std::memory_order_acquire, std::memory_order_relaxed)) {
-				break;
-			}
-			do {
-				_cpu_pause();
-			} while (locked.load(std::memory_order_relaxed));
-		}
+/*
+ * Checks if err are printing to stdout.
+ *
+ * @return - True if printing to stdout is enabled.
+ *           False if otherwise.
+ */
+[[nodiscard]] bool Engine::is_printing_error_messages() const {
+	return CoreGlobals::print_error_enabled;
+}
+
+/*
+ * Prints given header string.
+ *
+ * @param p_string - The header string to print.
+ */
+void Engine::print_header(const String &p_string) const {
+	if (_print_header) {
+		print_line(p_string);
 	}
+}
 
-	_ALWAYS_INLINE_ void unlock() const {
-		locked.store(false, std::memory_order_release);
+/*
+ * Prints formatted header lines with styling or context.
+ *
+ * @param p_string - The styled header String to print.
+ */
+void Engine::print_header_rich(const String &p_string) const {
+	if (_print_header) {
+		print_line_rich(p_string);
 	}
-};
-
-#endif // __APPLE__
-
-#else // THREADS_ENABLED
-
-class SpinLock {
-public:
-	void lock() const {}
-	void unlock() const {}
-};
-
-#endif // THREADS_ENABLED
+}

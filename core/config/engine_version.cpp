@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spin_lock.h                                                           */
+/*  engine_version.cpp                                                    */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -30,101 +30,74 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#include "engine.h"
 
-#include "core/os/thread.h"
-#include "core/typedefs.h"
+#include "core/version.h"
 
-#ifdef THREADS_ENABLED
+/*
+ * Provides version metadata about the compatibility details.
+ *
+ * @return - A dictionary containing version metadata.
+ */
+[[nodiscard]] Dictionary Engine::get_godot_compatible_version_info() const {
+	Dictionary dict;
 
-// Note the implementations below avoid false sharing by ensuring their
-// sizes match the assumed cache line. We can't use align attributes
-// because these objects may end up unaligned in semi-tightly packed arrays.
+	dict["major"] = GODOT_VERSION_MAJOR;
+	dict["minor"] = GODOT_VERSION_MINOR;
+	dict["patch"] = GODOT_VERSION_PATCH;
+	dict["hex"] = GODOT_VERSION_HEX;
+	dict["status"] = GODOT_VERSION_STATUS;
 
-#ifdef _MSC_VER
-#include <intrin.h>
-#endif
+	String stringver = String(dict["major"]) + "." + String(dict["minor"]);
 
-#if defined(__APPLE__)
-
-#include <os/lock.h>
-
-class SpinLock {
-	union {
-		mutable os_unfair_lock _lock = OS_UNFAIR_LOCK_INIT;
-		char aligner[Thread::CACHE_LINE_BYTES];
-	};
-
-public:
-	_ALWAYS_INLINE_ void lock() const {
-		os_unfair_lock_lock(&_lock);
+	if ((int)dict["patch"] != 0) {
+		stringver += "." + String(dict["patch"]);
 	}
 
-	_ALWAYS_INLINE_ void unlock() const {
-		os_unfair_lock_unlock(&_lock);
-	}
-};
+	// TODO: add godot automated build identification?
+	// stringver += "-" + String(dict["status"]) + " (" + String(dict["build"]) + ")";
 
-#else // __APPLE__
+	stringver += "-" + String(dict["status"]);
 
-#include <atomic>
+	dict["string"] = stringver;
 
-_ALWAYS_INLINE_ static void _cpu_pause() {
-#if defined(_MSC_VER)
-// ----- MSVC.
-#if defined(_M_ARM) || defined(_M_ARM64) // ARM.
-	__yield();
-#elif defined(_M_IX86) || defined(_M_X64) // x86.
-	_mm_pause();
-#endif
-#elif defined(__GNUC__) || defined(__clang__)
-// ----- GCC/Clang.
-#if defined(__i386__) || defined(__x86_64__) // x86.
-	__builtin_ia32_pause();
-#elif defined(__arm__) || defined(__aarch64__) // ARM.
-	asm volatile("yield");
-#elif defined(__powerpc__) || defined(__ppc__) || defined(__PPC__) // PowerPC.
-	asm volatile("or 27,27,27");
-#elif defined(__riscv) // RISC-V.
-	asm volatile(".insn i 0x0F, 0, x0, x0, 0x010");
-#endif
-#endif
+	return dict;
 }
 
-static_assert(std::atomic_bool::is_always_lock_free);
+/*
+ * Provides version metadata about the engine.
+ *
+ * @return - A dictionary containing version fields (major, minor, patch, hex,
+ *           status, build, status_version, hash, timestamp, and a formatted
+ *           version string.)
+ */
+[[nodiscard]] Dictionary Engine::get_version_info() const {
+	Dictionary dict;
+	dict["major"] = REDOT_VERSION_MAJOR;
+	dict["minor"] = REDOT_VERSION_MINOR;
+	dict["patch"] = REDOT_VERSION_PATCH;
+	dict["hex"] = REDOT_VERSION_HEX;
+	dict["status"] = REDOT_VERSION_STATUS;
+	dict["build"] = REDOT_VERSION_BUILD;
+	dict["status_version"] = REDOT_VERSION_STATUS_VERSION;
 
-class SpinLock {
-	union {
-		mutable std::atomic<bool> locked{ false };
-		char aligner[Thread::CACHE_LINE_BYTES];
-	};
+	String hash = String(REDOT_VERSION_HASH);
+	dict["hash"] = hash.is_empty() ? String("unknown") : hash;
 
-public:
-	_ALWAYS_INLINE_ void lock() const {
-		while (true) {
-			bool expected = false;
-			if (locked.compare_exchange_weak(expected, true, std::memory_order_acquire, std::memory_order_relaxed)) {
-				break;
-			}
-			do {
-				_cpu_pause();
-			} while (locked.load(std::memory_order_relaxed));
-		}
+	dict["timestamp"] = REDOT_VERSION_TIMESTAMP;
+
+	String stringver = String(dict["major"]) + "." + String(dict["minor"]);
+	if ((int)dict["patch"] != 0) {
+		stringver += "." + String(dict["patch"]);
+	}
+	stringver += "-" + String(dict["status"]);
+
+	if ((int)dict["status_version"] != 0) {
+		stringver += "." + String(dict["status_version"]);
 	}
 
-	_ALWAYS_INLINE_ void unlock() const {
-		locked.store(false, std::memory_order_release);
-	}
-};
+	stringver += " (" + String(dict["build"]) + ")";
+	dict["string"] = stringver;
 
-#endif // __APPLE__
-
-#else // THREADS_ENABLED
-
-class SpinLock {
-public:
-	void lock() const {}
-	void unlock() const {}
-};
-
-#endif // THREADS_ENABLED
+	return dict;
+}

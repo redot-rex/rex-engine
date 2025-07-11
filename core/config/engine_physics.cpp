@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  spin_lock.h                                                           */
+/*  engine_physics.cpp                                                    */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             REDOT ENGINE                               */
@@ -30,101 +30,69 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#pragma once
+#include "engine.h"
 
-#include "core/os/thread.h"
-#include "core/typedefs.h"
-
-#ifdef THREADS_ENABLED
-
-// Note the implementations below avoid false sharing by ensuring their
-// sizes match the assumed cache line. We can't use align attributes
-// because these objects may end up unaligned in semi-tightly packed arrays.
-
-#ifdef _MSC_VER
-#include <intrin.h>
-#endif
-
-#if defined(__APPLE__)
-
-#include <os/lock.h>
-
-class SpinLock {
-	union {
-		mutable os_unfair_lock _lock = OS_UNFAIR_LOCK_INIT;
-		char aligner[Thread::CACHE_LINE_BYTES];
-	};
-
-public:
-	_ALWAYS_INLINE_ void lock() const {
-		os_unfair_lock_lock(&_lock);
-	}
-
-	_ALWAYS_INLINE_ void unlock() const {
-		os_unfair_lock_unlock(&_lock);
-	}
-};
-
-#else // __APPLE__
-
-#include <atomic>
-
-_ALWAYS_INLINE_ static void _cpu_pause() {
-#if defined(_MSC_VER)
-// ----- MSVC.
-#if defined(_M_ARM) || defined(_M_ARM64) // ARM.
-	__yield();
-#elif defined(_M_IX86) || defined(_M_X64) // x86.
-	_mm_pause();
-#endif
-#elif defined(__GNUC__) || defined(__clang__)
-// ----- GCC/Clang.
-#if defined(__i386__) || defined(__x86_64__) // x86.
-	__builtin_ia32_pause();
-#elif defined(__arm__) || defined(__aarch64__) // ARM.
-	asm volatile("yield");
-#elif defined(__powerpc__) || defined(__ppc__) || defined(__PPC__) // PowerPC.
-	asm volatile("or 27,27,27");
-#elif defined(__riscv) // RISC-V.
-	asm volatile(".insn i 0x0F, 0, x0, x0, 0x010");
-#endif
-#endif
+/*
+ * Sets the physics ticks per second used for fixed-step simulation.
+ *
+ * @param p_ips - The number of physics ticks per second. Must be greater than
+ * 0.
+ */
+void Engine::set_physics_ticks_per_second(int p_ips) {
+	ERR_FAIL_COND_MSG(p_ips <= 0, "Engine iterations per second must be greater than 0.");
+	ips = p_ips;
 }
 
-static_assert(std::atomic_bool::is_always_lock_free);
+/*
+ * Returns the jitter fix threshold for smoother physics interpolation.
+ *
+ * @return - The jitter fix threshold value.
+ */
+[[nodiscard]] double Engine::get_physics_jitter_fix() const {
+	return physics_jitter_fix;
+}
 
-class SpinLock {
-	union {
-		mutable std::atomic<bool> locked{ false };
-		char aligner[Thread::CACHE_LINE_BYTES];
-	};
+/*
+ * Returns the physics ticks per second used for fixed-step simulation.
+ *
+ * @return - The number of physics ticks per second.
+ */
+[[nodiscard]] int Engine::get_physics_ticks_per_second() const {
+	return ips;
+}
 
-public:
-	_ALWAYS_INLINE_ void lock() const {
-		while (true) {
-			bool expected = false;
-			if (locked.compare_exchange_weak(expected, true, std::memory_order_acquire, std::memory_order_relaxed)) {
-				break;
-			}
-			do {
-				_cpu_pause();
-			} while (locked.load(std::memory_order_relaxed));
-		}
+/*
+ * Sets max number of physics steps that can run in a single frame
+ * to prevent spiral of death.
+ *
+ * @param p_max_physics_steps - The maximum allowed physics steps per frame.
+ *                              Must be greater than 0.
+ */
+void Engine::set_max_physics_steps_per_frame(int p_max_physics_steps) {
+	ERR_FAIL_COND_MSG(p_max_physics_steps <= 0, "Maximum number of physics steps per frame must be greater than 0.");
+	max_physics_steps_per_frame = p_max_physics_steps;
+}
+
+/*
+ * Returns physics steps that can be ran in a single frame.
+ *
+ * @return - The maximum allowed physics steps per frame.
+ */
+[[nodiscard]] int Engine::get_max_physics_steps_per_frame() const {
+	return max_physics_steps_per_frame;
+}
+
+/*
+ * Set the jitter fix threshold for smoother physics interpolation.
+ * A threshold of 0 disables jitter fixing.
+ *
+ * @param p_threshold - The jitter fix threshold value. Values less than zero
+ *                      will be clamped to zero.
+ */
+void Engine::set_physics_jitter_fix(double p_threshold) {
+	if (p_threshold < 0) {
+		p_threshold = 0;
 	}
 
-	_ALWAYS_INLINE_ void unlock() const {
-		locked.store(false, std::memory_order_release);
-	}
-};
-
-#endif // __APPLE__
-
-#else // THREADS_ENABLED
-
-class SpinLock {
-public:
-	void lock() const {}
-	void unlock() const {}
-};
-
-#endif // THREADS_ENABLED
+	physics_jitter_fix = p_threshold;
+}
