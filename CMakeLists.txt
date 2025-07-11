@@ -50,6 +50,13 @@ else()
 	set(CMAKE_BUILD_TYPE Release)
 endif()
 
+if (BUILD_TARGET STREQUAL "editor")
+	set(EDITOR_BUILD ON)
+endif()
+
+if (BUILD_TARGET STREQUAL "editor" OR BUILD_TARGET STREQUAL "template_debug")
+	set(DEBUG_FEATURES ON)
+endif()
 
 # Executable is defined per platform
 
@@ -64,14 +71,6 @@ add_subdirectory(platform/windows)
 target_include_directories(rex_engine PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
-
-if (BUILD_TARGET STREQUAL "editor")
-	set(EDITOR_BUILD ON)
-endif()
-
-if (BUILD_TARGET STREQUAL "editor" OR BUILD_TARGET STREQUAL "template_debug")
-	set(DEBUG_FEATURES ON)
-endif()
 
 if (EDITOR_BUILD)
 	target_compile_definitions(rex_engine PUBLIC
